@@ -2,8 +2,13 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "baseUrl": "."
+    "baseUrl": ".",
+
+    "noUnusedLocals": false
   },
   "include": ["src/**/*.ts"],
-  "references": [{ "path": "../../libs/hashicorp-plugin" }]
+  "references": [
+    { "path": "../../libs/hashicorp-plugin" },
+    { "path": "../../libs/grpc-utils" }
+  ]
 }

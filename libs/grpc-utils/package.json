@@ -1,0 +1,14 @@
+{
+  "name": "@terraform-typescript/grpc-utils",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build": "yarn build:ts",
+    "build:ts": "yarn tsc -b"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.1.8",
+    "@grpc/proto-loader": "^0.6.0-pre17"
+  }
+}

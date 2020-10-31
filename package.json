@@ -10,5 +10,8 @@
       "libs/*",
       "bins/*"
     ]
+  },
+  "scripts": {
+    "build": "yarn lerna run build"
   }
 }

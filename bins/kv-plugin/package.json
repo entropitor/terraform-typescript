@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "license": "UNLICENSED",
   "dependencies": {
-    "@grpc/grpc-js": "^1.1.8",
-    "@grpc/proto-loader": "^0.6.0-pre17",
     "@terraform-typescript/hashicorp-plugin": "1.0.0",
-    "grpc-health-check": "^1.8.0"
+    "@terraform-typescript/grpc-utils": "1.0.0"
+  },
+  "devDependencies": {
+    "@grpc/proto-loader": "^0.6.0-pre17"
   },
   "scripts": {
     "build": "yarn build:proto && yarn build:copy-proto && yarn build:ts",

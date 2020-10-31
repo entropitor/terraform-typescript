@@ -15,7 +15,7 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUnusedParameters": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "lib": ["ESNext.Array"],
     "composite": true,
     "declaration": true,
