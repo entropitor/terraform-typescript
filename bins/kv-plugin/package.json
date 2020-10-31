@@ -3,6 +3,18 @@
   "version": "1.0.0",
   "license": "UNLICENSED",
   "dependencies": {
-    "@terraform-typescript/hashicorp-plugin": "1.0.0"
+    "@grpc/grpc-js": "^1.1.8",
+    "@grpc/proto-loader": "^0.6.0-pre17",
+    "@terraform-typescript/hashicorp-plugin": "1.0.0",
+    "grpc-health-check": "^1.8.0"
+  },
+  "scripts": {
+    "build": "yarn build:proto && yarn build:copy-proto && yarn build:ts",
+    "build:ts": "yarn tsc -b",
+    "build:proto": "rm -rf src/generated && proto-loader-gen-types -O src/generated --grpcLib @grpc/grpc-js src/proto/*.proto",
+    "build:copy-proto": "cp -r src/proto/ dist/src/proto/"
+  },
+  "bin": {
+    "kv-plugin": "./kv-plugin"
   }
 }
