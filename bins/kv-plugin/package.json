@@ -16,6 +16,6 @@
     "build:copy-proto": "cp -r src/proto/ dist/src/proto/"
   },
   "bin": {
-    "kv-plugin": "./kv-plugin"
+    "kv-plugin": "./bin/kv-plugin"
   }
 }
