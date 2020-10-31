@@ -1,0 +1,8 @@
+{
+  "name": "@terraform-typescript/kv-plugin",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@terraform-typescript/hashicorp-plugin": "1.0.0"
+  }
+}

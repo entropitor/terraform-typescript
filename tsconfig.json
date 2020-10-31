@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "noEmitOnError": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "forceConsistentCasingInFileNames": true,
+    "target": "es6",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "lib": ["ESNext.Array"],
+    "composite": true,
+    "declaration": true,
+    "declarationMap": false,
+
+    "baseUrl": ".",
+    "paths": {
+      "@terraform-typescript/*": ["../../libs/*/src"]
+    }
+  },
+  "references": [
+    { "path": "../../libs/hashicorp-plugin" },
+    { "path": "../../bins/kv-plugin" }
+  ]
+}
