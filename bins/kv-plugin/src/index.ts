@@ -25,6 +25,7 @@ const kv = loadProto<KV.ProtoGrpcType, KV.ServiceHandlers.proto.KV, "proto">({
 });
 
 hashicorpPlugin({
+  appVersion: 1,
   configureServer(server) {
     kv.addToServer(server);
   },
