@@ -9,7 +9,7 @@ const unreachable = (_: never): void => {};
  */
 type ctyType =
   | {
-      type: "string" | "number" | "boolean";
+      type: "string" | "number" | "boolean" | "any";
     }
   | {
       type: "list" | "set" | "map";
@@ -33,6 +33,9 @@ const ctyTypeToJson = (typ: ctyType): any => {
     }
     case "boolean": {
       return "bool";
+    }
+    case "any": {
+      return "dynamic";
     }
     case "map":
     case "set":
@@ -63,6 +66,9 @@ export const ctyNumber = (): ctyType => ({
 });
 export const ctyBoolean = (): ctyType => ({
   type: "boolean",
+});
+export const ctyAny = (): ctyType => ({
+  type: "any",
 });
 export const ctyList = (of: ctyType): ctyType => ({
   type: "list",

@@ -9,7 +9,8 @@ build:
 #   mkdir -p ~/.terraform.d/plugins/darwin_amd64
 #   cp ../target/debug/terraform-plugin ./terraform-provider-${PROVIDER_NAME}_v${VERSION}
 
-# clean:
+clean:
+	rm terraform.tfstate*
 #   rm ./terraform-provider-${PROVIDER_NAME}_* || true
 
 run: build

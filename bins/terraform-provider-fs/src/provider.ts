@@ -11,12 +11,12 @@ export type ValidateResult = {
 export type ApplyChangeResult<S> = {
   diagnostics: Diagnostic[];
   privateData: Buffer;
-  newState: S;
+  newState: S | null;
 };
 export type PlanChangeResult<S> = {
   diagnostics: Diagnostic[];
   plannedPrivateData: Buffer;
-  plannedState: S;
+  plannedState: S | null;
   requiresReplace: AttributePath[];
 };
 export type UpgradeResult<S> = {
@@ -35,16 +35,16 @@ export interface Resource<S> {
   getSchema(): Schema;
   validate(args: { config: S }): Response<ValidateResult>;
   planChange(args: {
-    config: S;
+    config: S | null;
     priorPrivateData: Buffer;
-    priorState: S;
-    proposedNewState: S;
+    priorState: S | null;
+    proposedNewState: S | null;
   }): Response<PlanChangeResult<S>>;
   applyChange(args: {
     config: S;
     plannedPrivateData: Buffer;
-    priorState: S;
-    plannedState: S;
+    priorState: S | null;
+    plannedState: S | null;
   }): Response<ApplyChangeResult<S>>;
   upgrade(args: { version: number; rawState: any }): Response<UpgradeResult<S>>;
   read(args: { currentState: S; privateData: Buffer }): Response<ReadResult<S>>;

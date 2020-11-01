@@ -1,4 +1,4 @@
-import { ctyNumber, ctyObject, ctyString, ctyType } from "./ctyType";
+import { ctyAny, ctyNumber, ctyObject, ctyString, ctyType } from "./ctyType";
 import { StringKind } from "./generated/tfplugin5/StringKind";
 import { Provider, Resource } from "./provider";
 import * as Either from "fp-ts/Either";
@@ -11,13 +11,21 @@ import {
   Diagnostic,
   _tfplugin5_Diagnostic_Severity as Severity,
 } from "./generated/tfplugin5/Diagnostic";
+import { AttributePath } from "./generated/tfplugin5/AttributePath";
+
+/**
+ * The type of a dynamic value. The first part is a Buffer with the cty encoding of the actual type
+ */
+type Dynamic<T> = [Buffer, T];
 
 interface FsFile {
   file_name: string;
   body: {
     nb_foos: number;
   };
+  // extra: Dynamic<any>;
 }
+
 const fsFile: Resource<FsFile> = {
   validate({ config }) {
     const diagnostics: Diagnostic[] = [];
@@ -75,6 +83,17 @@ const fsFile: Resource<FsFile> = {
             deprecated: false,
             sensitive: false,
           },
+          // {
+          //   name: "extra",
+          //   type: ctyType(ctyAny()),
+          //   description: "Som extra properties of the file",
+          //   description_kind: StringKind.PLAIN,
+          //   required: false,
+          //   optional: true,
+          //   computed: false,
+          //   deprecated: false,
+          //   sensitive: false,
+          // },
         ],
         block_types: [],
         deprecated: false,
@@ -83,18 +102,48 @@ const fsFile: Resource<FsFile> = {
       },
     };
   },
-  planChange(args) {
-    console.error(args);
+  planChange({ proposedNewState }) {
     return Either.right({
       diagnostics: [],
       plannedPrivateData: Buffer.from("test"),
-      plannedState: args.proposedNewState,
-      requiresReplace: [],
+      plannedState: proposedNewState,
+      requiresReplace: [
+        {
+          steps: [
+            {
+              attribute_name: "file_name",
+            },
+          ],
+        },
+      ],
     });
   },
-  async applyChange({ plannedPrivateData, plannedState }) {
+  async applyChange({ plannedPrivateData, plannedState, priorState }) {
+    if (plannedState == null) {
+      const fileName = path.resolve(config!.root_dir, priorState!.file_name);
+      await fs.rm(fileName);
+
+      return Either.right({
+        diagnostics: [],
+        newState: null,
+        privateData: plannedPrivateData,
+      });
+    }
+
     const fileName = path.resolve(config!.root_dir, plannedState.file_name);
-    await fs.writeFile(fileName, JSON.stringify(plannedState.body, null, 2));
+    await fs.writeFile(
+      fileName,
+      JSON.stringify(
+        {
+          body: plannedState.body,
+        },
+        null,
+        2
+      )
+    );
+
+    console.error(plannedState);
+    console.error(plannedPrivateData);
 
     return Either.right({
       diagnostics: [],
@@ -111,13 +160,14 @@ const fsFile: Resource<FsFile> = {
   },
   async read({ currentState, privateData }) {
     const fileName = path.resolve(config!.root_dir, currentState.file_name);
-    const body = await fs.readFile(fileName);
+    const fileBody = await fs.readFile(fileName);
 
+    const content = JSON.parse(fileBody.toString());
     return Either.right({
       diagnostics: [],
       newState: {
         ...currentState,
-        body: JSON.parse(body.toString()),
+        body: content.body,
       },
       privateData,
     });
