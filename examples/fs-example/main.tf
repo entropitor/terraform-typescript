@@ -3,7 +3,7 @@ terraform {
 }
 
 provider "fs" {
-  foo = "bar"
+  root_dir = "/tmp/tf-experiment"
 }
 
 resource "fs_file" "quux" {

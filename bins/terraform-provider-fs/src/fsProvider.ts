@@ -5,6 +5,13 @@ import * as Either from "fp-ts/Either";
 import * as grpc from "@grpc/grpc-js";
 import { serializeDynamicValue } from "./dynamicValue";
 
+import * as path from "path";
+import * as fs from "fs";
+import {
+  Diagnostic,
+  _tfplugin5_Diagnostic_Severity as Severity,
+} from "./generated/tfplugin5/Diagnostic";
+
 interface FsFile {
   nb_foos: number;
 }
@@ -88,7 +95,7 @@ const fsFile: Resource<FsFile> = {
 };
 
 interface FsProviderSchemaType {
-  foo: string;
+  root_dir: string;
 }
 let config: FsProviderSchemaType | null = null;
 
@@ -100,11 +107,11 @@ export const fsProvider: Provider<FsProviderSchemaType, any> = {
         version: 1,
         attributes: [
           {
-            name: "foo",
+            name: "root_dir",
             type: ctyType(ctyString()),
-            description: "The foo value",
+            description: "The root dir where all files will be stored",
             description_kind: StringKind.PLAIN,
-            required: false,
+            required: true,
             optional: false,
             computed: false,
             sensitive: false,
@@ -129,23 +136,23 @@ export const fsProvider: Provider<FsProviderSchemaType, any> = {
     };
   },
   prepareProviderConfig(cfg) {
-    if (cfg.foo !== "bar") {
-      return [
-        {
-          severity: "ERROR",
-          attribute: {
-            steps: [
-              {
-                attribute_name: "foo",
-              },
-            ],
-          },
-          detail: "That's not a good foo, only bar is a good foo",
-          summary: "Bad foo",
+    const diagnostics: Diagnostic[] = [];
+
+    if (!path.isAbsolute(cfg.root_dir)) {
+      diagnostics.push({
+        severity: Severity.ERROR,
+        attribute: {
+          steps: [
+            {
+              attribute_name: "root_dir",
+            },
+          ],
         },
-      ];
+        detail: "You need to provide an absolute path as root_dir",
+        summary: "Relative root_dir",
+      });
     }
 
-    return [];
+    return diagnostics;
   },
 };
