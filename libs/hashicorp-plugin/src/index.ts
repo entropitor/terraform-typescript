@@ -88,5 +88,13 @@ export const hashicorpPlugin = async ({
     console.log(
       `${CORE_PROTOCOL_VERSION}|${appVersion}|${networkType}|${address}|${PROTOCOL}|${serverCertificateString}`
     );
+    // @ts-expect-error
+    server.http2ServerList.forEach((http2Server: any) => {
+      http2Server.on("connection", (socket: any) => {
+        socket.on("close", () => {
+          process.exit(0);
+        });
+      });
+    });
   });
 };
