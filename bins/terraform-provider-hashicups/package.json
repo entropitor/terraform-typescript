@@ -7,7 +7,8 @@
     "@terraform-typescript/grpc-utils": "1.0.0",
     "@terraform-typescript/hashicorp-plugin": "1.0.0",
     "@terraform-typescript/terraform-provider": "1.0.0",
-    "fp-ts": "^2.8.5"
+    "fp-ts": "^2.8.5",
+    "node-fetch": "^2.6.1"
   },
   "scripts": {
     "build": "yarn build:ts",
@@ -15,5 +16,8 @@
   },
   "bin": {
     "terraform-provider-hashicups": "./bin/terraform-provider-hashicups"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.7"
   }
 }

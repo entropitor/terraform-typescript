@@ -57,7 +57,7 @@ export type ValidateDataSourceResult = {
 };
 export type ReadDataSourceResult<State> = {
   diagnostics: Diagnostic[];
-  state: State;
+  state: State | null;
 };
 export interface DataSource<Config, State extends Config> {
   getSchema(): Schema;

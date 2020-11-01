@@ -11,19 +11,42 @@ import {
   Severity,
   StringKind,
 } from "@terraform-typescript/terraform-provider";
+import {
+  dataSourceCoffees,
+  DataSourceCoffeesConfig,
+  DataSourceCoffeesState,
+} from "./dataSourceCoffees";
 
-interface SchemaType {}
+interface SchemaType {
+  username: string;
+  password: string;
+}
 let config: SchemaType | null = null;
 
-export const hashicupsProvider: Provider<SchemaType, {}, {}> = {
+export const hashicupsProvider: Provider<
+  SchemaType,
+  {},
+  {
+    hashicups_coffees: [DataSourceCoffeesConfig, DataSourceCoffeesState];
+  }
+> = {
   getSchema() {
     return {
       version: 1,
       block: {
         version: 1,
-        attributes: [],
+        attributes: [
+          {
+            name: "username",
+            type: ctyType(ctyString()),
+          },
+          {
+            name: "password",
+            type: ctyType(ctyString()),
+            sensitive: true,
+          },
+        ],
         block_types: [],
-        // blockTypes: [],
         deprecated: false,
         description: "hashicups",
         description_kind: StringKind.PLAIN,
@@ -41,7 +64,9 @@ export const hashicupsProvider: Provider<SchemaType, {}, {}> = {
     return {};
   },
   getDataSources() {
-    return {};
+    return {
+      hashicups_coffees: dataSourceCoffees,
+    };
   },
   prepareProviderConfig(_cfg) {
     const diagnostics: Diagnostic[] = [];

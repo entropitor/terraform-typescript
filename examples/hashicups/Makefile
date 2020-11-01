@@ -4,7 +4,7 @@ build:
 clean:
 	rm terraform.tfstate*
 
-run: build
+debug: build
 	terraform init
 	TF_LOG=trace terraform apply
 
