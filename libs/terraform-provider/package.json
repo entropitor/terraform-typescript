@@ -1,0 +1,21 @@
+{
+  "name": "@terraform-typescript/terraform-provider",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "main": "dist/src/index.js",
+  "dependencies": {
+    "@msgpack/msgpack": "^2.3.0",
+    "@terraform-typescript/grpc-utils": "1.0.0",
+    "@terraform-typescript/hashicorp-plugin": "1.0.0",
+    "fp-ts": "^2.8.5"
+  },
+  "devDependencies": {
+    "@grpc/proto-loader": "^0.6.0-pre17"
+  },
+  "scripts": {
+    "build": "yarn build:proto && yarn build:copy-proto && yarn build:ts",
+    "build:ts": "yarn tsc -b",
+    "build:proto": "rm -rf src/generated && proto-loader-gen-types -O src/generated --grpcLib @grpc/grpc-js --keepCase --longs Number src/proto/*.proto",
+    "build:copy-proto": "cp -r src/proto/ dist/src/proto/"
+  }
+}

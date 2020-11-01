@@ -1,17 +1,19 @@
-import { ctyAny, ctyNumber, ctyObject, ctyString, ctyType } from "./ctyType";
-import { StringKind } from "./generated/tfplugin5/StringKind";
-import { Provider, Resource } from "./provider";
 import * as Either from "fp-ts/Either";
-import * as grpc from "@grpc/grpc-js";
-import { serializeDynamicValue } from "./dynamicValue";
+
+import {
+  ctyNumber,
+  ctyObject,
+  ctyString,
+  ctyType,
+  Diagnostic,
+  Provider,
+  Resource,
+  Severity,
+  StringKind,
+} from "@terraform-typescript/terraform-provider";
 
 import * as path from "path";
 import { promises as fs } from "fs";
-import {
-  Diagnostic,
-  _tfplugin5_Diagnostic_Severity as Severity,
-} from "./generated/tfplugin5/Diagnostic";
-import { AttributePath } from "./generated/tfplugin5/AttributePath";
 
 /**
  * The type of a dynamic value. The first part is a Buffer with the cty encoding of the actual type
@@ -179,7 +181,12 @@ interface FsProviderSchemaType {
 }
 let config: FsProviderSchemaType | null = null;
 
-export const fsProvider: Provider<FsProviderSchemaType, any> = {
+export const fsProvider: Provider<
+  FsProviderSchemaType,
+  {
+    fs_file: FsFile;
+  }
+> = {
   getSchema() {
     return {
       version: 1,

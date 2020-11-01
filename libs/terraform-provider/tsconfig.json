@@ -9,9 +9,5 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/generated/tfplugin5.ts"],
-  "references": [
-    { "path": "../../libs/hashicorp-plugin" },
-    { "path": "../../libs/grpc-utils" },
-    { "path": "../../libs/terraform-provider" }
-  ]
+  "references": [{ "path": "../hashicorp-plugin" }, { "path": "../grpc-utils" }]
 }

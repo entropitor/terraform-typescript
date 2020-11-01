@@ -25,9 +25,5 @@
     "paths": {
       "@terraform-typescript/*": ["../../libs/*/src"]
     }
-  },
-  "references": [
-    { "path": "../../libs/hashicorp-plugin" },
-    { "path": "../../bins/kv-plugin" }
-  ]
+  }
 }
