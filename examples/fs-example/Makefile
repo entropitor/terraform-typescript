@@ -15,3 +15,7 @@ build:
 run: build
 	terraform init
 	TF_LOG=trace terraform plan
+
+stealth: build
+	terraform init
+	terraform plan
