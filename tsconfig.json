@@ -16,7 +16,7 @@
     "noImplicitReturns": true,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
-    "lib": ["ESNext.Array"],
+    "lib": ["ESNext.Array", "ES2019"],
     "composite": true,
     "declaration": true,
     "declarationMap": false,

@@ -73,6 +73,105 @@ export interface Provider {
   ValidateResourceTypeConfig: any;
 }
 
+const objectMap = <A, B>(
+  mapFn: (
+    keyValue: [string, A],
+    index: number,
+    array: [string, A][]
+  ) => [string, B],
+  obj: Record<string, A>
+): Record<string, B> => Object.fromEntries(Object.entries(obj).map(mapFn));
+const valueMap = <A, B>(
+  mapFn: (keyValue: A, index: number) => B,
+  obj: Record<string, A>
+): Record<string, B> =>
+  objectMap(([key, value], index) => [key, mapFn(value, index)], obj);
+
+const unreachable = (_: never): void => {};
+
+// https://github.com/zclconf/go-cty
+type ctyType =
+  | {
+      type: "string" | "number" | "boolean";
+    }
+  | {
+      type: "list" | "set" | "map";
+      itemType: ctyType;
+    }
+  | {
+      type: "tuple";
+      itemTypes: ctyType[];
+    }
+  | {
+      type: "object";
+      itemType: {
+        [key: string]: ctyType;
+      };
+    };
+const ctyTypeToJson = (typ: ctyType): any => {
+  switch (typ.type) {
+    case "number":
+    case "string": {
+      return typ.type;
+    }
+    case "boolean": {
+      return "bool";
+    }
+    case "map":
+    case "set":
+    case "list": {
+      return [typ.type, ctyTypeToJson(typ.itemType)];
+    }
+    case "tuple": {
+      return [typ.type, typ.itemTypes.map(ctyTypeToJson)];
+    }
+    case "object": {
+      return [typ.type, valueMap(ctyTypeToJson, typ.itemType)];
+    }
+    default:
+      unreachable(typ);
+      return "";
+  }
+};
+const ctyType = (typ: ctyType): Buffer => {
+  return Buffer.from(JSON.stringify(ctyTypeToJson(typ)));
+};
+
+interface Resource {
+  getSchema(): Schema;
+}
+const resources: { [resourceName: string]: Resource } = {
+  fs_file: {
+    getSchema() {
+      return {
+        version: 1,
+        block: {
+          version: 1,
+          attributes: [
+            {
+              name: "nb_foos",
+              type: ctyType({
+                type: "number",
+              }),
+              description: "The number of foos",
+              required: true,
+              optional: false,
+              computed: false,
+              deprecated: false,
+              description_kind: StringKind.PLAIN,
+              sensitive: false,
+            },
+          ],
+          block_types: [],
+          deprecated: false,
+          description: "test resource",
+          description_kind: StringKind.PLAIN,
+        },
+      };
+    },
+  },
+};
+
 // TF.ProtoGrpcType,
 // TF.ServiceHandlers.tfplugin5.Provider,
 const tf = loadProto<any, Provider, "tfplugin5">({
@@ -99,9 +198,7 @@ const tf = loadProto<any, Provider, "tfplugin5">({
             attributes: [
               {
                 name: "foo",
-                // TODO abstract
-                // type: "string",
-                type: Buffer.from('"string"'),
+                type: ctyType({ type: "string" }),
                 description: "The foo value",
                 description_kind: StringKind.PLAIN,
                 required: false,
@@ -118,35 +215,10 @@ const tf = loadProto<any, Provider, "tfplugin5">({
             description_kind: StringKind.PLAIN,
           },
         },
-        // providerMeta: undefined,
-        resource_schemas: ({
-          fs_file: {
-            version: 1,
-            block: {
-              version: 1,
-              attributes: [
-                {
-                  name: "nb_foos",
-                  type: Buffer.from('"number"'),
-                  description: "The number of foos",
-                  required: true,
-                  optional: false,
-                  computed: false,
-                  deprecated: false,
-                  description_kind: StringKind.PLAIN,
-                  sensitive: false,
-                },
-              ],
-              block_types: [],
-              deprecated: false,
-              description: "test resource",
-              description_kind: StringKind.PLAIN,
-            },
-          } as Schema,
-          // TODO remove, bug in type generation
-        } as any) as Schema,
-        // dataSourceSchemas: {},
-        // diagnostics: [],
+        resource_schemas: valueMap(
+          (resource) => resource.getSchema(),
+          resources
+        ) as Schema,
       });
     }),
     ImportResourceState(call, callback) {
