@@ -15,7 +15,7 @@ import {
 interface SchemaType {}
 let config: SchemaType | null = null;
 
-export const hashicupsProvider: Provider<SchemaType, {}> = {
+export const hashicupsProvider: Provider<SchemaType, {}, {}> = {
   getSchema() {
     return {
       version: 1,
@@ -38,6 +38,9 @@ export const hashicupsProvider: Provider<SchemaType, {}> = {
     });
   },
   getResources() {
+    return {};
+  },
+  getDataSources() {
     return {};
   },
   prepareProviderConfig(_cfg) {

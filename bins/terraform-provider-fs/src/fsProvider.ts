@@ -185,7 +185,8 @@ export const fsProvider: Provider<
   FsProviderSchemaType,
   {
     fs_file: FsFile;
-  }
+  },
+  {}
 > = {
   getSchema() {
     return {
@@ -228,6 +229,9 @@ export const fsProvider: Provider<
     return {
       fs_file: fsFile,
     };
+  },
+  getDataSources() {
+    return {};
   },
   prepareProviderConfig(cfg) {
     const diagnostics: Diagnostic[] = [];

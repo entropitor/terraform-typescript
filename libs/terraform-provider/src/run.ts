@@ -13,12 +13,21 @@ import {
   PrepareConfigureResult,
   Provider,
   ProviderSchema,
-  ReadResult,
+  ReadDataSourceResult,
+  ReadResourceResult,
+  Resource,
   UpgradeResult,
+  ValidateDataSourceResult,
   ValidateResult,
 } from "./provider";
 
-export const run = (provider: Provider<any, any>) => {
+export const run = <
+  P,
+  R extends { [key: string]: any },
+  S extends { [key: string]: [any, any] }
+>(
+  provider: Provider<P, R, S>
+) => {
   type PSchema = ProviderSchema<typeof provider>;
 
   const proto = loadProto<
@@ -35,10 +44,13 @@ export const run = (provider: Provider<any, any>) => {
         const resourceName = call.request!.type_name!;
         const resource = provider.getResources()[resourceName];
 
-        return Either.map((result: ApplyChangeResult<any>) => ({
-          ...result,
-          new_state: serializeDynamicValue(result.newState),
-        }))(
+        return Either.map(
+          ({ diagnostics, newState, privateData }: ApplyChangeResult<any>) => ({
+            private: privateData,
+            diagnostics,
+            new_state: serializeDynamicValue(newState),
+          })
+        )(
           await resource.applyChange({
             config: parseDynamicValue(call.request!.config!),
             plannedPrivateData: call.request!.planned_private!,
@@ -57,21 +69,31 @@ export const run = (provider: Provider<any, any>) => {
           provider: provider.getSchema(),
           resource_schemas: valueMap(
             (resource) => resource.getSchema(),
-            provider.getResources()
-            // TODO remove when typings get fixed
-          ) as TF.messages.tfplugin5.Schema,
+            provider.getResources() as { [key: string]: Resource<any> }
+          ),
+          data_source_schemas: valueMap(
+            (dataSource) => dataSource.getSchema(),
+            provider.getDataSources()
+          ),
         });
       }),
       PlanResourceChange: unary(async (call) => {
         const resourceName = call.request!.type_name!;
         const resource = provider.getResources()[resourceName];
 
-        return Either.map((result: PlanChangeResult<any>) => ({
-          ...result,
-          planned_private: result.plannedPrivateData,
-          planned_state: serializeDynamicValue(result.plannedState),
-          requires_replace: result.requiresReplace,
-        }))(
+        return Either.map(
+          ({
+            diagnostics,
+            plannedPrivateData,
+            plannedState,
+            requiresReplace,
+          }: PlanChangeResult<any>) => ({
+            diagnostics,
+            planned_private: plannedPrivateData,
+            planned_state: serializeDynamicValue(plannedState),
+            requires_replace: requiresReplace,
+          })
+        )(
           await resource.planChange({
             config: parseDynamicValue(call.request!.config!),
             priorPrivateData: call.request!.prior_private!,
@@ -84,8 +106,8 @@ export const run = (provider: Provider<any, any>) => {
       }),
       PrepareProviderConfig: unary(async (call) => {
         const cfg = parseDynamicValue<PSchema>(call.request!.config!);
-        return Either.map((result: PrepareConfigureResult) => ({
-          ...result,
+        return Either.map(({ diagnostics }: PrepareConfigureResult) => ({
+          diagnostics,
           prepare_config: serializeDynamicValue(cfg),
         }))(await provider.prepareProviderConfig(cfg));
       }),
@@ -93,10 +115,17 @@ export const run = (provider: Provider<any, any>) => {
         const resourceName = call.request!.type_name!;
         const resource = provider.getResources()[resourceName];
 
-        return Either.map((result: ReadResult<any>) => ({
-          ...result,
-          new_state: serializeDynamicValue(result.newState),
-        }))(
+        return Either.map(
+          ({
+            diagnostics,
+            newState,
+            privateData,
+          }: ReadResourceResult<any>) => ({
+            diagnostics,
+            private: privateData,
+            new_state: serializeDynamicValue(newState),
+          })
+        )(
           await resource.read({
             currentState: parseDynamicValue(call.request!.current_state!),
             privateData: call.request!.private!,
@@ -114,10 +143,12 @@ export const run = (provider: Provider<any, any>) => {
         const resourceName = call.request!.type_name!;
         const resource = provider.getResources()[resourceName];
 
-        return Either.map((result: UpgradeResult<any>) => ({
-          ...result,
-          upgraded_state: serializeDynamicValue(result.upgradedState),
-        }))(
+        return Either.map(
+          ({ diagnostics, upgradedState }: UpgradeResult<any>) => ({
+            diagnostics,
+            upgraded_state: serializeDynamicValue(upgradedState),
+          })
+        )(
           await resource.upgrade({
             version: call.request!.version!,
             rawState: parseDynamicValue(call.request!.raw_state!),
@@ -128,8 +159,8 @@ export const run = (provider: Provider<any, any>) => {
         const resourceName = call.request!.type_name!;
         const resource = provider.getResources()[resourceName];
 
-        return Either.map((result: ValidateResult) => ({
-          ...result,
+        return Either.map(({ diagnostics }: ValidateResult) => ({
+          diagnostics,
         }))(
           await resource.validate({
             config: parseDynamicValue(call.request!.config!),
@@ -143,17 +174,33 @@ export const run = (provider: Provider<any, any>) => {
           code: grpc.status.UNIMPLEMENTED,
         });
       }),
+
       ValidateDataSourceConfig: unary(async (call) => {
-        console.error(call.request!);
-        return Either.left({
-          code: grpc.status.UNIMPLEMENTED,
-        });
+        const dataSourceName = call.request!.type_name!;
+        const dataSource = provider.getDataSources()[dataSourceName];
+
+        return Either.map(({ diagnostics }: ValidateDataSourceResult) => ({
+          diagnostics,
+        }))(
+          await dataSource.validate({
+            config: parseDynamicValue(call.request!.config!),
+          })
+        );
       }),
       ReadDataSource: unary(async (call) => {
-        console.error(call.request!);
-        return Either.left({
-          code: grpc.status.UNIMPLEMENTED,
-        });
+        const dataSourceName = call.request!.type_name!;
+        const dataSource = provider.getDataSources()[dataSourceName];
+
+        return Either.map(
+          ({ diagnostics, state }: ReadDataSourceResult<any>) => ({
+            diagnostics,
+            state: serializeDynamicValue(state),
+          })
+        )(
+          await dataSource.read({
+            config: parseDynamicValue(call.request!.config!),
+          })
+        );
       }),
     },
   });
