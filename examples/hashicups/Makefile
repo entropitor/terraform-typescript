@@ -11,3 +11,6 @@ run: build
 tf: build
 	terraform init
 	terraform apply
+
+api:
+	cd docker-compose && docker-compose up
