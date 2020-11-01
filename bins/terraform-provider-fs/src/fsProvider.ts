@@ -6,7 +6,7 @@ import * as grpc from "@grpc/grpc-js";
 import { serializeDynamicValue } from "./dynamicValue";
 
 import * as path from "path";
-import * as fs from "fs";
+import { promises as fs } from "fs";
 import {
   Diagnostic,
   _tfplugin5_Diagnostic_Severity as Severity,
@@ -87,17 +87,19 @@ const fsFile: Resource<FsFile> = {
     console.error(args);
     return Either.right({
       diagnostics: [],
-      plannedPrivate: Buffer.from("test"),
+      plannedPrivateData: Buffer.from("test"),
       plannedState: args.proposedNewState,
       requiresReplace: [],
     });
   },
-  applyChange(args) {
-    console.error(args);
+  async applyChange({ plannedPrivateData, plannedState }) {
+    const fileName = path.resolve(config!.root_dir, plannedState.file_name);
+    await fs.writeFile(fileName, JSON.stringify(plannedState.body, null, 2));
+
     return Either.right({
       diagnostics: [],
-      newState: args.plannedState,
-      private: args.plannedPrivate,
+      newState: plannedState,
+      privateData: plannedPrivateData,
     });
   },
   upgrade(args) {
@@ -107,12 +109,17 @@ const fsFile: Resource<FsFile> = {
       upgradedState: args.rawState,
     });
   },
-  read(args) {
-    console.error(args);
+  async read({ currentState, privateData }) {
+    const fileName = path.resolve(config!.root_dir, currentState.file_name);
+    const body = await fs.readFile(fileName);
+
     return Either.right({
       diagnostics: [],
-      newState: args.currentState,
-      private: args.private,
+      newState: {
+        ...currentState,
+        body: JSON.parse(body.toString()),
+      },
+      privateData,
     });
   },
 };
@@ -149,8 +156,13 @@ export const fsProvider: Provider<FsProviderSchemaType, any> = {
       },
     };
   },
-  configure(cfg) {
+  async configure(cfg) {
     config = cfg;
+
+    await fs.mkdir(cfg.root_dir, {
+      recursive: true,
+    });
+
     return Either.right({
       diagnostics: [],
     });

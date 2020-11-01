@@ -10,12 +10,12 @@ export type ValidateResult = {
 };
 export type ApplyChangeResult<S> = {
   diagnostics: Diagnostic[];
-  private: Buffer;
+  privateData: Buffer;
   newState: S;
 };
 export type PlanChangeResult<S> = {
   diagnostics: Diagnostic[];
-  plannedPrivate: Buffer;
+  plannedPrivateData: Buffer;
   plannedState: S;
   requiresReplace: AttributePath[];
 };
@@ -25,7 +25,7 @@ export type UpgradeResult<S> = {
 };
 export type ReadResult<S> = {
   diagnostics: Diagnostic[];
-  private: Buffer;
+  privateData: Buffer;
   newState: S;
 };
 
@@ -36,18 +36,18 @@ export interface Resource<S> {
   validate(args: { config: S }): Response<ValidateResult>;
   planChange(args: {
     config: S;
-    priorPrivate: Buffer;
+    priorPrivateData: Buffer;
     priorState: S;
     proposedNewState: S;
   }): Response<PlanChangeResult<S>>;
   applyChange(args: {
     config: S;
-    plannedPrivate: Buffer;
+    plannedPrivateData: Buffer;
     priorState: S;
     plannedState: S;
   }): Response<ApplyChangeResult<S>>;
   upgrade(args: { version: number; rawState: any }): Response<UpgradeResult<S>>;
-  read(args: { currentState: S; private: Buffer }): Response<ReadResult<S>>;
+  read(args: { currentState: S; privateData: Buffer }): Response<ReadResult<S>>;
 }
 
 type Resources<R> = {

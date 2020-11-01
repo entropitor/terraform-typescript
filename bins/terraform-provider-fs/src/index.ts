@@ -41,7 +41,7 @@ const tf = loadProto<
       }))(
         await resource.applyChange({
           config: parseDynamicValue(call.request!.config!),
-          plannedPrivate: call.request!.planned_private!,
+          plannedPrivateData: call.request!.planned_private!,
           priorState: parseDynamicValue(call.request!.prior_state!),
           plannedState: parseDynamicValue(call.request!.planned_state!),
         })
@@ -66,13 +66,13 @@ const tf = loadProto<
 
       return Either.map((result: PlanChangeResult<any>) => ({
         ...result,
-        planned_private: result.plannedPrivate,
+        planned_private: result.plannedPrivateData,
         planned_state: serializeDynamicValue(result.plannedState),
         requires_replace: result.requiresReplace,
       }))(
         await resource.planChange({
           config: parseDynamicValue(call.request!.config!),
-          priorPrivate: call.request!.prior_private!,
+          priorPrivateData: call.request!.prior_private!,
           priorState: parseDynamicValue(call.request!.prior_state!),
           proposedNewState: parseDynamicValue(
             call.request!.proposed_new_state!
@@ -97,7 +97,7 @@ const tf = loadProto<
       }))(
         await resource.read({
           currentState: parseDynamicValue(call.request!.current_state!),
-          private: call.request!.private!,
+          privateData: call.request!.private!,
         })
       );
     }),
