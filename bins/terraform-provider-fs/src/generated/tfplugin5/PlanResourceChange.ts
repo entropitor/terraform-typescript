@@ -5,37 +5,37 @@ import { AttributePath as _tfplugin5_AttributePath, AttributePath__Output as _tf
 import { Diagnostic as _tfplugin5_Diagnostic, Diagnostic__Output as _tfplugin5_Diagnostic__Output } from '../tfplugin5/Diagnostic';
 
 export interface _tfplugin5_PlanResourceChange_Request {
-  'typeName'?: (string);
-  'priorState'?: (_tfplugin5_DynamicValue);
-  'proposedNewState'?: (_tfplugin5_DynamicValue);
+  'type_name'?: (string);
+  'prior_state'?: (_tfplugin5_DynamicValue);
+  'proposed_new_state'?: (_tfplugin5_DynamicValue);
   'config'?: (_tfplugin5_DynamicValue);
-  'priorPrivate'?: (Buffer | Uint8Array | string);
-  'providerMeta'?: (_tfplugin5_DynamicValue);
+  'prior_private'?: (Buffer | Uint8Array | string);
+  'provider_meta'?: (_tfplugin5_DynamicValue);
 }
 
 export interface _tfplugin5_PlanResourceChange_Request__Output {
-  'typeName'?: (string);
-  'priorState'?: (_tfplugin5_DynamicValue__Output);
-  'proposedNewState'?: (_tfplugin5_DynamicValue__Output);
+  'type_name'?: (string);
+  'prior_state'?: (_tfplugin5_DynamicValue__Output);
+  'proposed_new_state'?: (_tfplugin5_DynamicValue__Output);
   'config'?: (_tfplugin5_DynamicValue__Output);
-  'priorPrivate'?: (Buffer);
-  'providerMeta'?: (_tfplugin5_DynamicValue__Output);
+  'prior_private'?: (Buffer);
+  'provider_meta'?: (_tfplugin5_DynamicValue__Output);
 }
 
 export interface _tfplugin5_PlanResourceChange_Response {
-  'plannedState'?: (_tfplugin5_DynamicValue);
-  'requiresReplace'?: (_tfplugin5_AttributePath)[];
-  'plannedPrivate'?: (Buffer | Uint8Array | string);
+  'planned_state'?: (_tfplugin5_DynamicValue);
+  'requires_replace'?: (_tfplugin5_AttributePath)[];
+  'planned_private'?: (Buffer | Uint8Array | string);
   'diagnostics'?: (_tfplugin5_Diagnostic)[];
-  'legacyTypeSystem'?: (boolean);
+  'legacy_type_system'?: (boolean);
 }
 
 export interface _tfplugin5_PlanResourceChange_Response__Output {
-  'plannedState'?: (_tfplugin5_DynamicValue__Output);
-  'requiresReplace'?: (_tfplugin5_AttributePath__Output)[];
-  'plannedPrivate'?: (Buffer);
+  'planned_state'?: (_tfplugin5_DynamicValue__Output);
+  'requires_replace'?: (_tfplugin5_AttributePath__Output)[];
+  'planned_private'?: (Buffer);
   'diagnostics'?: (_tfplugin5_Diagnostic__Output)[];
-  'legacyTypeSystem'?: (boolean);
+  'legacy_type_system'?: (boolean);
 }
 
 export interface PlanResourceChange {

@@ -6,24 +6,24 @@ import { Diagnostic as _tfplugin5_Diagnostic, Diagnostic__Output as _tfplugin5_D
 import { Long } from '@grpc/proto-loader';
 
 export interface _tfplugin5_UpgradeResourceState_Request {
-  'typeName'?: (string);
+  'type_name'?: (string);
   'version'?: (number | string | Long);
-  'rawState'?: (_tfplugin5_RawState);
+  'raw_state'?: (_tfplugin5_RawState);
 }
 
 export interface _tfplugin5_UpgradeResourceState_Request__Output {
-  'typeName'?: (string);
+  'type_name'?: (string);
   'version'?: (Long);
-  'rawState'?: (_tfplugin5_RawState__Output);
+  'raw_state'?: (_tfplugin5_RawState__Output);
 }
 
 export interface _tfplugin5_UpgradeResourceState_Response {
-  'upgradedState'?: (_tfplugin5_DynamicValue);
+  'upgraded_state'?: (_tfplugin5_DynamicValue);
   'diagnostics'?: (_tfplugin5_Diagnostic)[];
 }
 
 export interface _tfplugin5_UpgradeResourceState_Response__Output {
-  'upgradedState'?: (_tfplugin5_DynamicValue__Output);
+  'upgraded_state'?: (_tfplugin5_DynamicValue__Output);
   'diagnostics'?: (_tfplugin5_Diagnostic__Output)[];
 }
 

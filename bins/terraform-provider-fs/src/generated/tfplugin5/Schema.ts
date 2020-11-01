@@ -11,7 +11,7 @@ export interface _tfplugin5_Schema_Attribute {
   'optional'?: (boolean);
   'computed'?: (boolean);
   'sensitive'?: (boolean);
-  'descriptionKind'?: (_tfplugin5_StringKind | keyof typeof _tfplugin5_StringKind);
+  'description_kind'?: (_tfplugin5_StringKind | keyof typeof _tfplugin5_StringKind);
   'deprecated'?: (boolean);
 }
 
@@ -23,42 +23,42 @@ export interface _tfplugin5_Schema_Attribute__Output {
   'optional'?: (boolean);
   'computed'?: (boolean);
   'sensitive'?: (boolean);
-  'descriptionKind'?: (_tfplugin5_StringKind);
+  'description_kind'?: (_tfplugin5_StringKind);
   'deprecated'?: (boolean);
 }
 
 export interface _tfplugin5_Schema_Block {
   'version'?: (number | string | Long);
   'attributes'?: (_tfplugin5_Schema_Attribute)[];
-  'blockTypes'?: (_tfplugin5_Schema_NestedBlock)[];
+  'block_types'?: (_tfplugin5_Schema_NestedBlock)[];
   'description'?: (string);
-  'descriptionKind'?: (_tfplugin5_StringKind | keyof typeof _tfplugin5_StringKind);
+  'description_kind'?: (_tfplugin5_StringKind | keyof typeof _tfplugin5_StringKind);
   'deprecated'?: (boolean);
 }
 
 export interface _tfplugin5_Schema_Block__Output {
   'version'?: (Long);
   'attributes'?: (_tfplugin5_Schema_Attribute__Output)[];
-  'blockTypes'?: (_tfplugin5_Schema_NestedBlock__Output)[];
+  'block_types'?: (_tfplugin5_Schema_NestedBlock__Output)[];
   'description'?: (string);
-  'descriptionKind'?: (_tfplugin5_StringKind);
+  'description_kind'?: (_tfplugin5_StringKind);
   'deprecated'?: (boolean);
 }
 
 export interface _tfplugin5_Schema_NestedBlock {
-  'typeName'?: (string);
+  'type_name'?: (string);
   'block'?: (_tfplugin5_Schema_Block);
   'nesting'?: (_tfplugin5_Schema_NestedBlock_NestingMode | keyof typeof _tfplugin5_Schema_NestedBlock_NestingMode);
-  'minItems'?: (number | string | Long);
-  'maxItems'?: (number | string | Long);
+  'min_items'?: (number | string | Long);
+  'max_items'?: (number | string | Long);
 }
 
 export interface _tfplugin5_Schema_NestedBlock__Output {
-  'typeName'?: (string);
+  'type_name'?: (string);
   'block'?: (_tfplugin5_Schema_Block__Output);
   'nesting'?: (_tfplugin5_Schema_NestedBlock_NestingMode);
-  'minItems'?: (Long);
-  'maxItems'?: (Long);
+  'min_items'?: (Long);
+  'max_items'?: (Long);
 }
 
 // Original file: src/proto/tfplugin5.proto

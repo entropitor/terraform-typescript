@@ -11,18 +11,18 @@ export interface _tfplugin5_GetProviderSchema_Request__Output {
 
 export interface _tfplugin5_GetProviderSchema_Response {
   'provider'?: (_tfplugin5_Schema);
-  'resourceSchemas'?: (_tfplugin5_Schema);
-  'dataSourceSchemas'?: (_tfplugin5_Schema);
+  'resource_schemas'?: (_tfplugin5_Schema);
+  'data_source_schemas'?: (_tfplugin5_Schema);
   'diagnostics'?: (_tfplugin5_Diagnostic)[];
-  'providerMeta'?: (_tfplugin5_Schema);
+  'provider_meta'?: (_tfplugin5_Schema);
 }
 
 export interface _tfplugin5_GetProviderSchema_Response__Output {
   'provider'?: (_tfplugin5_Schema__Output);
-  'resourceSchemas'?: (_tfplugin5_Schema__Output);
-  'dataSourceSchemas'?: (_tfplugin5_Schema__Output);
+  'resource_schemas'?: (_tfplugin5_Schema__Output);
+  'data_source_schemas'?: (_tfplugin5_Schema__Output);
   'diagnostics'?: (_tfplugin5_Diagnostic__Output)[];
-  'providerMeta'?: (_tfplugin5_Schema__Output);
+  'provider_meta'?: (_tfplugin5_Schema__Output);
 }
 
 export interface GetProviderSchema {

@@ -4,15 +4,15 @@ import { DynamicValue as _tfplugin5_DynamicValue, DynamicValue__Output as _tfplu
 import { Diagnostic as _tfplugin5_Diagnostic, Diagnostic__Output as _tfplugin5_Diagnostic__Output } from '../tfplugin5/Diagnostic';
 
 export interface _tfplugin5_ReadDataSource_Request {
-  'typeName'?: (string);
+  'type_name'?: (string);
   'config'?: (_tfplugin5_DynamicValue);
-  'providerMeta'?: (_tfplugin5_DynamicValue);
+  'provider_meta'?: (_tfplugin5_DynamicValue);
 }
 
 export interface _tfplugin5_ReadDataSource_Request__Output {
-  'typeName'?: (string);
+  'type_name'?: (string);
   'config'?: (_tfplugin5_DynamicValue__Output);
-  'providerMeta'?: (_tfplugin5_DynamicValue__Output);
+  'provider_meta'?: (_tfplugin5_DynamicValue__Output);
 }
 
 export interface _tfplugin5_ReadDataSource_Response {

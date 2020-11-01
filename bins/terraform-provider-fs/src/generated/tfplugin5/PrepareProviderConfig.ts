@@ -12,12 +12,12 @@ export interface _tfplugin5_PrepareProviderConfig_Request__Output {
 }
 
 export interface _tfplugin5_PrepareProviderConfig_Response {
-  'preparedConfig'?: (_tfplugin5_DynamicValue);
+  'prepared_config'?: (_tfplugin5_DynamicValue);
   'diagnostics'?: (_tfplugin5_Diagnostic)[];
 }
 
 export interface _tfplugin5_PrepareProviderConfig_Response__Output {
-  'preparedConfig'?: (_tfplugin5_DynamicValue__Output);
+  'prepared_config'?: (_tfplugin5_DynamicValue__Output);
   'diagnostics'?: (_tfplugin5_Diagnostic__Output)[];
 }
 

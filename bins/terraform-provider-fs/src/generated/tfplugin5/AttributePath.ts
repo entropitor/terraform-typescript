@@ -3,16 +3,16 @@
 import { Long } from '@grpc/proto-loader';
 
 export interface _tfplugin5_AttributePath_Step {
-  'attributeName'?: (string);
-  'elementKeyString'?: (string);
-  'elementKeyInt'?: (number | string | Long);
-  'selector'?: "attributeName"|"elementKeyString"|"elementKeyInt";
+  'attribute_name'?: (string);
+  'element_key_string'?: (string);
+  'element_key_int'?: (number | string | Long);
+  'selector'?: "attribute_name"|"element_key_string"|"element_key_int";
 }
 
 export interface _tfplugin5_AttributePath_Step__Output {
-  'attributeName'?: (string);
-  'elementKeyString'?: (string);
-  'elementKeyInt'?: (Long);
+  'attribute_name'?: (string);
+  'element_key_string'?: (string);
+  'element_key_int'?: (Long);
 }
 
 export interface AttributePath {

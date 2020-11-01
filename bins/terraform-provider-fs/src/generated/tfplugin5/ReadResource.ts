@@ -4,27 +4,27 @@ import { DynamicValue as _tfplugin5_DynamicValue, DynamicValue__Output as _tfplu
 import { Diagnostic as _tfplugin5_Diagnostic, Diagnostic__Output as _tfplugin5_Diagnostic__Output } from '../tfplugin5/Diagnostic';
 
 export interface _tfplugin5_ReadResource_Request {
-  'typeName'?: (string);
-  'currentState'?: (_tfplugin5_DynamicValue);
+  'type_name'?: (string);
+  'current_state'?: (_tfplugin5_DynamicValue);
   'private'?: (Buffer | Uint8Array | string);
-  'providerMeta'?: (_tfplugin5_DynamicValue);
+  'provider_meta'?: (_tfplugin5_DynamicValue);
 }
 
 export interface _tfplugin5_ReadResource_Request__Output {
-  'typeName'?: (string);
-  'currentState'?: (_tfplugin5_DynamicValue__Output);
+  'type_name'?: (string);
+  'current_state'?: (_tfplugin5_DynamicValue__Output);
   'private'?: (Buffer);
-  'providerMeta'?: (_tfplugin5_DynamicValue__Output);
+  'provider_meta'?: (_tfplugin5_DynamicValue__Output);
 }
 
 export interface _tfplugin5_ReadResource_Response {
-  'newState'?: (_tfplugin5_DynamicValue);
+  'new_state'?: (_tfplugin5_DynamicValue);
   'diagnostics'?: (_tfplugin5_Diagnostic)[];
   'private'?: (Buffer | Uint8Array | string);
 }
 
 export interface _tfplugin5_ReadResource_Response__Output {
-  'newState'?: (_tfplugin5_DynamicValue__Output);
+  'new_state'?: (_tfplugin5_DynamicValue__Output);
   'diagnostics'?: (_tfplugin5_Diagnostic__Output)[];
   'private'?: (Buffer);
 }

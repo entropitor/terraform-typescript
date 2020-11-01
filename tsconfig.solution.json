@@ -3,6 +3,8 @@
   "files": [],
   "references": [
     { "path": "./libs/hashicorp-plugin" },
-    { "path": "./bins/kv-plugin" }
+    { "path": "./libs/grpc-utils" },
+    { "path": "./bins/kv-plugin" },
+    { "path": "./bins/terraform-provider-fs" }
   ]
 }

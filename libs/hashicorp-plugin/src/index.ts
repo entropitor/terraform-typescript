@@ -85,24 +85,8 @@ export const hashicorpPlugin = async ({
     server.start();
     const networkType = "tcp";
     const address = `127.0.0.1:${port}`;
-    console.error(
-      `${CORE_PROTOCOL_VERSION}|${appVersion}|${networkType}|${address}|${PROTOCOL}|${serverCertificateString}`
-    );
     console.log(
       `${CORE_PROTOCOL_VERSION}|${appVersion}|${networkType}|${address}|${PROTOCOL}|${serverCertificateString}`
     );
   });
 };
-// let (mut server, server_certificate) =
-//     if let Ok(client_cert) = std::env::var("PLUGIN_CLIENT_CERT") {
-
-//         eprintln!("Configuring tls for server");
-//         (
-//             server
-//                 .tls_config(tls_config)
-//                 .expect("tls config for server"),
-//             base64::encode_config(certificate.to_der()?, base64::STANDARD_NO_PAD),
-//         )
-//     } else {
-//         (server, "".to_string())
-//     };

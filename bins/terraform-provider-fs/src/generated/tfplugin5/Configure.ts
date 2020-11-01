@@ -4,12 +4,12 @@ import { DynamicValue as _tfplugin5_DynamicValue, DynamicValue__Output as _tfplu
 import { Diagnostic as _tfplugin5_Diagnostic, Diagnostic__Output as _tfplugin5_Diagnostic__Output } from '../tfplugin5/Diagnostic';
 
 export interface _tfplugin5_Configure_Request {
-  'terraformVersion'?: (string);
+  'terraform_version'?: (string);
   'config'?: (_tfplugin5_DynamicValue);
 }
 
 export interface _tfplugin5_Configure_Request__Output {
-  'terraformVersion'?: (string);
+  'terraform_version'?: (string);
   'config'?: (_tfplugin5_DynamicValue__Output);
 }
 
