@@ -1,24 +1,13 @@
 import path from "path";
-// import * as TF from "src/generated/tfplugin5.2";
+// import * as TF from "./generated/tfplugin5.2";
+import * as TF from "./tfplugin5";
 import * as fs from "fs";
 import { hashicorpPlugin } from "@terraform-typescript/hashicorp-plugin";
 import { loadProto } from "@terraform-typescript/grpc-utils";
 import * as Either from "fp-ts/Either";
 import * as grpc from "@grpc/grpc-js";
-import {
-  _tfplugin5_GetProviderSchema_Request__Output,
-  _tfplugin5_GetProviderSchema_Response,
-} from "./generated/tfplugin5/GetProviderSchema";
-import {
-  _tfplugin5_PrepareProviderConfig_Request__Output,
-  _tfplugin5_PrepareProviderConfig_Response,
-} from "./generated/tfplugin5/PrepareProviderConfig";
-import {
-  _tfplugin5_Stop_Request__Output,
-  _tfplugin5_Stop_Response,
-} from "./generated/tfplugin5/Stop";
+
 import { StringKind } from "./generated/tfplugin5/StringKind";
-import { Schema } from "./generated/tfplugin5/Schema";
 
 const cbReturn = <E, V>(
   callback: (error: E | null, value: V | null) => void,
@@ -51,28 +40,6 @@ const unary: <Req, Res>(
   >
 ) => UnaryCall<Req, Res> = (implementation) => (call, callback) =>
   cbReturn(callback, () => implementation(call));
-
-export interface Provider {
-  ApplyResourceChange: any;
-  Configure: any;
-  GetSchema: UnaryCall<
-    _tfplugin5_GetProviderSchema_Request__Output,
-    _tfplugin5_GetProviderSchema_Response
-  >;
-  ImportResourceState: any;
-  PlanResourceChange: any;
-  PrepareProviderConfig: UnaryCall<
-    _tfplugin5_PrepareProviderConfig_Request__Output,
-    _tfplugin5_PrepareProviderConfig_Response
-  >;
-  ReadDataSource: any;
-  ReadResource: any;
-  Stop: UnaryCall<_tfplugin5_Stop_Request__Output, _tfplugin5_Stop_Response>;
-  UpgradeResourceState: any;
-  ValidateDataSourceConfig: any;
-  ValidateResourceTypeConfig: any;
-}
-
 const objectMap = <A, B>(
   mapFn: (
     keyValue: [string, A],
@@ -138,7 +105,7 @@ const ctyType = (typ: ctyType): Buffer => {
 };
 
 interface Resource {
-  getSchema(): Schema;
+  getSchema(): TF.messages.tfplugin5.Schema;
 }
 const resources: { [resourceName: string]: Resource } = {
   fs_file: {
@@ -172,9 +139,11 @@ const resources: { [resourceName: string]: Resource } = {
   },
 };
 
-// TF.ProtoGrpcType,
-// TF.ServiceHandlers.tfplugin5.Provider,
-const tf = loadProto<any, Provider, "tfplugin5">({
+const tf = loadProto<
+  TF.ProtoGrpcType,
+  TF.ServiceHandlers.tfplugin5.Provider,
+  "tfplugin5"
+>({
   dirname: __dirname,
   fileName: "tfplugin5.proto",
   packageName: "tfplugin5",
@@ -218,7 +187,7 @@ const tf = loadProto<any, Provider, "tfplugin5">({
         resource_schemas: valueMap(
           (resource) => resource.getSchema(),
           resources
-        ) as Schema,
+        ) as TF.messages.tfplugin5.Schema,
       });
     }),
     ImportResourceState(call, callback) {
