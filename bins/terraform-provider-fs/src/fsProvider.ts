@@ -70,6 +70,13 @@ const fsFile: Resource<FsFile> = {
       private: args.plannedPrivate,
     });
   },
+  upgrade(args) {
+    console.error(args);
+    return Either.right({
+      diagnostics: [],
+      upgradedState: args.rawState,
+    });
+  },
 };
 
 interface FsProviderSchemaType {

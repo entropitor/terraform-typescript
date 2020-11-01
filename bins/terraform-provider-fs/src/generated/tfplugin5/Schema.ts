@@ -37,7 +37,7 @@ export interface _tfplugin5_Schema_Block {
 }
 
 export interface _tfplugin5_Schema_Block__Output {
-  'version'?: (Long);
+  'version'?: (number);
   'attributes'?: (_tfplugin5_Schema_Attribute__Output)[];
   'block_types'?: (_tfplugin5_Schema_NestedBlock__Output)[];
   'description'?: (string);
@@ -57,8 +57,8 @@ export interface _tfplugin5_Schema_NestedBlock__Output {
   'type_name'?: (string);
   'block'?: (_tfplugin5_Schema_Block__Output);
   'nesting'?: (_tfplugin5_Schema_NestedBlock_NestingMode);
-  'min_items'?: (Long);
-  'max_items'?: (Long);
+  'min_items'?: (number);
+  'max_items'?: (number);
 }
 
 // Original file: src/proto/tfplugin5.proto
@@ -78,6 +78,6 @@ export interface Schema {
 }
 
 export interface Schema__Output {
-  'version'?: (Long);
+  'version'?: (number);
   'block'?: (_tfplugin5_Schema_Block__Output);
 }

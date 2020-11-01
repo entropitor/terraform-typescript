@@ -13,7 +13,7 @@ export interface _tfplugin5_UpgradeResourceState_Request {
 
 export interface _tfplugin5_UpgradeResourceState_Request__Output {
   'type_name'?: (string);
-  'version'?: (Long);
+  'version'?: (number);
   'raw_state'?: (_tfplugin5_RawState__Output);
 }
 

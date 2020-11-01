@@ -14,7 +14,7 @@
   "scripts": {
     "build": "yarn build:proto && yarn build:copy-proto && yarn build:ts",
     "build:ts": "yarn tsc -b",
-    "build:proto": "rm -rf src/generated && proto-loader-gen-types -O src/generated --grpcLib @grpc/grpc-js --keepCase src/proto/*.proto",
+    "build:proto": "rm -rf src/generated && proto-loader-gen-types -O src/generated --grpcLib @grpc/grpc-js --keepCase --longs Number src/proto/*.proto",
     "build:copy-proto": "cp -r src/proto/ dist/src/proto/"
   },
   "bin": {

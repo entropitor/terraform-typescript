@@ -12,7 +12,7 @@ export interface _tfplugin5_AttributePath_Step {
 export interface _tfplugin5_AttributePath_Step__Output {
   'attribute_name'?: (string);
   'element_key_string'?: (string);
-  'element_key_int'?: (Long);
+  'element_key_int'?: (number);
 }
 
 export interface AttributePath {

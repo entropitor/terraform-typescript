@@ -12,6 +12,7 @@ import {
   ApplyChangeResult,
   PlanChangeResult,
   ProviderSchema,
+  UpgradeResult,
 } from "./provider";
 
 const provider = fsProvider;
@@ -60,7 +61,7 @@ const tf = loadProto<
       });
     }),
     ImportResourceState: unary(async (call) => {
-      console.log(call.request!);
+      console.error(call.request!);
       return Either.left({
         code: grpc.status.UNIMPLEMENTED,
       });
@@ -93,32 +94,40 @@ const tf = loadProto<
       });
     }),
     ReadDataSource: unary(async (call) => {
-      console.log(call.request!);
+      console.error(call.request!);
       return Either.left({
         code: grpc.status.UNIMPLEMENTED,
       });
     }),
     ReadResource: unary(async (call) => {
-      console.log(call.request!);
+      console.error(call.request!);
       return Either.left({
         code: grpc.status.UNIMPLEMENTED,
       });
     }),
     Stop: unary(async (_call) => {
-      console.log("Hello from Stop");
+      console.error("Hello from Stop");
       setTimeout(() => {
         process.exit(0);
       }, 100);
       return Either.right({});
     }),
     UpgradeResourceState: unary(async (call) => {
-      console.log(call.request!);
-      return Either.left({
-        code: grpc.status.UNIMPLEMENTED,
-      });
+      const resourceName = call.request!.type_name!;
+      const resource = provider.getResources()[resourceName];
+
+      return Either.map((result: UpgradeResult<any>) => ({
+        ...result,
+        upgraded_state: serializeDynamicValue(result.upgradedState),
+      }))(
+        resource.upgrade({
+          version: call.request!.version!,
+          rawState: parseDynamicValue(call.request!.raw_state!),
+        })
+      );
     }),
     ValidateDataSourceConfig: unary(async (call) => {
-      console.log(call.request!);
+      console.error(call.request!);
       return Either.left({
         code: grpc.status.UNIMPLEMENTED,
       });

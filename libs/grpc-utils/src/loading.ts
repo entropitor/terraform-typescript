@@ -43,7 +43,7 @@ export const loadProto = <
   const fullPath = path.resolve(dirname, "proto", fileName);
   const packageDefinition = protoLoader.loadSync(fullPath, {
     keepCase: true,
-    longs: String,
+    longs: Number,
     enums: String,
     defaults: true,
     oneofs: true,

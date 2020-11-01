@@ -16,6 +16,10 @@ export type PlanChangeResult<S> = {
   plannedState: S;
   requiresReplace: AttributePath[];
 };
+export type UpgradeResult<S> = {
+  diagnostics: Diagnostic[];
+  upgradedState: S;
+};
 export interface Resource<S> {
   getSchema(): Schema;
   validate(config: S): Diagnostic[];
@@ -31,6 +35,10 @@ export interface Resource<S> {
     priorState: S;
     plannedState: S;
   }): GrpcResponse<ApplyChangeResult<S>>;
+  upgrade(args: {
+    version: number;
+    rawState: any;
+  }): GrpcResponse<UpgradeResult<S>>;
 }
 
 type Resources<R> = {
