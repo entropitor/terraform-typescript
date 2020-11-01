@@ -1,22 +1,21 @@
 {
-  "name": "@terraform-typescript/hashicorp-plugin",
+  "name": "@terraform-typescript/terraform-provider-fs",
   "version": "1.0.0",
   "license": "UNLICENSED",
-  "main": "dist/src/index.js",
+  "dependencies": {
+    "@terraform-typescript/hashicorp-plugin": "1.0.0",
+    "@terraform-typescript/grpc-utils": "1.0.0"
+  },
+  "devDependencies": {
+    "@grpc/proto-loader": "^0.6.0-pre17"
+  },
   "scripts": {
     "build": "yarn build:proto && yarn build:copy-proto && yarn build:ts",
     "build:ts": "yarn tsc -b",
     "build:proto": "rm -rf src/generated && proto-loader-gen-types -O src/generated --grpcLib @grpc/grpc-js src/proto/*.proto",
     "build:copy-proto": "cp -r src/proto/ dist/src/proto/"
   },
-  "dependencies": {
-    "@grpc/grpc-js": "^1.1.8",
-    "@terraform-typescript/grpc-utils": "^1.0.0",
-    "grpc-health-check": "^1.8.0",
-    "node-forge": "^0.10.0"
-  },
-  "devDependencies": {
-    "@grpc/proto-loader": "^0.6.0-pre17",
-    "@types/node-forge": "^0.9.5"
+  "bin": {
+    "terraform-provider-fs": "./bin/terraform-provider-fs"
   }
 }

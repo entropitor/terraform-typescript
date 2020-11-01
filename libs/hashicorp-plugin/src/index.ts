@@ -2,8 +2,9 @@ import * as grpc from "@grpc/grpc-js";
 import * as GrpcStdio from "src/generated/grpc_stdio";
 // @ts-expect-error no definition file
 import health from "grpc-health-check";
-
+import * as forge from "node-forge";
 import { loadProto } from "@terraform-typescript/grpc-utils";
+import { generateIdentity } from "./certificate";
 
 const CORE_PROTOCOL_VERSION = 1;
 const PROTOCOL = "grpc";
@@ -48,19 +49,60 @@ export const hashicorpPlugin = async ({
 
   await configureServer(server);
 
-  server.bindAsync(
-    "0.0.0.0:0",
-    grpc.ServerCredentials.createInsecure(),
-    (_err, port) => {
-      console.error(port);
-      server.start();
-      console.log(`1|1|tcp|127.0.0.1:${port}|grpc`);
-      const networkType = "tcp";
-      const address = `127.0.0.1:${port}`;
-      const serverCertificate = "";
-      console.log(
-        `${CORE_PROTOCOL_VERSION}|${appVersion}|${networkType}|${address}|${PROTOCOL}|${serverCertificate}`
-      );
-    }
-  );
+  let credentials = grpc.ServerCredentials.createInsecure();
+  let serverCertificateString = "";
+  if (process.env.PLUGIN_CLIENT_CERT) {
+    const clientCertString = process.env.PLUGIN_CLIENT_CERT;
+    // const clientCertificate = forge.pki.certificateFromPem(clientCertString);
+    // const pemCertificateClient = forge.pki.certificateToPem(clientCertificate);
+
+    const { cert: serverCertificate, keys } = generateIdentity();
+    const pemCertificateServer = forge.pki.certificateToPem(serverCertificate);
+    const privateKey = forge.pki.privateKeyToPem(keys.privateKey);
+
+    credentials = grpc.ServerCredentials.createSsl(
+      Buffer.from(clientCertString),
+      [
+        {
+          cert_chain: Buffer.from(pemCertificateServer),
+          private_key: Buffer.from(privateKey),
+        },
+      ],
+      true
+    );
+    serverCertificateString = forge.util
+      .encode64(
+        forge.asn1
+          .toDer(forge.pki.certificateToAsn1(serverCertificate))
+          .getBytes()
+      )
+      // Remove padding
+      .replace(/=*$/, "");
+  }
+
+  server.bindAsync("0.0.0.0:0", credentials, (_err, port) => {
+    console.error(port);
+    server.start();
+    const networkType = "tcp";
+    const address = `127.0.0.1:${port}`;
+    console.error(
+      `${CORE_PROTOCOL_VERSION}|${appVersion}|${networkType}|${address}|${PROTOCOL}|${serverCertificateString}`
+    );
+    console.log(
+      `${CORE_PROTOCOL_VERSION}|${appVersion}|${networkType}|${address}|${PROTOCOL}|${serverCertificateString}`
+    );
+  });
 };
+// let (mut server, server_certificate) =
+//     if let Ok(client_cert) = std::env::var("PLUGIN_CLIENT_CERT") {
+
+//         eprintln!("Configuring tls for server");
+//         (
+//             server
+//                 .tls_config(tls_config)
+//                 .expect("tls config for server"),
+//             base64::encode_config(certificate.to_der()?, base64::STANDARD_NO_PAD),
+//         )
+//     } else {
+//         (server, "".to_string())
+//     };
