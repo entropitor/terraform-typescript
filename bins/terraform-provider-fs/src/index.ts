@@ -26,6 +26,11 @@ const cbReturn = <E, V>(
   );
 };
 
+type GrpcResponse<Res> = Either.Either<
+  Exclude<Parameters<grpc.sendUnaryData<Res>>[0], null>,
+  Exclude<Parameters<grpc.sendUnaryData<Res>>[1], null>
+>;
+
 type UnaryCall<Req, Res> = (
   call: grpc.ServerUnaryCall<Req, Res>,
   callback: grpc.sendUnaryData<Res>
@@ -34,12 +39,7 @@ type UnaryCall<Req, Res> = (
 const unary: <Req, Res>(
   implementation: (
     call: grpc.ServerUnaryCall<Req, Res>
-  ) => Promise<
-    Either.Either<
-      Exclude<Parameters<grpc.sendUnaryData<Res>>[0], null>,
-      Exclude<Parameters<grpc.sendUnaryData<Res>>[1], null>
-    >
-  >
+  ) => Promise<GrpcResponse<Res>>
 ) => UnaryCall<Req, Res> = (implementation) => (call, callback) =>
   cbReturn(callback, () => implementation(call));
 const objectMap = <A, B>(
@@ -131,7 +131,14 @@ const serializeDynamicValue = (value: any): DynamicValue => {
 interface Resource<T> {
   getSchema(): TF.messages.tfplugin5.Schema;
   validate(config: T): TF.messages.tfplugin5.Diagnostic[];
+  planChange(args: {
+    config: T;
+    priorPrivate: Buffer;
+    priorState: T;
+    proposedNewState: T;
+  }): GrpcResponse<TF.messages.tfplugin5.PlanResourceChange.Response>;
 }
+// Partial<grpc.StatusObject> | grpc.ServerErrorResponse | grpc.handleUnaryCall,
 type Resources<T> = {
   [resourceName in keyof T]: Resource<T[resourceName]>;
 };
@@ -139,6 +146,7 @@ const resources: Resources<{
   fs_file: {
     nb_foos: number;
   };
+  [name: string]: {};
 }> = {
   fs_file: {
     validate(config) {
@@ -187,10 +195,20 @@ const resources: Resources<{
         },
       };
     },
+    planChange(args) {
+      console.error(args);
+      return Either.left({
+        code: grpc.status.UNIMPLEMENTED,
+      });
+    },
   },
 };
 
-let config = null;
+interface FsProviderSchemaType {
+  foo: string;
+}
+
+let config: FsProviderSchemaType | null = null;
 const tf = loadProto<
   TF.ProtoGrpcType,
   TF.ServiceHandlers.tfplugin5.Provider,
@@ -201,13 +219,14 @@ const tf = loadProto<
   packageName: "tfplugin5",
   serviceName: "Provider",
   implementation: {
-    ApplyResourceChange(call, callback) {
+    ApplyResourceChange: unary(async (call) => {
       console.log(call.request!);
-      callback({ code: 12 }, null);
-    },
+      return Either.left({
+        code: grpc.status.UNIMPLEMENTED,
+      });
+    }),
     Configure: unary(async (call) => {
-      config = parseDynamicValue(call.request!.config!);
-      console.error(config);
+      config = parseDynamicValue<FsProviderSchemaType>(call.request!.config!);
       return Either.right({
         diagnostics: [],
       });
@@ -245,19 +264,31 @@ const tf = loadProto<
         ) as TF.messages.tfplugin5.Schema,
       });
     }),
-    ImportResourceState(call, callback) {
+    ImportResourceState: unary(async (call) => {
       console.log(call.request!);
-      callback({ code: 12 }, null);
-    },
-    PlanResourceChange: unary(async (_call) => {
       return Either.left({
-        code: 12,
+        code: grpc.status.UNIMPLEMENTED,
       });
     }),
+    PlanResourceChange: unary(async (call) => {
+      const resourceName = call.request!.type_name!;
+      const resource = resources[resourceName];
+
+      return resource.planChange({
+        config: parseDynamicValue(call.request!.config!),
+        priorPrivate: call.request!.prior_private!,
+        priorState: parseDynamicValue(call.request!.prior_state!),
+        proposedNewState: parseDynamicValue(call.request!.proposed_new_state!),
+      });
+
+      // return Either.left({
+      //   code: 12,
+      // });
+    }),
     PrepareProviderConfig: unary(async (call) => {
-      const requestConfig = parseDynamicValue<{
-        foo: string;
-      }>(call.request!.config!);
+      const requestConfig = parseDynamicValue<FsProviderSchemaType>(
+        call.request!.config!
+      );
 
       return Either.right({
         diagnostics:
@@ -280,14 +311,18 @@ const tf = loadProto<
         preparedConfig: serializeDynamicValue(requestConfig),
       });
     }),
-    ReadDataSource(call, callback) {
+    ReadDataSource: unary(async (call) => {
       console.log(call.request!);
-      callback({ code: 12 }, null);
-    },
-    ReadResource(call, callback) {
+      return Either.left({
+        code: grpc.status.UNIMPLEMENTED,
+      });
+    }),
+    ReadResource: unary(async (call) => {
       console.log(call.request!);
-      callback({ code: 12 }, null);
-    },
+      return Either.left({
+        code: grpc.status.UNIMPLEMENTED,
+      });
+    }),
     Stop: unary(async (_call) => {
       console.log("Hello from Stop");
       setTimeout(() => {
@@ -295,14 +330,18 @@ const tf = loadProto<
       }, 100);
       return Either.right({});
     }),
-    UpgradeResourceState(call, callback) {
+    UpgradeResourceState: unary(async (call) => {
       console.log(call.request!);
-      callback({ code: 12 }, null);
-    },
-    ValidateDataSourceConfig(call, callback) {
+      return Either.left({
+        code: grpc.status.UNIMPLEMENTED,
+      });
+    }),
+    ValidateDataSourceConfig: unary(async (call) => {
       console.log(call.request!);
-      callback({ code: 12 }, null);
-    },
+      return Either.left({
+        code: grpc.status.UNIMPLEMENTED,
+      });
+    }),
     ValidateResourceTypeConfig: unary(async (call) => {
       const resourceName = call.request!.type_name!;
       const resource = resources[resourceName];
