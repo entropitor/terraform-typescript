@@ -12,6 +12,7 @@ import {
   ApplyChangeResult,
   PlanChangeResult,
   ProviderSchema,
+  ReadResult,
   UpgradeResult,
 } from "./provider";
 
@@ -100,10 +101,18 @@ const tf = loadProto<
       });
     }),
     ReadResource: unary(async (call) => {
-      console.error(call.request!);
-      return Either.left({
-        code: grpc.status.UNIMPLEMENTED,
-      });
+      const resourceName = call.request!.type_name!;
+      const resource = provider.getResources()[resourceName];
+
+      return Either.map((result: ReadResult<any>) => ({
+        ...result,
+        new_state: serializeDynamicValue(result.newState),
+      }))(
+        resource.read({
+          currentState: parseDynamicValue(call.request!.current_state!),
+          private: call.request!.private!,
+        })
+      );
     }),
     Stop: unary(async (_call) => {
       console.error("Hello from Stop");

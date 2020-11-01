@@ -77,6 +77,14 @@ const fsFile: Resource<FsFile> = {
       upgradedState: args.rawState,
     });
   },
+  read(args) {
+    console.error(args);
+    return Either.right({
+      diagnostics: [],
+      newState: args.currentState,
+      private: args.private,
+    });
+  },
 };
 
 interface FsProviderSchemaType {

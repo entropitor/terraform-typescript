@@ -7,5 +7,5 @@ provider "fs" {
 }
 
 resource "fs_file" "quux" {
-  nb_foos = 5
+  nb_foos = 6
 }

@@ -20,6 +20,11 @@ export type UpgradeResult<S> = {
   diagnostics: Diagnostic[];
   upgradedState: S;
 };
+export type ReadResult<S> = {
+  diagnostics: Diagnostic[];
+  private: Buffer;
+  newState: S;
+};
 export interface Resource<S> {
   getSchema(): Schema;
   validate(config: S): Diagnostic[];
@@ -39,6 +44,7 @@ export interface Resource<S> {
     version: number;
     rawState: any;
   }): GrpcResponse<UpgradeResult<S>>;
+  read(args: { currentState: S; private: Buffer }): GrpcResponse<ReadResult<S>>;
 }
 
 type Resources<R> = {
