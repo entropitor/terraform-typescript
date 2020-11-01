@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "license": "UNLICENSED",
   "dependencies": {
+    "@msgpack/msgpack": "^2.3.0",
     "@terraform-typescript/grpc-utils": "1.0.0",
     "@terraform-typescript/hashicorp-plugin": "1.0.0",
     "fp-ts": "^2.8.5"

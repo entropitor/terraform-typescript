@@ -6,8 +6,10 @@ import { hashicorpPlugin } from "@terraform-typescript/hashicorp-plugin";
 import { loadProto } from "@terraform-typescript/grpc-utils";
 import * as Either from "fp-ts/Either";
 import * as grpc from "@grpc/grpc-js";
+import * as msgpack from "@msgpack/msgpack";
 
 import { StringKind } from "./generated/tfplugin5/StringKind";
+import { DynamicValue } from "./generated/tfplugin5/DynamicValue";
 
 const cbReturn = <E, V>(
   callback: (error: E | null, value: V | null) => void,
@@ -104,11 +106,60 @@ const ctyType = (typ: ctyType): Buffer => {
   return Buffer.from(JSON.stringify(ctyTypeToJson(typ)));
 };
 
-interface Resource {
+const parseDynamicValue = <T>(value: DynamicValue): T => {
+  if (value.msgpack) {
+    return msgpack.decode(value.msgpack as Uint8Array) as T;
+  }
+  if (value.json) {
+    return JSON.parse(value.json.toString()) as T;
+  }
+  return {} as T;
+};
+const serializeDynamicValue = (value: any): DynamicValue => {
+  const encoded: Uint8Array = msgpack.encode(value);
+  const buffer: Buffer = Buffer.from(
+    encoded.buffer,
+    encoded.byteOffset,
+    encoded.byteLength
+  );
+
+  return {
+    msgpack: buffer,
+  };
+};
+
+interface Resource<T> {
   getSchema(): TF.messages.tfplugin5.Schema;
+  validate(config: T): TF.messages.tfplugin5.Diagnostic[];
 }
-const resources: { [resourceName: string]: Resource } = {
+type Resources<T> = {
+  [resourceName in keyof T]: Resource<T[resourceName]>;
+};
+const resources: Resources<{
   fs_file: {
+    nb_foos: number;
+  };
+}> = {
+  fs_file: {
+    validate(config) {
+      if (config.nb_foos < 5) {
+        return [
+          {
+            severity: "ERROR",
+            attribute: {
+              steps: [
+                {
+                  attribute_name: "nb_foos",
+                },
+              ],
+            },
+            detail: "Do you not give a foo?",
+            summary: "You need more foo's",
+          },
+        ];
+      }
+      return [];
+    },
     getSchema() {
       return {
         version: 1,
@@ -198,10 +249,30 @@ const tf = loadProto<
       console.log(call.request!);
       callback({ code: 12 }, null);
     },
-    PrepareProviderConfig: unary(async (_call) => {
+    PrepareProviderConfig: unary(async (call) => {
+      const requestConfig = parseDynamicValue<{
+        foo: string;
+      }>(call.request!.config!);
+
       return Either.right({
-        diagnostics: [],
-        preparedConfig: {},
+        diagnostics:
+          requestConfig.foo !== "bar"
+            ? [
+                {
+                  severity: "ERROR",
+                  attribute: {
+                    steps: [
+                      {
+                        attribute_name: "foo",
+                      },
+                    ],
+                  },
+                  detail: "That's not a good foo, only bar is a good foo",
+                  summary: "Bad foo",
+                },
+              ]
+            : [],
+        preparedConfig: serializeDynamicValue(requestConfig),
       });
     }),
     ReadDataSource(call, callback) {
@@ -227,10 +298,16 @@ const tf = loadProto<
       console.log(call.request!);
       callback({ code: 12 }, null);
     },
-    ValidateResourceTypeConfig(call, callback) {
-      console.log(call.request!);
-      callback({ code: 12 }, null);
-    },
+    ValidateResourceTypeConfig: unary(async (call) => {
+      const resourceName = call.request!.type_name!;
+      const resource = resources[resourceName];
+
+      return Either.right({
+        diagnostics: resource.validate(
+          parseDynamicValue(call.request!.config!)
+        ),
+      });
+    }),
   },
 });
 
