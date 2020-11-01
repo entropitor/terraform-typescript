@@ -3,130 +3,17 @@ import path from "path";
 import * as TF from "./tfplugin5";
 import * as fs from "fs";
 import { hashicorpPlugin } from "@terraform-typescript/hashicorp-plugin";
-import { loadProto } from "@terraform-typescript/grpc-utils";
+import {
+  GrpcResponse,
+  loadProto,
+  unary,
+} from "@terraform-typescript/grpc-utils";
 import * as Either from "fp-ts/Either";
 import * as grpc from "@grpc/grpc-js";
-import * as msgpack from "@msgpack/msgpack";
-
 import { StringKind } from "./generated/tfplugin5/StringKind";
-import { DynamicValue } from "./generated/tfplugin5/DynamicValue";
-
-const cbReturn = <E, V>(
-  callback: (error: E | null, value: V | null) => void,
-  promiseFn: () => Promise<Either.Either<E, V>>
-): void => {
-  promiseFn().then(
-    (result) => {
-      Either.fold<E, V, void>(
-        (error) => callback(error, null),
-        (value) => callback(null, value)
-      )(result);
-    },
-    (error) => callback(error, null)
-  );
-};
-
-type GrpcResponse<Res> = Either.Either<
-  Exclude<Parameters<grpc.sendUnaryData<Res>>[0], null>,
-  Exclude<Parameters<grpc.sendUnaryData<Res>>[1], null>
->;
-
-type UnaryCall<Req, Res> = (
-  call: grpc.ServerUnaryCall<Req, Res>,
-  callback: grpc.sendUnaryData<Res>
-) => void;
-
-const unary: <Req, Res>(
-  implementation: (
-    call: grpc.ServerUnaryCall<Req, Res>
-  ) => Promise<GrpcResponse<Res>>
-) => UnaryCall<Req, Res> = (implementation) => (call, callback) =>
-  cbReturn(callback, () => implementation(call));
-const objectMap = <A, B>(
-  mapFn: (
-    keyValue: [string, A],
-    index: number,
-    array: [string, A][]
-  ) => [string, B],
-  obj: Record<string, A>
-): Record<string, B> => Object.fromEntries(Object.entries(obj).map(mapFn));
-const valueMap = <A, B>(
-  mapFn: (keyValue: A, index: number) => B,
-  obj: Record<string, A>
-): Record<string, B> =>
-  objectMap(([key, value], index) => [key, mapFn(value, index)], obj);
-
-const unreachable = (_: never): void => {};
-
-// https://github.com/zclconf/go-cty
-type ctyType =
-  | {
-      type: "string" | "number" | "boolean";
-    }
-  | {
-      type: "list" | "set" | "map";
-      itemType: ctyType;
-    }
-  | {
-      type: "tuple";
-      itemTypes: ctyType[];
-    }
-  | {
-      type: "object";
-      itemType: {
-        [key: string]: ctyType;
-      };
-    };
-const ctyTypeToJson = (typ: ctyType): any => {
-  switch (typ.type) {
-    case "number":
-    case "string": {
-      return typ.type;
-    }
-    case "boolean": {
-      return "bool";
-    }
-    case "map":
-    case "set":
-    case "list": {
-      return [typ.type, ctyTypeToJson(typ.itemType)];
-    }
-    case "tuple": {
-      return [typ.type, typ.itemTypes.map(ctyTypeToJson)];
-    }
-    case "object": {
-      return [typ.type, valueMap(ctyTypeToJson, typ.itemType)];
-    }
-    default:
-      unreachable(typ);
-      return "";
-  }
-};
-const ctyType = (typ: ctyType): Buffer => {
-  return Buffer.from(JSON.stringify(ctyTypeToJson(typ)));
-};
-
-const parseDynamicValue = <T>(value: DynamicValue): T => {
-  if (value.msgpack) {
-    return msgpack.decode(value.msgpack as Uint8Array) as T;
-  }
-  if (value.json) {
-    return JSON.parse(value.json.toString()) as T;
-  }
-  return {} as T;
-};
-const serializeDynamicValue = (value: any): DynamicValue => {
-  const encoded: Uint8Array = msgpack.encode(value);
-  const buffer: Buffer = Buffer.from(
-    encoded.buffer,
-    encoded.byteOffset,
-    encoded.byteLength
-  );
-
-  return {
-    msgpack: buffer,
-  };
-};
+import { parseDynamicValue, serializeDynamicValue } from "./dynamicValue";
+import { valueMap } from "./mapOverObject";
+import { ctyNumber, ctyString, ctyType } from "./ctyType";
 
 interface Resource<T> {
   getSchema(): TF.messages.tfplugin5.Schema;
@@ -176,9 +63,7 @@ const resources: Resources<{
           attributes: [
             {
               name: "nb_foos",
-              type: ctyType({
-                type: "number",
-              }),
+              type: ctyType(ctyNumber()),
               description: "The number of foos",
               required: true,
               optional: false,
@@ -241,7 +126,7 @@ const tf = loadProto<
             attributes: [
               {
                 name: "foo",
-                type: ctyType({ type: "string" }),
+                type: ctyType(ctyString()),
                 description: "The foo value",
                 description_kind: StringKind.PLAIN,
                 required: false,
