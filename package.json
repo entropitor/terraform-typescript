@@ -12,6 +12,7 @@
     ]
   },
   "scripts": {
-    "build": "yarn lerna run build"
+    "build": "yarn lerna run build",
+    "build:ts": "yarn tsc -b tsconfig.solution.json"
   }
 }
