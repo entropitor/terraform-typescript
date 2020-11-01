@@ -1,4 +1,4 @@
-import { ctyNumber, ctyString, ctyType } from "./ctyType";
+import { ctyNumber, ctyObject, ctyString, ctyType } from "./ctyType";
 import { StringKind } from "./generated/tfplugin5/StringKind";
 import { Provider, Resource } from "./provider";
 import * as Either from "fp-ts/Either";
@@ -13,18 +13,24 @@ import {
 } from "./generated/tfplugin5/Diagnostic";
 
 interface FsFile {
-  nb_foos: number;
+  file_name: string;
+  body: {
+    nb_foos: number;
+  };
 }
 const fsFile: Resource<FsFile> = {
   validate(config) {
-    if (config.nb_foos < 5) {
+    if (config.body.nb_foos < 5) {
       return [
         {
-          severity: "ERROR",
+          severity: Severity.ERROR,
           attribute: {
             steps: [
               {
-                attribute_name: "nb_foos",
+                attribute_name: "body",
+              },
+              {
+                element_key_string: "nb_foos",
               },
             ],
           },
@@ -42,9 +48,9 @@ const fsFile: Resource<FsFile> = {
         version: 1,
         attributes: [
           {
-            name: "nb_foos",
-            type: ctyType(ctyNumber()),
-            description: "The number of foos",
+            name: "file_name",
+            type: ctyType(ctyString()),
+            description: "The name of the file to manage",
             required: true,
             optional: false,
             computed: false,
@@ -52,10 +58,25 @@ const fsFile: Resource<FsFile> = {
             description_kind: StringKind.PLAIN,
             sensitive: false,
           },
+          {
+            name: "body",
+            type: ctyType(
+              ctyObject({
+                nb_foos: ctyNumber(),
+              })
+            ),
+            description: "The body of the file",
+            description_kind: StringKind.PLAIN,
+            required: true,
+            optional: false,
+            computed: false,
+            deprecated: false,
+            sensitive: false,
+          },
         ],
         block_types: [],
         deprecated: false,
-        description: "test resource",
+        description: "a file resource",
         description_kind: StringKind.PLAIN,
       },
     };

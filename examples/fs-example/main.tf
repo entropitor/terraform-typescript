@@ -7,5 +7,8 @@ provider "fs" {
 }
 
 resource "fs_file" "quux" {
-  nb_foos = 6
+  file_name = "quux"
+  body = {
+    nb_foos = 6
+  }
 }

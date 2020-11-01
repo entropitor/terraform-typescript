@@ -16,6 +16,6 @@ run: build
 	terraform init
 	TF_LOG=trace terraform apply
 
-stealth: build
+tf: build
 	terraform init
-	terraform plan
+	terraform apply
