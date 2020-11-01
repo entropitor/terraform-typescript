@@ -4,6 +4,7 @@ import * as GrpcStdio from "src/generated/grpc_stdio";
 import health from "grpc-health-check";
 import * as forge from "node-forge";
 import { loadProto } from "@terraform-typescript/grpc-utils";
+import { Http2Server } from "http2";
 import { generateIdentity } from "./certificate";
 
 const CORE_PROTOCOL_VERSION = 1;
@@ -81,7 +82,6 @@ export const hashicorpPlugin = async ({
   }
 
   server.bindAsync("0.0.0.0:0", credentials, (_err, port) => {
-    console.error(port);
     server.start();
     const networkType = "tcp";
     const address = `127.0.0.1:${port}`;
@@ -89,8 +89,8 @@ export const hashicorpPlugin = async ({
       `${CORE_PROTOCOL_VERSION}|${appVersion}|${networkType}|${address}|${PROTOCOL}|${serverCertificateString}`
     );
     // @ts-expect-error
-    server.http2ServerList.forEach((http2Server: any) => {
-      http2Server.on("connection", (socket: any) => {
+    server.http2ServerList.forEach((http2Server: Http2Server) => {
+      http2Server.on("connection", (socket) => {
         socket.on("close", () => {
           process.exit(0);
         });

@@ -190,6 +190,7 @@ const resources: Resources<{
   },
 };
 
+let config = null;
 const tf = loadProto<
   TF.ProtoGrpcType,
   TF.ServiceHandlers.tfplugin5.Provider,
@@ -204,10 +205,13 @@ const tf = loadProto<
       console.log(call.request!);
       callback({ code: 12 }, null);
     },
-    Configure(call, callback) {
-      console.log(call.request!);
-      callback({ code: 12 }, null);
-    },
+    Configure: unary(async (call) => {
+      config = parseDynamicValue(call.request!.config!);
+      console.error(config);
+      return Either.right({
+        diagnostics: [],
+      });
+    }),
     GetSchema: unary(async (_call) => {
       console.error("Hello from GetSchema");
       return Either.right({
@@ -245,10 +249,11 @@ const tf = loadProto<
       console.log(call.request!);
       callback({ code: 12 }, null);
     },
-    PlanResourceChange(call, callback) {
-      console.log(call.request!);
-      callback({ code: 12 }, null);
-    },
+    PlanResourceChange: unary(async (_call) => {
+      return Either.left({
+        code: 12,
+      });
+    }),
     PrepareProviderConfig: unary(async (call) => {
       const requestConfig = parseDynamicValue<{
         foo: string;
