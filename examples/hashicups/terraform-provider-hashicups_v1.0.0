@@ -1,0 +1,2 @@
+#!/bin/sh
+../../bins/terraform-provider-hashicups/bin/terraform-provider-hashicups

@@ -6,6 +6,7 @@
     { "path": "./libs/grpc-utils" },
     { "path": "./libs/terraform-provider" },
     { "path": "./bins/kv-plugin" },
-    { "path": "./bins/terraform-provider-fs" }
+    { "path": "./bins/terraform-provider-fs" },
+    { "path": "./bins/terraform-provider-hashicups" }
   ]
 }

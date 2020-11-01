@@ -1,5 +1,5 @@
 {
-  "name": "@terraform-typescript/terraform-provider-fs",
+  "name": "@terraform-typescript/terraform-provider-hashicups",
   "version": "1.0.0",
   "license": "UNLICENSED",
   "dependencies": {
@@ -14,6 +14,6 @@
     "build:ts": "yarn tsc -b"
   },
   "bin": {
-    "terraform-provider-fs": "./bin/terraform-provider-fs"
+    "terraform-provider-hashicups": "./bin/terraform-provider-hashicups"
   }
 }
