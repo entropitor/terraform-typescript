@@ -8,7 +8,11 @@ import * as grpc from "@grpc/grpc-js";
 import { parseDynamicValue, serializeDynamicValue } from "./dynamicValue";
 import { valueMap } from "./mapOverObject";
 import { fsProvider } from "./fsProvider";
-import { ProviderSchema } from "./provider";
+import {
+  ApplyChangeResult,
+  PlanChangeResult,
+  ProviderSchema,
+} from "./provider";
 
 const provider = fsProvider;
 type PSchema = ProviderSchema<typeof provider>;
@@ -24,10 +28,20 @@ const tf = loadProto<
   serviceName: "Provider",
   implementation: {
     ApplyResourceChange: unary(async (call) => {
-      console.log(call.request!);
-      return Either.left({
-        code: grpc.status.UNIMPLEMENTED,
-      });
+      const resourceName = call.request!.type_name!;
+      const resource = provider.getResources()[resourceName];
+
+      return Either.map((result: ApplyChangeResult<any>) => ({
+        ...result,
+        new_state: serializeDynamicValue(result.newState),
+      }))(
+        resource.applyChange({
+          config: parseDynamicValue(call.request!.config!),
+          plannedPrivate: call.request!.planned_private!,
+          priorState: parseDynamicValue(call.request!.prior_state!),
+          plannedState: parseDynamicValue(call.request!.planned_state!),
+        })
+      );
     }),
     Configure: unary(async (call) => {
       return Either.right({
@@ -55,12 +69,21 @@ const tf = loadProto<
       const resourceName = call.request!.type_name!;
       const resource = provider.getResources()[resourceName];
 
-      return resource.planChange({
-        config: parseDynamicValue(call.request!.config!),
-        priorPrivate: call.request!.prior_private!,
-        priorState: parseDynamicValue(call.request!.prior_state!),
-        proposedNewState: parseDynamicValue(call.request!.proposed_new_state!),
-      });
+      return Either.map((result: PlanChangeResult<any>) => ({
+        ...result,
+        planned_private: result.plannedPrivate,
+        planned_state: serializeDynamicValue(result.plannedState),
+        requires_replace: result.requiresReplace,
+      }))(
+        resource.planChange({
+          config: parseDynamicValue(call.request!.config!),
+          priorPrivate: call.request!.prior_private!,
+          priorState: parseDynamicValue(call.request!.prior_state!),
+          proposedNewState: parseDynamicValue(
+            call.request!.proposed_new_state!
+          ),
+        })
+      );
     }),
     PrepareProviderConfig: unary(async (call) => {
       const cfg = parseDynamicValue<PSchema>(call.request!.config!);

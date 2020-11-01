@@ -3,6 +3,7 @@ import { StringKind } from "./generated/tfplugin5/StringKind";
 import { Provider, Resource } from "./provider";
 import * as Either from "fp-ts/Either";
 import * as grpc from "@grpc/grpc-js";
+import { serializeDynamicValue } from "./dynamicValue";
 
 interface FsFile {
   nb_foos: number;
@@ -54,8 +55,19 @@ const fsFile: Resource<FsFile> = {
   },
   planChange(args) {
     console.error(args);
-    return Either.left({
-      code: grpc.status.UNIMPLEMENTED,
+    return Either.right({
+      diagnostics: [],
+      plannedPrivate: Buffer.from("test"),
+      plannedState: args.proposedNewState,
+      requiresReplace: [],
+    });
+  },
+  applyChange(args) {
+    console.error(args);
+    return Either.right({
+      diagnostics: [],
+      newState: args.plannedState,
+      private: args.plannedPrivate,
     });
   },
 };
