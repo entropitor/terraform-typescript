@@ -11,9 +11,11 @@ import { fsProvider } from "./fsProvider";
 import {
   ApplyChangeResult,
   PlanChangeResult,
+  PrepareConfigureResult,
   ProviderSchema,
   ReadResult,
   UpgradeResult,
+  ValidateResult,
 } from "./provider";
 
 const provider = fsProvider;
@@ -37,7 +39,7 @@ const tf = loadProto<
         ...result,
         new_state: serializeDynamicValue(result.newState),
       }))(
-        resource.applyChange({
+        await resource.applyChange({
           config: parseDynamicValue(call.request!.config!),
           plannedPrivate: call.request!.planned_private!,
           priorState: parseDynamicValue(call.request!.prior_state!),
@@ -46,11 +48,7 @@ const tf = loadProto<
       );
     }),
     Configure: unary(async (call) => {
-      return Either.right({
-        diagnostics: provider.configure(
-          parseDynamicValue(call.request!.config!)
-        ),
-      });
+      return await provider.configure(parseDynamicValue(call.request!.config!));
     }),
     GetSchema: unary(async (_call) => {
       return Either.right({
@@ -58,13 +56,8 @@ const tf = loadProto<
         resource_schemas: valueMap(
           (resource) => resource.getSchema(),
           provider.getResources()
+          // TODO remove when typings get fixed
         ) as TF.messages.tfplugin5.Schema,
-      });
-    }),
-    ImportResourceState: unary(async (call) => {
-      console.error(call.request!);
-      return Either.left({
-        code: grpc.status.UNIMPLEMENTED,
       });
     }),
     PlanResourceChange: unary(async (call) => {
@@ -77,7 +70,7 @@ const tf = loadProto<
         planned_state: serializeDynamicValue(result.plannedState),
         requires_replace: result.requiresReplace,
       }))(
-        resource.planChange({
+        await resource.planChange({
           config: parseDynamicValue(call.request!.config!),
           priorPrivate: call.request!.prior_private!,
           priorState: parseDynamicValue(call.request!.prior_state!),
@@ -89,16 +82,10 @@ const tf = loadProto<
     }),
     PrepareProviderConfig: unary(async (call) => {
       const cfg = parseDynamicValue<PSchema>(call.request!.config!);
-      return Either.right({
-        diagnostics: provider.prepareProviderConfig(cfg),
-        prepared_config: serializeDynamicValue(cfg),
-      });
-    }),
-    ReadDataSource: unary(async (call) => {
-      console.error(call.request!);
-      return Either.left({
-        code: grpc.status.UNIMPLEMENTED,
-      });
+      return Either.map((result: PrepareConfigureResult) => ({
+        ...result,
+        prepare_config: serializeDynamicValue(cfg),
+      }))(await provider.prepareProviderConfig(cfg));
     }),
     ReadResource: unary(async (call) => {
       const resourceName = call.request!.type_name!;
@@ -108,7 +95,7 @@ const tf = loadProto<
         ...result,
         new_state: serializeDynamicValue(result.newState),
       }))(
-        resource.read({
+        await resource.read({
           currentState: parseDynamicValue(call.request!.current_state!),
           private: call.request!.private!,
         })
@@ -129,11 +116,30 @@ const tf = loadProto<
         ...result,
         upgraded_state: serializeDynamicValue(result.upgradedState),
       }))(
-        resource.upgrade({
+        await resource.upgrade({
           version: call.request!.version!,
           rawState: parseDynamicValue(call.request!.raw_state!),
         })
       );
+    }),
+    ValidateResourceTypeConfig: unary(async (call) => {
+      const resourceName = call.request!.type_name!;
+      const resource = provider.getResources()[resourceName];
+
+      return Either.map((result: ValidateResult) => ({
+        ...result,
+      }))(
+        await resource.validate({
+          config: parseDynamicValue(call.request!.config!),
+        })
+      );
+    }),
+
+    ImportResourceState: unary(async (call) => {
+      console.error(call.request!);
+      return Either.left({
+        code: grpc.status.UNIMPLEMENTED,
+      });
     }),
     ValidateDataSourceConfig: unary(async (call) => {
       console.error(call.request!);
@@ -141,14 +147,10 @@ const tf = loadProto<
         code: grpc.status.UNIMPLEMENTED,
       });
     }),
-    ValidateResourceTypeConfig: unary(async (call) => {
-      const resourceName = call.request!.type_name!;
-      const resource = provider.getResources()[resourceName];
-
-      return Either.right({
-        diagnostics: resource.validate(
-          parseDynamicValue(call.request!.config!)
-        ),
+    ReadDataSource: unary(async (call) => {
+      console.error(call.request!);
+      return Either.left({
+        code: grpc.status.UNIMPLEMENTED,
       });
     }),
   },

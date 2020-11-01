@@ -19,27 +19,29 @@ interface FsFile {
   };
 }
 const fsFile: Resource<FsFile> = {
-  validate(config) {
+  validate({ config }) {
+    const diagnostics: Diagnostic[] = [];
     if (config.body.nb_foos < 5) {
-      return [
-        {
-          severity: Severity.ERROR,
-          attribute: {
-            steps: [
-              {
-                attribute_name: "body",
-              },
-              {
-                element_key_string: "nb_foos",
-              },
-            ],
-          },
-          detail: "Do you not give a foo?",
-          summary: "You need more foo's",
+      diagnostics.push({
+        severity: Severity.ERROR,
+        attribute: {
+          steps: [
+            {
+              attribute_name: "body",
+            },
+            {
+              element_key_string: "nb_foos",
+            },
+          ],
         },
-      ];
+        detail: "Do you not give a foo?",
+        summary: "You need more foo's",
+      });
     }
-    return [];
+
+    return Either.right({
+      diagnostics,
+    });
   },
   getSchema() {
     return {
@@ -149,7 +151,9 @@ export const fsProvider: Provider<FsProviderSchemaType, any> = {
   },
   configure(cfg) {
     config = cfg;
-    return [];
+    return Either.right({
+      diagnostics: [],
+    });
   },
   getResources() {
     return {
@@ -174,6 +178,8 @@ export const fsProvider: Provider<FsProviderSchemaType, any> = {
       });
     }
 
-    return diagnostics;
+    return Either.right({
+      diagnostics,
+    });
   },
 };

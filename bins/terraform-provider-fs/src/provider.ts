@@ -5,6 +5,9 @@ type AttributePath = TF.messages.tfplugin5.AttributePath;
 type Diagnostic = TF.messages.tfplugin5.Diagnostic;
 type Schema = TF.messages.tfplugin5.Schema;
 
+export type ValidateResult = {
+  diagnostics: Diagnostic[];
+};
 export type ApplyChangeResult<S> = {
   diagnostics: Diagnostic[];
   private: Buffer;
@@ -25,37 +28,43 @@ export type ReadResult<S> = {
   private: Buffer;
   newState: S;
 };
+
+type Response<T> = Promise<GrpcResponse<T>> | GrpcResponse<T>;
+
 export interface Resource<S> {
   getSchema(): Schema;
-  validate(config: S): Diagnostic[];
+  validate(args: { config: S }): Response<ValidateResult>;
   planChange(args: {
     config: S;
     priorPrivate: Buffer;
     priorState: S;
     proposedNewState: S;
-  }): GrpcResponse<PlanChangeResult<S>>;
+  }): Response<PlanChangeResult<S>>;
   applyChange(args: {
     config: S;
     plannedPrivate: Buffer;
     priorState: S;
     plannedState: S;
-  }): GrpcResponse<ApplyChangeResult<S>>;
-  upgrade(args: {
-    version: number;
-    rawState: any;
-  }): GrpcResponse<UpgradeResult<S>>;
-  read(args: { currentState: S; private: Buffer }): GrpcResponse<ReadResult<S>>;
+  }): Response<ApplyChangeResult<S>>;
+  upgrade(args: { version: number; rawState: any }): Response<UpgradeResult<S>>;
+  read(args: { currentState: S; private: Buffer }): Response<ReadResult<S>>;
 }
 
 type Resources<R> = {
   [resourceName in keyof R]: Resource<R[resourceName]>;
 };
 
+export type PrepareConfigureResult = {
+  diagnostics: Diagnostic[];
+};
+export type ConfigureResult = {
+  diagnostics: Diagnostic[];
+};
 export interface Provider<S, R> {
   getSchema(): Schema;
   getResources(): Resources<R>;
-  prepareProviderConfig(config: S): Diagnostic[];
-  configure(config: S): Diagnostic[];
+  prepareProviderConfig(config: S): Response<PrepareConfigureResult>;
+  configure(config: S): Response<ConfigureResult>;
 }
 
 export type ProviderSchema<P> = P extends Provider<infer S, any> ? S : never;
