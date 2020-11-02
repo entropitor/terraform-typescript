@@ -75,22 +75,25 @@ type DataSources<D extends { [key: string]: [any, any] }> = {
   >;
 };
 
-export type PrepareConfigureResult = {
+export type PrepareConfigureResult<C> = {
   diagnostics: Diagnostic[];
+  preparedConfig: C;
 };
 export type ConfigureResult = {
   diagnostics: Diagnostic[];
 };
 export interface Provider<
-  S,
+  ProviderSchemaConfig,
   R extends { [key: string]: any },
   D extends { [key: string]: [any, any] }
 > {
   getSchema(): Schema;
   getResources(): Resources<R>;
   getDataSources(): DataSources<D>;
-  prepareProviderConfig(config: S): Response<PrepareConfigureResult>;
-  configure(config: S): Response<ConfigureResult>;
+  prepareProviderConfig(args: {
+    config: ProviderSchemaConfig;
+  }): Response<PrepareConfigureResult<ProviderSchemaConfig>>;
+  configure(arsg: { config: ProviderSchemaConfig }): Response<ConfigureResult>;
 }
 
 export type ProviderSchema<P> = P extends Provider<infer S, any, any>

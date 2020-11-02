@@ -1,14 +1,12 @@
+/**
+ * Implementing https://learn.hashicorp.com/tutorials/terraform/provider-setup
+ */
 import * as Either from "fp-ts/Either";
-
 import {
-  ctyNumber,
-  ctyObject,
   ctyString,
   ctyType,
   Diagnostic,
   Provider,
-  Resource,
-  Severity,
   StringKind,
 } from "@terraform-typescript/terraform-provider";
 import {
@@ -18,10 +16,10 @@ import {
 } from "./dataSourceCoffees";
 
 interface SchemaType {
-  username: string;
-  password: string;
+  username: string | null;
+  password: string | null;
 }
-let config: SchemaType | null = null;
+let configuredConfig: SchemaType | null = null;
 
 export const hashicupsProvider: Provider<
   SchemaType,
@@ -39,11 +37,13 @@ export const hashicupsProvider: Provider<
           {
             name: "username",
             type: ctyType(ctyString()),
+            optional: true,
           },
           {
             name: "password",
             type: ctyType(ctyString()),
-            sensitive: true,
+            // sensitive: true,
+            optional: true,
           },
         ],
         block_types: [],
@@ -53,8 +53,10 @@ export const hashicupsProvider: Provider<
       },
     };
   },
-  async configure(cfg) {
-    config = cfg;
+  async configure({ config }) {
+    configuredConfig = config;
+
+    console.error(config);
 
     return Either.right({
       diagnostics: [],
@@ -68,11 +70,18 @@ export const hashicupsProvider: Provider<
       hashicups_coffees: dataSourceCoffees,
     };
   },
-  prepareProviderConfig(_cfg) {
+  // @ts-expect-error
+  prepareProviderConfig({ config }) {
     const diagnostics: Diagnostic[] = [];
 
+    console.error(config.username || process.env.HASHICUPS_USERNAME);
+
     return Either.right({
-      diagnostics,
+      preparedConfig: {
+        username: config.username || process.env.HASHICUPS_USERNAME || null,
+        password: config.password || process.env.HASHICUPS_PASSWORD || null,
+      },
+      diagnostics: null,
     });
   },
 };

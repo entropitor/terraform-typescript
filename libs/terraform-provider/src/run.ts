@@ -60,9 +60,9 @@ export const run = <
         );
       }),
       Configure: unary(async (call) => {
-        return await provider.configure(
-          parseDynamicValue(call.request!.config!)
-        );
+        return await provider.configure({
+          config: parseDynamicValue(call.request!.config!),
+        });
       }),
       GetSchema: unary(async (_call) => {
         return Either.right({
@@ -105,11 +105,13 @@ export const run = <
         );
       }),
       PrepareProviderConfig: unary(async (call) => {
-        const cfg = parseDynamicValue<PSchema>(call.request!.config!);
-        return Either.map(({ diagnostics }: PrepareConfigureResult) => ({
-          diagnostics,
-          prepare_config: serializeDynamicValue(cfg),
-        }))(await provider.prepareProviderConfig(cfg));
+        const config = parseDynamicValue<PSchema>(call.request!.config!);
+        return Either.map(
+          ({ diagnostics, preparedConfig }: PrepareConfigureResult<any>) => ({
+            diagnostics,
+            prepared_config: serializeDynamicValue(preparedConfig),
+          })
+        )(await provider.prepareProviderConfig({ config }));
       }),
       ReadResource: unary(async (call) => {
         const resourceName = call.request!.type_name!;

@@ -122,7 +122,10 @@ const fsFile: Resource<FsFile> = {
   },
   async applyChange({ plannedPrivateData, plannedState, priorState }) {
     if (plannedState == null) {
-      const fileName = path.resolve(config!.root_dir, priorState!.file_name);
+      const fileName = path.resolve(
+        configuredConfig!.root_dir,
+        priorState!.file_name
+      );
       await fs.rm(fileName);
 
       return Either.right({
@@ -132,7 +135,10 @@ const fsFile: Resource<FsFile> = {
       });
     }
 
-    const fileName = path.resolve(config!.root_dir, plannedState.file_name);
+    const fileName = path.resolve(
+      configuredConfig!.root_dir,
+      plannedState.file_name
+    );
     await fs.writeFile(
       fileName,
       JSON.stringify(
@@ -161,7 +167,10 @@ const fsFile: Resource<FsFile> = {
     });
   },
   async read({ currentState, privateData }) {
-    const fileName = path.resolve(config!.root_dir, currentState.file_name);
+    const fileName = path.resolve(
+      configuredConfig!.root_dir,
+      currentState.file_name
+    );
     const fileBody = await fs.readFile(fileName);
 
     const content = JSON.parse(fileBody.toString());
@@ -179,7 +188,7 @@ const fsFile: Resource<FsFile> = {
 interface FsProviderSchemaType {
   root_dir: string;
 }
-let config: FsProviderSchemaType | null = null;
+let configuredConfig: FsProviderSchemaType | null = null;
 
 export const fsProvider: Provider<
   FsProviderSchemaType,
@@ -214,10 +223,10 @@ export const fsProvider: Provider<
       },
     };
   },
-  async configure(cfg) {
-    config = cfg;
+  async configure({ config }) {
+    configuredConfig = config;
 
-    await fs.mkdir(cfg.root_dir, {
+    await fs.mkdir(config.root_dir, {
       recursive: true,
     });
 
@@ -233,10 +242,10 @@ export const fsProvider: Provider<
   getDataSources() {
     return {};
   },
-  prepareProviderConfig(cfg) {
+  prepareProviderConfig({ config }) {
     const diagnostics: Diagnostic[] = [];
 
-    if (!path.isAbsolute(cfg.root_dir)) {
+    if (!path.isAbsolute(config.root_dir)) {
       diagnostics.push({
         severity: Severity.ERROR,
         attribute: {
@@ -252,6 +261,7 @@ export const fsProvider: Provider<
     }
 
     return Either.right({
+      preparedConfig: config,
       diagnostics,
     });
   },

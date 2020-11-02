@@ -21,5 +21,6 @@ export const serializeDynamicValue = (value: any): DynamicValue => {
 
   return {
     msgpack: buffer,
+    json: Buffer.from(JSON.stringify(value)),
   };
 };
