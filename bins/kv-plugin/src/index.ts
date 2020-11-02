@@ -3,8 +3,9 @@ import * as KV from "src/generated/kv";
 import * as fs from "fs";
 import { hashicorpPlugin } from "@terraform-typescript/hashicorp-plugin";
 import { loadProto } from "@terraform-typescript/grpc-utils";
+import { KVHandlers } from "./generated/proto/KV";
 
-const kv = loadProto<KV.ProtoGrpcType, KV.ServiceHandlers.proto.KV, "proto">({
+const kv = loadProto<KV.ProtoGrpcType, KVHandlers, "proto">({
   dirname: __dirname,
   fileName: "kv.proto",
   packageName: "proto",

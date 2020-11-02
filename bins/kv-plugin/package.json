@@ -7,7 +7,7 @@
     "@terraform-typescript/grpc-utils": "1.0.0"
   },
   "devDependencies": {
-    "@grpc/proto-loader": "^0.6.0-pre17"
+    "@grpc/proto-loader": "0.6.0-pre17"
   },
   "scripts": {
     "build": "yarn build:proto && yarn build:copy-proto && yarn build:ts",

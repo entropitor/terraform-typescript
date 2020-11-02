@@ -1,6 +1,4 @@
 import path from "path";
-// import * as TF from "./generated/tfplugin5.2";
-import * as TF from "./tfplugin5";
 import { hashicorpPlugin } from "@terraform-typescript/hashicorp-plugin";
 import { loadProto, unary } from "@terraform-typescript/grpc-utils";
 import * as Either from "fp-ts/Either";
@@ -20,6 +18,8 @@ import {
   ValidateDataSourceResult,
   ValidateResult,
 } from "./provider";
+import { ProtoGrpcType } from "./generated/tfplugin5";
+import { ProviderHandlers } from "./generated/tfplugin5/Provider";
 
 export const run = <
   P,
@@ -30,11 +30,7 @@ export const run = <
 ) => {
   type PSchema = ProviderSchema<typeof provider>;
 
-  const proto = loadProto<
-    TF.ProtoGrpcType,
-    TF.ServiceHandlers.tfplugin5.Provider,
-    "tfplugin5"
-  >({
+  const proto = loadProto<ProtoGrpcType, ProviderHandlers, "tfplugin5">({
     dirname: __dirname,
     fileName: "tfplugin5.proto",
     packageName: "tfplugin5",

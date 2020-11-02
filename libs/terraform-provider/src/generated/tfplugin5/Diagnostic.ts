@@ -1,6 +1,6 @@
 // Original file: src/proto/tfplugin5.proto
 
-import { AttributePath as _tfplugin5_AttributePath, AttributePath__Output as _tfplugin5_AttributePath__Output } from '../tfplugin5/AttributePath';
+import type { AttributePath as _tfplugin5_AttributePath, AttributePath__Output as _tfplugin5_AttributePath__Output } from '../tfplugin5/AttributePath';
 
 // Original file: src/proto/tfplugin5.proto
 

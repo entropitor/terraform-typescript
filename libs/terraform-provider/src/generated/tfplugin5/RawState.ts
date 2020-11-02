@@ -3,10 +3,10 @@
 
 export interface RawState {
   'json'?: (Buffer | Uint8Array | string);
-  'flatmap'?: (string);
+  'flatmap'?: ({[key: string]: string});
 }
 
 export interface RawState__Output {
   'json'?: (Buffer);
-  'flatmap'?: (string);
+  'flatmap'?: ({[key: string]: string});
 }

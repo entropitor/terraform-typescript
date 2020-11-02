@@ -1,6 +1,6 @@
 // Original file: src/proto/tfplugin5.proto
 
-import { Long } from '@grpc/proto-loader';
+import type { Long } from '@grpc/proto-loader';
 
 export interface _tfplugin5_AttributePath_Step {
   'attribute_name'?: (string);

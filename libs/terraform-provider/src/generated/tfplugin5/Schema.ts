@@ -1,7 +1,7 @@
 // Original file: src/proto/tfplugin5.proto
 
-import { StringKind as _tfplugin5_StringKind } from '../tfplugin5/StringKind';
-import { Long } from '@grpc/proto-loader';
+import type { StringKind as _tfplugin5_StringKind } from '../tfplugin5/StringKind';
+import type { Long } from '@grpc/proto-loader';
 
 export interface _tfplugin5_Schema_Attribute {
   'name'?: (string);

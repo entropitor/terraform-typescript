@@ -1,7 +1,7 @@
 // Original file: src/proto/tfplugin5.proto
 
-import { Schema as _tfplugin5_Schema, Schema__Output as _tfplugin5_Schema__Output } from '../tfplugin5/Schema';
-import { Diagnostic as _tfplugin5_Diagnostic, Diagnostic__Output as _tfplugin5_Diagnostic__Output } from '../tfplugin5/Diagnostic';
+import type { Schema as _tfplugin5_Schema, Schema__Output as _tfplugin5_Schema__Output } from '../tfplugin5/Schema';
+import type { Diagnostic as _tfplugin5_Diagnostic, Diagnostic__Output as _tfplugin5_Diagnostic__Output } from '../tfplugin5/Diagnostic';
 
 export interface _tfplugin5_GetProvisionerSchema_Request {
 }

@@ -1,9 +1,9 @@
 // Original file: src/proto/tfplugin5.proto
 
-import { RawState as _tfplugin5_RawState, RawState__Output as _tfplugin5_RawState__Output } from '../tfplugin5/RawState';
-import { DynamicValue as _tfplugin5_DynamicValue, DynamicValue__Output as _tfplugin5_DynamicValue__Output } from '../tfplugin5/DynamicValue';
-import { Diagnostic as _tfplugin5_Diagnostic, Diagnostic__Output as _tfplugin5_Diagnostic__Output } from '../tfplugin5/Diagnostic';
-import { Long } from '@grpc/proto-loader';
+import type { RawState as _tfplugin5_RawState, RawState__Output as _tfplugin5_RawState__Output } from '../tfplugin5/RawState';
+import type { DynamicValue as _tfplugin5_DynamicValue, DynamicValue__Output as _tfplugin5_DynamicValue__Output } from '../tfplugin5/DynamicValue';
+import type { Diagnostic as _tfplugin5_Diagnostic, Diagnostic__Output as _tfplugin5_Diagnostic__Output } from '../tfplugin5/Diagnostic';
+import type { Long } from '@grpc/proto-loader';
 
 export interface _tfplugin5_UpgradeResourceState_Request {
   'type_name'?: (string);

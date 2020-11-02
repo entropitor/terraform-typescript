@@ -6,13 +6,14 @@ import * as forge from "node-forge";
 import { loadProto } from "@terraform-typescript/grpc-utils";
 import { Http2Server } from "http2";
 import { generateIdentity } from "./certificate";
+import { GRPCStdioHandlers } from "./generated/plugin/GRPCStdio";
 
 const CORE_PROTOCOL_VERSION = 1;
 const PROTOCOL = "grpc";
 
 const grpcStdioProto = loadProto<
   GrpcStdio.ProtoGrpcType,
-  GrpcStdio.ServiceHandlers.plugin.GRPCStdio,
+  GRPCStdioHandlers,
   "plugin"
 >({
   dirname: __dirname,

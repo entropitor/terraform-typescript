@@ -1,9 +1,7 @@
-import * as TF from "./tfplugin5";
 import { GrpcResponse } from "@terraform-typescript/grpc-utils";
-
-type AttributePath = TF.messages.tfplugin5.AttributePath;
-type Diagnostic = TF.messages.tfplugin5.Diagnostic;
-type Schema = TF.messages.tfplugin5.Schema;
+import { AttributePath } from "./generated/tfplugin5/AttributePath";
+import { Diagnostic } from "./generated/tfplugin5/Diagnostic";
+import { Schema } from "./generated/tfplugin5/Schema";
 
 type Response<T> = Promise<GrpcResponse<T>> | GrpcResponse<T>;
 

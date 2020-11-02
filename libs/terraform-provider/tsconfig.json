@@ -8,6 +8,5 @@
     "noImplicitAny": false
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/generated/tfplugin5.ts"],
   "references": [{ "path": "../hashicorp-plugin" }, { "path": "../grpc-utils" }]
 }

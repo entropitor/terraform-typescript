@@ -1,8 +1,8 @@
 // Original file: src/proto/tfplugin5.proto
 
-import { DynamicValue as _tfplugin5_DynamicValue, DynamicValue__Output as _tfplugin5_DynamicValue__Output } from '../tfplugin5/DynamicValue';
-import { AttributePath as _tfplugin5_AttributePath, AttributePath__Output as _tfplugin5_AttributePath__Output } from '../tfplugin5/AttributePath';
-import { Diagnostic as _tfplugin5_Diagnostic, Diagnostic__Output as _tfplugin5_Diagnostic__Output } from '../tfplugin5/Diagnostic';
+import type { DynamicValue as _tfplugin5_DynamicValue, DynamicValue__Output as _tfplugin5_DynamicValue__Output } from '../tfplugin5/DynamicValue';
+import type { AttributePath as _tfplugin5_AttributePath, AttributePath__Output as _tfplugin5_AttributePath__Output } from '../tfplugin5/AttributePath';
+import type { Diagnostic as _tfplugin5_Diagnostic, Diagnostic__Output as _tfplugin5_Diagnostic__Output } from '../tfplugin5/Diagnostic';
 
 export interface _tfplugin5_PlanResourceChange_Request {
   'type_name'?: (string);
