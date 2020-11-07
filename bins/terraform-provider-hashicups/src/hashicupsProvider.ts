@@ -53,10 +53,8 @@ export const hashicupsProvider: Provider<
       },
     };
   },
-  async configure({ config }) {
-    configuredConfig = config;
-
-    console.error(config);
+  async configure({ preparedConfig }) {
+    configuredConfig = preparedConfig;
 
     return Either.right({
       diagnostics: [],
@@ -70,7 +68,6 @@ export const hashicupsProvider: Provider<
       hashicups_coffees: dataSourceCoffees,
     };
   },
-  // @ts-expect-error
   prepareProviderConfig({ config }) {
     const diagnostics: Diagnostic[] = [];
 
@@ -81,7 +78,7 @@ export const hashicupsProvider: Provider<
         username: config.username || process.env.HASHICUPS_USERNAME || null,
         password: config.password || process.env.HASHICUPS_PASSWORD || null,
       },
-      diagnostics: null,
+      diagnostics,
     });
   },
 };

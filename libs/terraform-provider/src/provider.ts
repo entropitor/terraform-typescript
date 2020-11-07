@@ -91,7 +91,10 @@ export interface Provider<
   prepareProviderConfig(args: {
     config: ProviderSchemaConfig;
   }): Response<PrepareConfigureResult<ProviderSchemaConfig>>;
-  configure(arsg: { config: ProviderSchemaConfig }): Response<ConfigureResult>;
+  configure(arsg: {
+    config: ProviderSchemaConfig;
+    preparedConfig: ProviderSchemaConfig;
+  }): Response<ConfigureResult>;
 }
 
 export type ProviderSchema<P> = P extends Provider<infer S, any, any>

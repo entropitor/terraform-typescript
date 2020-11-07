@@ -56,8 +56,14 @@ export const run = <
         );
       }),
       Configure: unary(async (call) => {
+        const config = parseDynamicValue<P>(call.request!.config!);
+        const result = await provider.prepareProviderConfig({ config });
+        if (Either.isLeft(result)) {
+          return result;
+        }
         return await provider.configure({
-          config: parseDynamicValue(call.request!.config!),
+          config,
+          preparedConfig: result.right.preparedConfig,
         });
       }),
       GetSchema: unary(async (_call) => {
