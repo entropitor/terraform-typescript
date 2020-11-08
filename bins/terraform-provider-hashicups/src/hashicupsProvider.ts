@@ -58,7 +58,7 @@ export const hashicupsProvider: Provider<
   async configure({ preparedConfig }) {
     return Either.right({
       diagnostics: [],
-      client: createApiClient({
+      client: await createApiClient({
         username: preparedConfig.username!,
         password: preparedConfig.password!,
       }),
