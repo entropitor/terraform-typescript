@@ -4,13 +4,20 @@ import { createSchema } from "./schema";
 
 describe("createSchema", () => {
   it("should create a simple schema", () => {
-    expect(createSchema({})).toEqual({
+    expect(
+      createSchema({
+        description: "Empty schema",
+        properties: {},
+      })
+    ).toEqual({
       version: 1,
       block: {
         version: 1,
         attributes: [],
         block_types: [],
         deprecated: false,
+        description: "Empty schema",
+        description_kind: StringKind.PLAIN,
       },
     });
   });
@@ -18,18 +25,21 @@ describe("createSchema", () => {
   it("should create a simple schema with attributes", () => {
     expect(
       createSchema({
-        username: {
-          type: ctyString(),
-          inConfig: "optional",
-          computed: true,
-        },
-        password: {
-          type: ctyString(),
-          inConfig: "required",
-        },
-        url: {
-          type: ctyString(),
-          inConfig: "absent",
+        description: "Test schema",
+        properties: {
+          username: {
+            type: ctyString(),
+            inConfig: "optional",
+            computed: true,
+          },
+          password: {
+            type: ctyString(),
+            inConfig: "required",
+          },
+          url: {
+            type: ctyString(),
+            inConfig: "absent",
+          },
         },
       })
     ).toEqual({
@@ -56,6 +66,8 @@ describe("createSchema", () => {
         ],
         block_types: [],
         deprecated: false,
+        description: "Test schema",
+        description_kind: StringKind.PLAIN,
       },
     });
   });

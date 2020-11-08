@@ -1,5 +1,6 @@
 import { ctyType, CtyType } from "./ctyType";
 import { Schema } from "./generated/tfplugin5/Schema";
+import { StringKind } from "./generated/tfplugin5/StringKind";
 
 type AttributeDescriptor = {
   type: CtyType;
@@ -7,13 +8,16 @@ type AttributeDescriptor = {
   computed?: boolean;
 };
 type SchemaDescriptor = {
-  [key: string]: AttributeDescriptor;
+  description: string;
+  properties: {
+    [key: string]: AttributeDescriptor;
+  };
 };
-export const createSchema = (config: SchemaDescriptor): Schema => {
+export const createSchema = (descriptor: SchemaDescriptor): Schema => {
   return {
     version: 1,
     block: {
-      attributes: Object.entries(config).map(
+      attributes: Object.entries(descriptor.properties).map(
         ([attributeName, attributeDescriptor]) => {
           return {
             name: attributeName,
@@ -30,6 +34,8 @@ export const createSchema = (config: SchemaDescriptor): Schema => {
       block_types: [],
       deprecated: false,
       version: 1,
+      description: descriptor.description,
+      description_kind: StringKind.PLAIN,
     },
   };
 };

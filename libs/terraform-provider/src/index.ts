@@ -1,6 +1,7 @@
-export * from "./run";
-export * from "./provider";
 export * from "./ctyType";
+export * from "./provider";
+export * from "./run";
+export * from "./schema";
 
 export * from "./generated/tfplugin5/AttributePath";
 export * from "./generated/tfplugin5/Diagnostic";
