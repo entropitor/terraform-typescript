@@ -7,6 +7,7 @@ import {
   ctyType,
   Diagnostic,
   Provider,
+  Severity,
   StringKind,
 } from "@terraform-typescript/terraform-provider";
 import {
@@ -14,15 +15,16 @@ import {
   DataSourceCoffeesConfig,
   DataSourceCoffeesState,
 } from "./dataSourceCoffees";
+import { createApiClient, HashicupsApiClient } from "./apiClient";
 
 interface SchemaType {
   username: string | null;
   password: string | null;
 }
-let configuredConfig: SchemaType | null = null;
 
 export const hashicupsProvider: Provider<
   SchemaType,
+  HashicupsApiClient,
   {},
   {
     hashicups_coffees: [DataSourceCoffeesConfig, DataSourceCoffeesState];
@@ -54,10 +56,12 @@ export const hashicupsProvider: Provider<
     };
   },
   async configure({ preparedConfig }) {
-    configuredConfig = preparedConfig;
-
     return Either.right({
       diagnostics: [],
+      client: createApiClient({
+        username: preparedConfig.username!,
+        password: preparedConfig.password!,
+      }),
     });
   },
   getResources() {
@@ -71,12 +75,45 @@ export const hashicupsProvider: Provider<
   prepareProviderConfig({ config }) {
     const diagnostics: Diagnostic[] = [];
 
-    console.error(config.username || process.env.HASHICUPS_USERNAME);
+    const username = config.username || process.env.HASHICUPS_USERNAME || null;
+    const password = config.password || process.env.HASHICUPS_PASSWORD || null;
+
+    if (username == null) {
+      diagnostics.push({
+        severity: Severity.ERROR,
+        attribute: {
+          steps: [
+            {
+              attribute_name: "username",
+            },
+          ],
+        },
+        detail:
+          "You did not set an username nor an env variable HASHICUPS_USERNAME",
+        summary: "Username missing",
+      });
+    }
+
+    if (password == null) {
+      diagnostics.push({
+        severity: Severity.ERROR,
+        attribute: {
+          steps: [
+            {
+              attribute_name: "password",
+            },
+          ],
+        },
+        detail:
+          "You did not set a password nor an env variable HASHICUPS_PASSWORD",
+        summary: "Password missing",
+      });
+    }
 
     return Either.right({
       preparedConfig: {
-        username: config.username || process.env.HASHICUPS_USERNAME || null,
-        password: config.password || process.env.HASHICUPS_PASSWORD || null,
+        username,
+        password,
       },
       diagnostics,
     });

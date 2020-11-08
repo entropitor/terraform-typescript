@@ -57,19 +57,23 @@ export type ReadDataSourceResult<State> = {
   diagnostics: Diagnostic[];
   state: State | null;
 };
-export interface DataSource<Config, State extends Config> {
+export interface DataSource<Config, State extends Config, Client> {
   getSchema(): Schema;
   validate(args: { config: Config }): Response<ValidateDataSourceResult>;
-  read(args: { config: Config }): Response<ReadDataSourceResult<State>>;
+  read(args: {
+    config: Config;
+    client: Client;
+  }): Response<ReadDataSourceResult<State>>;
 }
 
 type Resources<R extends { [key: string]: any }> = {
   [resourceName in keyof R]: Resource<R[resourceName]>;
 };
-type DataSources<D extends { [key: string]: [any, any] }> = {
+type DataSources<D extends { [key: string]: [any, any] }, Client> = {
   [dataSourceName in keyof D]: DataSource<
     D[dataSourceName][0],
-    D[dataSourceName][1]
+    D[dataSourceName][1],
+    Client
   >;
 };
 
@@ -77,26 +81,28 @@ export type PrepareConfigureResult<C> = {
   diagnostics: Diagnostic[];
   preparedConfig: C;
 };
-export type ConfigureResult = {
+export type ConfigureResult<Client> = {
   diagnostics: Diagnostic[];
+  client: Client;
 };
 export interface Provider<
   ProviderSchemaConfig,
+  Client,
   R extends { [key: string]: any },
   D extends { [key: string]: [any, any] }
 > {
   getSchema(): Schema;
   getResources(): Resources<R>;
-  getDataSources(): DataSources<D>;
+  getDataSources(): DataSources<D, Client>;
   prepareProviderConfig(args: {
     config: ProviderSchemaConfig;
   }): Response<PrepareConfigureResult<ProviderSchemaConfig>>;
   configure(arsg: {
     config: ProviderSchemaConfig;
     preparedConfig: ProviderSchemaConfig;
-  }): Response<ConfigureResult>;
+  }): Response<ConfigureResult<Client>>;
 }
 
-export type ProviderSchema<P> = P extends Provider<infer S, any, any>
+export type ProviderSchema<P> = P extends Provider<infer S, any, any, any>
   ? S
   : never;

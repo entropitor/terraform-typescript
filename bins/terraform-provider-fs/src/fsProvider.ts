@@ -192,6 +192,7 @@ let configuredConfig: FsProviderSchemaType | null = null;
 
 export const fsProvider: Provider<
   FsProviderSchemaType,
+  null,
   {
     fs_file: FsFile;
   },
@@ -232,6 +233,7 @@ export const fsProvider: Provider<
 
     return Either.right({
       diagnostics: [],
+      client: null,
     });
   },
   getResources() {

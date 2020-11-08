@@ -1,5 +1,4 @@
 import {
-  ctyList,
   ctyNumber,
   ctyString,
   ctyType,
@@ -8,13 +7,14 @@ import {
   Severity,
 } from "@terraform-typescript/terraform-provider";
 import * as Either from "fp-ts/either";
-import fetch from "node-fetch";
+import { HashicupsApiClient } from "./apiClient";
 
 export interface DataSourceCoffeesConfig {}
 export interface DataSourceCoffeesState {}
 export const dataSourceCoffees: DataSource<
   DataSourceCoffeesConfig,
-  DataSourceCoffeesState
+  DataSourceCoffeesState,
+  HashicupsApiClient
 > = {
   getSchema() {
     return {
@@ -80,19 +80,13 @@ export const dataSourceCoffees: DataSource<
       },
     };
   },
-  async read() {
+  async read({ client }) {
     const diagnostics: Diagnostic[] = [];
     try {
-      const result = await fetch("http://localhost:19090/coffees", {
-        method: "GET",
-      });
-
-      const body = await result.json();
-
       return Either.right({
         diagnostics: [],
         state: {
-          coffees: body,
+          coffees: await client.listCoffees(),
         },
       });
     } catch (error) {

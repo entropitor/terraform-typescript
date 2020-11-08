@@ -23,12 +23,15 @@ import { ProviderHandlers } from "./generated/tfplugin5/Provider";
 
 export const run = <
   P,
+  Client,
   R extends { [key: string]: any },
   S extends { [key: string]: [any, any] }
 >(
-  provider: Provider<P, R, S>
+  provider: Provider<P, Client, R, S>
 ) => {
   type PSchema = ProviderSchema<typeof provider>;
+
+  let client: Client | null = null;
 
   const proto = loadProto<ProtoGrpcType, ProviderHandlers, "tfplugin5">({
     dirname: __dirname,
@@ -65,9 +68,17 @@ export const run = <
         if (Either.isLeft(result)) {
           return result;
         }
-        return await provider.configure({
+
+        const configuredResult = await provider.configure({
           config,
           preparedConfig: result.right.preparedConfig,
+        });
+        if (Either.isLeft(configuredResult)) {
+          return result;
+        }
+        client = configuredResult.right.client;
+        return Either.right({
+          diagnostics: configuredResult.right.diagnostics,
         });
       }),
 
@@ -204,6 +215,7 @@ export const run = <
           })
         )(
           await dataSource.read({
+            client: client!,
             config: parseDynamicValue(call.request!.config!),
           })
         );
