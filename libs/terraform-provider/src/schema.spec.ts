@@ -1,6 +1,19 @@
 import { ctyString, ctyType, CtyType } from "./ctyType";
 import { StringKind } from "./generated/tfplugin5/StringKind";
-import { createSchema } from "./schema";
+import { createSchema, SchemaConfig } from "./schema";
+
+export type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
+  T
+>() => T extends Y ? 1 : 2
+  ? true
+  : false;
+const testType = <_ extends true>() => {};
+function testSchemaConfig<
+  ResultedConfig,
+  _ExpectedConfig extends ResultedConfig
+>(): void {
+  return;
+}
 
 describe("createSchema", () => {
   it("should create a simple schema", () => {
@@ -23,26 +36,26 @@ describe("createSchema", () => {
   });
 
   it("should create a simple schema with attributes", () => {
-    expect(
-      createSchema({
-        description: "Test schema",
-        properties: {
-          username: {
-            type: ctyString(),
-            inConfig: "optional",
-            computed: true,
-          },
-          password: {
-            type: ctyString(),
-            inConfig: "required",
-          },
-          url: {
-            type: ctyString(),
-            inConfig: "absent",
-          },
+    const descriptor = {
+      description: "Test schema",
+      properties: {
+        username: {
+          type: ctyString(),
+          inConfig: "optional",
+          computed: true,
         },
-      })
-    ).toEqual({
+        password: {
+          type: ctyString(),
+          inConfig: "required",
+        },
+        url: {
+          type: ctyString(),
+          inConfig: "absent",
+        },
+      },
+    } as const;
+
+    expect(createSchema(descriptor)).toEqual({
       version: 1,
       block: {
         version: 1,
@@ -70,5 +83,12 @@ describe("createSchema", () => {
         description_kind: StringKind.PLAIN,
       },
     });
+
+    type ExpectedConfig = {
+      readonly username: string | null;
+      readonly password: string;
+      readonly url: void;
+    };
+    testType<Equals<SchemaConfig<typeof descriptor>, ExpectedConfig>>();
   });
 });

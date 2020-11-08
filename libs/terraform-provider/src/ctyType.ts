@@ -58,9 +58,10 @@ export const ctyType = (typ: CtyType): Buffer => {
   return Buffer.from(JSON.stringify(ctyTypeToJson(typ)));
 };
 
-export const ctyString = (): CtyType => ({
-  type: "string",
-});
+export const ctyString = () =>
+  ({
+    type: "string",
+  } as const);
 export const ctyNumber = (): CtyType => ({
   type: "number",
 });

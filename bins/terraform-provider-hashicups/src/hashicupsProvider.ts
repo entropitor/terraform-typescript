@@ -3,10 +3,12 @@
  */
 import * as Either from "fp-ts/Either";
 import {
+  createSchema,
   ctyString,
   ctyType,
   Diagnostic,
   Provider,
+  SchemaConfig,
   Severity,
   StringKind,
 } from "@terraform-typescript/terraform-provider";
@@ -17,13 +19,25 @@ import {
 } from "./dataSourceCoffees";
 import { createApiClient, HashicupsApiClient } from "./apiClient";
 
-interface SchemaType {
-  username: string | null;
-  password: string | null;
-}
+const schemaDescriptor = {
+  description: "hashicups",
+  properties: {
+    username: {
+      type: ctyString(),
+      inConfig: "optional",
+      computed: true,
+    },
+    password: {
+      type: ctyString(),
+      inConfig: "optional",
+    },
+  },
+} as const;
+
+type ProviderConfig = SchemaConfig<typeof schemaDescriptor>;
 
 export const hashicupsProvider: Provider<
-  SchemaType,
+  ProviderConfig,
   HashicupsApiClient,
   {},
   {
@@ -31,29 +45,7 @@ export const hashicupsProvider: Provider<
   }
 > = {
   getSchema() {
-    return {
-      version: 1,
-      block: {
-        version: 1,
-        attributes: [
-          {
-            name: "username",
-            type: ctyType(ctyString()),
-            optional: true,
-          },
-          {
-            name: "password",
-            type: ctyType(ctyString()),
-            // sensitive: true,
-            optional: true,
-          },
-        ],
-        block_types: [],
-        deprecated: false,
-        description: "hashicups",
-        description_kind: StringKind.PLAIN,
-      },
-    };
+    return createSchema(schemaDescriptor);
   },
   async configure({ preparedConfig }) {
     return Either.right({
