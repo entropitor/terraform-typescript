@@ -1,4 +1,4 @@
-import { ctyType, CtyType, ctyString } from "./ctyType";
+import { ctyType, CtyType, ctyString, CtyToTypescript } from "./ctyType";
 import { Schema } from "./generated/tfplugin5/Schema";
 import { StringKind } from "./generated/tfplugin5/StringKind";
 
@@ -14,15 +14,12 @@ type SchemaDescriptor = {
   };
 };
 
-type TypeScriptType<Cty extends CtyType> = Cty["type"] extends "string"
-  ? string
-  : void;
 type AttributeConfig<
   Descriptor extends AttributeDescriptor
 > = Descriptor["inConfig"] extends "required"
-  ? TypeScriptType<Descriptor["type"]>
+  ? CtyToTypescript<Descriptor["type"]>
   : Descriptor["inConfig"] extends "optional"
-  ? TypeScriptType<Descriptor["type"]> | null
+  ? CtyToTypescript<Descriptor["type"]> | null
   : void;
 export type SchemaConfig<Descriptor extends SchemaDescriptor> = {
   [attributeName in keyof Descriptor["properties"]]: AttributeConfig<

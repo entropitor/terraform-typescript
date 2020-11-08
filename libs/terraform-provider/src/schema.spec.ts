@@ -1,19 +1,7 @@
 import { ctyString, ctyType, CtyType } from "./ctyType";
 import { StringKind } from "./generated/tfplugin5/StringKind";
 import { createSchema, SchemaConfig } from "./schema";
-
-export type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
-  T
->() => T extends Y ? 1 : 2
-  ? true
-  : false;
-const testType = <_ extends true>() => {};
-function testSchemaConfig<
-  ResultedConfig,
-  _ExpectedConfig extends ResultedConfig
->(): void {
-  return;
-}
+import { Equals, expectTypeToBeTrue } from "./testUtils";
 
 describe("createSchema", () => {
   it("should create a simple schema", () => {
@@ -89,6 +77,8 @@ describe("createSchema", () => {
       readonly password: string;
       readonly url: void;
     };
-    testType<Equals<SchemaConfig<typeof descriptor>, ExpectedConfig>>();
+    expectTypeToBeTrue<
+      Equals<SchemaConfig<typeof descriptor>, ExpectedConfig>
+    >();
   });
 });

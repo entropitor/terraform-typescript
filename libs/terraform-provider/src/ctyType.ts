@@ -62,32 +62,56 @@ export const ctyString = () =>
   ({
     type: "string",
   } as const);
-export const ctyNumber = (): CtyType => ({
-  type: "number",
-});
-export const ctyBoolean = (): CtyType => ({
-  type: "boolean",
-});
-export const ctyAny = (): CtyType => ({
-  type: "any",
-});
-export const ctyList = (of: CtyType): CtyType => ({
-  type: "list",
-  itemType: of,
-});
-export const ctySet = (of: CtyType): CtyType => ({
-  type: "set",
-  itemType: of,
-});
-export const ctyMap = (of: CtyType): CtyType => ({
-  type: "map",
-  itemType: of,
-});
-export const ctyTuple = (...of: CtyType[]): CtyType => ({
-  type: "tuple",
-  itemTypes: of,
-});
-export const ctyObject = (of: { [key: string]: CtyType }): CtyType => ({
-  type: "object",
-  itemType: of,
-});
+export const ctyNumber = () =>
+  ({
+    type: "number",
+  } as const);
+export const ctyBoolean = () =>
+  ({
+    type: "boolean",
+  } as const);
+export const ctyAny = () =>
+  ({
+    type: "any",
+  } as const);
+export const ctyList = <C extends CtyType>(of: C) =>
+  ({
+    type: "list",
+    itemType: of,
+  } as const);
+export const ctySet = <C extends CtyType>(of: C) =>
+  ({
+    type: "set",
+    itemType: of,
+  } as const);
+export const ctyMap = <C extends CtyType>(of: C) =>
+  ({
+    type: "map",
+    itemType: of,
+  } as const);
+export const ctyTuple = (...of: CtyType[]) =>
+  ({
+    type: "tuple",
+    itemTypes: of,
+  } as const);
+export const ctyObject = (of: { [key: string]: CtyType }) =>
+  ({
+    type: "object",
+    itemType: of,
+  } as const);
+
+export type CtyToTypescript<Cty extends CtyType> = Cty extends {
+  type: "string";
+}
+  ? string
+  : Cty extends { type: "number" }
+  ? number
+  : Cty extends { type: "boolean" }
+  ? boolean
+  : Cty extends { type: "list"; itemType: CtyType }
+  ? Array<CtyToTypescript<Cty["itemType"]>>
+  : Cty extends { type: "set"; itemType: CtyType }
+  ? Set<CtyToTypescript<Cty["itemType"]>>
+  : Cty extends { type: "map"; itemType: CtyType }
+  ? { [key: string]: CtyToTypescript<Cty["itemType"]> }
+  : void;
