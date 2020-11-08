@@ -2,6 +2,12 @@
   "name": "terraform-typescript",
   "private": true,
   "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-typescript": "^7.12.1",
+    "@types/jest": "^26.0.15",
+    "babel-jest": "^26.6.3",
+    "jest": "^26.6.3",
     "lerna": "^3.22.1",
     "typescript": "^4.0.5"
   },
@@ -13,6 +19,7 @@
   },
   "scripts": {
     "build": "yarn lerna run build",
-    "build:ts": "yarn tsc -b tsconfig.solution.json"
+    "build:ts": "yarn tsc -b tsconfig.solution.json",
+    "test": "yarn jest"
   }
 }
