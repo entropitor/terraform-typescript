@@ -1,4 +1,4 @@
-import { ctyString, ctyType, CtyType } from "./ctyType";
+import { ctyString, ctyTypeToBuffer, CtyType } from "./ctyType";
 import { StringKind } from "./generated/tfplugin5/StringKind";
 import { createSchema, SchemaConfig } from "./schema";
 import { Equals, expectTypeToBeTrue } from "./testUtils";
@@ -50,18 +50,18 @@ describe("createSchema", () => {
         attributes: [
           {
             name: "username",
-            type: ctyType(ctyString()),
+            type: ctyTypeToBuffer(ctyString()),
             optional: true,
             computed: true,
           },
           {
             name: "password",
-            type: ctyType(ctyString()),
+            type: ctyTypeToBuffer(ctyString()),
             required: true,
           },
           {
             name: "url",
-            type: ctyType(ctyString()),
+            type: ctyTypeToBuffer(ctyString()),
             computed: true,
           },
         ],

@@ -54,7 +54,7 @@ const ctyTypeToJson = (typ: CtyType): any => {
   }
 };
 
-export const ctyType = (typ: CtyType): Buffer => {
+export const ctyTypeToBuffer = (typ: CtyType): Buffer => {
   return Buffer.from(JSON.stringify(ctyTypeToJson(typ)));
 };
 

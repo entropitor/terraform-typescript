@@ -1,4 +1,9 @@
-import { ctyType, CtyType, ctyString, CtyToTypescript } from "./ctyType";
+import {
+  ctyTypeToBuffer,
+  CtyType,
+  ctyString,
+  CtyToTypescript,
+} from "./ctyType";
 import { Schema } from "./generated/tfplugin5/Schema";
 import { StringKind } from "./generated/tfplugin5/StringKind";
 
@@ -35,7 +40,7 @@ export const createSchema = (descriptor: SchemaDescriptor): Schema => {
         ([attributeName, attributeDescriptor]) => {
           return {
             name: attributeName,
-            type: ctyType(attributeDescriptor.type),
+            type: ctyTypeToBuffer(attributeDescriptor.type),
             optional: attributeDescriptor.inConfig === "optional" || undefined,
             required: attributeDescriptor.inConfig === "required" || undefined,
             computed:

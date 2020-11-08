@@ -6,15 +6,15 @@ import {
   ctySet,
   ctyString,
   CtyToTypescript,
-  ctyType,
+  ctyTypeToBuffer,
 } from "./ctyType";
 import { Equals, expectTypeToBeTrue } from "./testUtils";
 
 describe("ctyString()", () => {
   const type = ctyString();
 
-  it("ctyType", () => {
-    expect(ctyType(type)).toEqual(Buffer.from('"string"'));
+  it("ctyTypeToBuffer", () => {
+    expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('"string"'));
   });
 
   type Computed = CtyToTypescript<typeof type>;
@@ -24,8 +24,8 @@ describe("ctyString()", () => {
 describe("ctyNumber()", () => {
   const type = ctyNumber();
 
-  it("ctyType", () => {
-    expect(ctyType(type)).toEqual(Buffer.from('"number"'));
+  it("ctyTypeToBuffer", () => {
+    expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('"number"'));
   });
 
   type Computed = CtyToTypescript<typeof type>;
@@ -35,8 +35,8 @@ describe("ctyNumber()", () => {
 describe("ctyBoolean()", () => {
   const type = ctyBoolean();
 
-  it("ctyType", () => {
-    expect(ctyType(type)).toEqual(Buffer.from('"bool"'));
+  it("ctyTypeToBuffer", () => {
+    expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('"bool"'));
   });
 
   type Computed = CtyToTypescript<typeof type>;
@@ -46,8 +46,8 @@ describe("ctyBoolean()", () => {
 describe("ctyList(ctyNumber())", () => {
   const type = ctyList(ctyNumber());
 
-  it("ctyType", () => {
-    expect(ctyType(type)).toEqual(Buffer.from('["list","number"]'));
+  it("ctyTypeToBuffer", () => {
+    expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('["list","number"]'));
   });
 
   type Computed = CtyToTypescript<typeof type>;
@@ -57,8 +57,8 @@ describe("ctyList(ctyNumber())", () => {
 describe("ctySet(ctyNumber())", () => {
   const type = ctySet(ctyNumber());
 
-  it("ctyType", () => {
-    expect(ctyType(type)).toEqual(Buffer.from('["set","number"]'));
+  it("ctyTypeToBuffer", () => {
+    expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('["set","number"]'));
   });
 
   type Computed = CtyToTypescript<typeof type>;
@@ -68,8 +68,8 @@ describe("ctySet(ctyNumber())", () => {
 describe("ctyMap(ctyNumber())", () => {
   const type = ctyMap(ctyNumber());
 
-  it("ctyType", () => {
-    expect(ctyType(type)).toEqual(Buffer.from('["map","number"]'));
+  it("ctyTypeToBuffer", () => {
+    expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('["map","number"]'));
   });
 
   type Computed = CtyToTypescript<typeof type>;

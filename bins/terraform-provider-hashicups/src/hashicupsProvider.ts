@@ -5,12 +5,10 @@ import * as Either from "fp-ts/Either";
 import {
   createSchema,
   ctyString,
-  ctyType,
   Diagnostic,
   Provider,
   SchemaConfig,
   Severity,
-  StringKind,
 } from "@terraform-typescript/terraform-provider";
 import {
   dataSourceCoffees,

@@ -4,7 +4,7 @@ import {
   ctyNumber,
   ctyObject,
   ctyString,
-  ctyType,
+  ctyTypeToBuffer,
   Diagnostic,
   Provider,
   Resource,
@@ -61,7 +61,7 @@ const fsFile: Resource<FsFile> = {
         attributes: [
           {
             name: "file_name",
-            type: ctyType(ctyString()),
+            type: ctyTypeToBuffer(ctyString()),
             description: "The name of the file to manage",
             required: true,
             optional: false,
@@ -72,7 +72,7 @@ const fsFile: Resource<FsFile> = {
           },
           {
             name: "body",
-            type: ctyType(
+            type: ctyTypeToBuffer(
               ctyObject({
                 nb_foos: ctyNumber(),
               })
@@ -206,7 +206,7 @@ export const fsProvider: Provider<
         attributes: [
           {
             name: "root_dir",
-            type: ctyType(ctyString()),
+            type: ctyTypeToBuffer(ctyString()),
             description: "The root dir where all files will be stored",
             description_kind: StringKind.PLAIN,
             required: true,
