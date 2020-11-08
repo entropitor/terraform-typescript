@@ -7,25 +7,25 @@ const unreachable = (_: never): void => {};
  *
  * Original Go Library: https://github.com/zclconf/go-cty
  */
-type ctyType =
+export type CtyType =
   | {
       type: "string" | "number" | "boolean" | "any";
     }
   | {
       type: "list" | "set" | "map";
-      itemType: ctyType;
+      itemType: CtyType;
     }
   | {
       type: "tuple";
-      itemTypes: ctyType[];
+      itemTypes: CtyType[];
     }
   | {
       type: "object";
       itemType: {
-        [key: string]: ctyType;
+        [key: string]: CtyType;
       };
     };
-const ctyTypeToJson = (typ: ctyType): any => {
+const ctyTypeToJson = (typ: CtyType): any => {
   switch (typ.type) {
     case "number":
     case "string": {
@@ -54,39 +54,39 @@ const ctyTypeToJson = (typ: ctyType): any => {
   }
 };
 
-export const ctyType = (typ: ctyType): Buffer => {
+export const ctyType = (typ: CtyType): Buffer => {
   return Buffer.from(JSON.stringify(ctyTypeToJson(typ)));
 };
 
-export const ctyString = (): ctyType => ({
+export const ctyString = (): CtyType => ({
   type: "string",
 });
-export const ctyNumber = (): ctyType => ({
+export const ctyNumber = (): CtyType => ({
   type: "number",
 });
-export const ctyBoolean = (): ctyType => ({
+export const ctyBoolean = (): CtyType => ({
   type: "boolean",
 });
-export const ctyAny = (): ctyType => ({
+export const ctyAny = (): CtyType => ({
   type: "any",
 });
-export const ctyList = (of: ctyType): ctyType => ({
+export const ctyList = (of: CtyType): CtyType => ({
   type: "list",
   itemType: of,
 });
-export const ctySet = (of: ctyType): ctyType => ({
+export const ctySet = (of: CtyType): CtyType => ({
   type: "set",
   itemType: of,
 });
-export const ctyMap = (of: ctyType): ctyType => ({
+export const ctyMap = (of: CtyType): CtyType => ({
   type: "map",
   itemType: of,
 });
-export const ctyTuple = (...of: ctyType[]): ctyType => ({
+export const ctyTuple = (...of: CtyType[]): CtyType => ({
   type: "tuple",
   itemTypes: of,
 });
-export const ctyObject = (of: { [key: string]: ctyType }): ctyType => ({
+export const ctyObject = (of: { [key: string]: CtyType }): CtyType => ({
   type: "object",
   itemType: of,
 });
