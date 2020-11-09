@@ -89,29 +89,46 @@ export const ctyMap = <C extends CtyType>(of: C) =>
     type: "map",
     itemType: of,
   } as const);
-export const ctyTuple = (...of: CtyType[]) =>
+export const ctyTuple = <T extends CtyType[]>(...of: T) =>
   ({
     type: "tuple",
     itemTypes: of,
   } as const);
-export const ctyObject = (of: { [key: string]: CtyType }) =>
+export const ctyObject = <R extends { [key: string]: CtyType }>(of: R) =>
   ({
     type: "object",
     itemType: of,
   } as const);
 
-export type CtyToTypescript<Cty extends CtyType> = Cty extends {
-  type: "string";
-}
+type CtyString = ReturnType<typeof ctyString>;
+type CtyNumber = ReturnType<typeof ctyNumber>;
+type CtyBoolean = ReturnType<typeof ctyBoolean>;
+type CtyAny = ReturnType<typeof ctyAny>;
+type CtyList = ReturnType<typeof ctyList>;
+type CtySet = ReturnType<typeof ctySet>;
+type CtyMap = ReturnType<typeof ctyMap>;
+type CtyTuple = ReturnType<typeof ctyTuple>;
+type CtyObject = ReturnType<typeof ctyObject>;
+
+type CtyTupleToTypescript<T> = {
+  [key in keyof T]: CtyToTypescript<T[key]>;
+};
+export type CtyToTypescript<Cty> = Cty extends CtyString
   ? string
-  : Cty extends { type: "number" }
+  : Cty extends CtyNumber
   ? number
-  : Cty extends { type: "boolean" }
+  : Cty extends CtyBoolean
   ? boolean
-  : Cty extends { type: "list"; itemType: CtyType }
+  : Cty extends CtyAny
+  ? any
+  : Cty extends CtyList
   ? Array<CtyToTypescript<Cty["itemType"]>>
-  : Cty extends { type: "set"; itemType: CtyType }
+  : Cty extends CtySet
   ? Set<CtyToTypescript<Cty["itemType"]>>
-  : Cty extends { type: "map"; itemType: CtyType }
+  : Cty extends CtyMap
   ? { [key: string]: CtyToTypescript<Cty["itemType"]> }
-  : void;
+  : Cty extends CtyTuple
+  ? CtyTupleToTypescript<Cty["itemTypes"]>
+  : Cty extends CtyObject
+  ? { [key in keyof Cty["itemType"]]: CtyToTypescript<Cty["itemType"][key]> }
+  : never;

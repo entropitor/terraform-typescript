@@ -1,11 +1,15 @@
 import {
+  ctyAny,
   ctyBoolean,
   ctyList,
   ctyMap,
   ctyNumber,
+  ctyObject,
   ctySet,
   ctyString,
   CtyToTypescript,
+  ctyTuple,
+  CtyType,
   ctyTypeToBuffer,
 } from "./ctyType";
 import { Equals, expectTypeToBeTrue } from "./testUtils";
@@ -43,6 +47,17 @@ describe("ctyBoolean()", () => {
   expectTypeToBeTrue<Equals<Computed, boolean>>();
 });
 
+describe("ctyAny()", () => {
+  const type = ctyAny();
+
+  it("ctyTypeToBuffer", () => {
+    expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('"dynamic"'));
+  });
+
+  type Computed = CtyToTypescript<typeof type>;
+  expectTypeToBeTrue<Equals<Computed, any>>();
+});
+
 describe("ctyList(ctyNumber())", () => {
   const type = ctyList(ctyNumber());
 
@@ -74,4 +89,38 @@ describe("ctyMap(ctyNumber())", () => {
 
   type Computed = CtyToTypescript<typeof type>;
   expectTypeToBeTrue<Equals<Computed, Record<string, number>>>();
+});
+
+describe("ctyTuple(ctyNumber(), ctyString())", () => {
+  const type = ctyTuple(ctyNumber(), ctyString());
+
+  it("ctyTypeToBuffer", () => {
+    expect(ctyTypeToBuffer(type)).toEqual(
+      Buffer.from('["tuple",["number","string"]]')
+    );
+  });
+
+  type Computed = CtyToTypescript<typeof type>;
+  expectTypeToBeTrue<Equals<Computed, [number, string]>>();
+});
+
+describe("ctyObject({ name: ctyString(), age: ctyNumber() })", () => {
+  const type = ctyObject({ name: ctyString(), age: ctyNumber() });
+
+  it("ctyTypeToBuffer", () => {
+    expect(ctyTypeToBuffer(type)).toEqual(
+      Buffer.from('["object",{"name":"string","age":"number"}]')
+    );
+  });
+
+  type Computed = CtyToTypescript<typeof type>;
+  expectTypeToBeTrue<
+    Equals<
+      Computed,
+      {
+        name: string;
+        age: number;
+      }
+    >
+  >();
 });
