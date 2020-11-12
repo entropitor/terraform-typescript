@@ -6,20 +6,24 @@ import * as grpc from "@grpc/grpc-js";
 import { parseDynamicValue, serializeDynamicValue } from "./dynamicValue";
 import { valueMap } from "./mapOverObject";
 import {
-  ApplyChangeResult,
-  PlanChangeResult,
   PrepareConfigureResult,
   Provider,
   ProviderSchema,
-  ReadDataSourceResult,
+} from "./types/provider";
+import { ProtoGrpcType } from "./generated/tfplugin5";
+import { ProviderHandlers } from "./generated/tfplugin5/Provider";
+import {
+  ApplyChangeResult,
+  PlanChangeResult,
   ReadResourceResult,
   Resource,
   UpgradeResult,
-  ValidateDataSourceResult,
   ValidateResult,
-} from "./provider";
-import { ProtoGrpcType } from "./generated/tfplugin5";
-import { ProviderHandlers } from "./generated/tfplugin5/Provider";
+} from "./types/resource";
+import {
+  ReadDataSourceResult,
+  ValidateDataSourceResult,
+} from "./types/datasource";
 
 export const run = <
   P,

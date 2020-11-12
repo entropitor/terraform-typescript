@@ -1,7 +1,10 @@
 export * from "./ctyType";
-export * from "./provider";
+export * from "./types/provider";
 export * from "./run";
 export * from "./schema";
+
+export { Resource } from "./types/resource";
+export { DataSource } from "./types/datasource";
 
 export * from "./generated/tfplugin5/AttributePath";
 export * from "./generated/tfplugin5/Diagnostic";
