@@ -20,10 +20,8 @@ import {
   UpgradeResult,
   ValidateResult,
 } from "./types/resource";
-import {
-  ReadDataSourceResult,
-  ValidateDataSourceResult,
-} from "./types/datasource";
+import { ReadDataSourceResult } from "./types/datasource";
+import { getDiagnostics, runTask } from "./types/response";
 
 export const run = <
   P,
@@ -200,13 +198,15 @@ export const run = <
         const dataSourceName = call.request!.type_name!;
         const dataSource = provider.getDataSources()[dataSourceName];
 
-        return Either.map(({ diagnostics }: ValidateDataSourceResult) => ({
-          diagnostics,
-        }))(
-          await dataSource.validate({
+        const validateResult = await runTask(
+          dataSource.validate({
             config: parseDynamicValue(call.request!.config!),
           })
         );
+
+        return Either.right({
+          diagnostics: getDiagnostics(validateResult),
+        });
       }),
       ReadDataSource: unary(async (call) => {
         const dataSourceName = call.request!.type_name!;

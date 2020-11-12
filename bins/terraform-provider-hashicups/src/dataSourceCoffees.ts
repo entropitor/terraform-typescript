@@ -1,4 +1,5 @@
 import {
+  AsyncResponse,
   ctyNumber,
   ctyString,
   ctyTypeToBuffer,
@@ -105,8 +106,6 @@ export const dataSourceCoffees: DataSource<
     }
   },
   validate() {
-    return Either.right({
-      diagnostics: [],
-    });
+    return AsyncResponse.right({});
   },
 };
