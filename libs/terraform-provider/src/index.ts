@@ -1,3 +1,5 @@
+export * from "./run";
+
 export {
   CtyType,
   ctyAny,
@@ -9,14 +11,17 @@ export {
   ctySet,
   ctyString,
   ctyTuple,
-} from "./ctyType";
-export * from "./types/provider";
-export * from "./run";
-export * from "./schema";
+} from "./schema/ctyType";
+export {
+  createSchema,
+  createSchemaDescriptor,
+  SchemaState,
+  SchemaConfig,
+} from "./schema/schema";
 
-export { Resource } from "./types/resource";
 export { DataSource } from "./types/dataSource";
-
+export { Resource } from "./types/resource";
+export * from "./types/provider";
 export { AsyncResponse, SyncResponse, responseDo } from "./types/response";
 
 export * from "./generated/tfplugin5/AttributePath";

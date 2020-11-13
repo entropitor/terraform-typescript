@@ -11,7 +11,7 @@ import {
   ctyTuple,
   ctyTypeToBuffer,
 } from "./ctyType";
-import { Equals, expectTypeToBeFalse, expectTypeToBeTrue } from "./testUtils";
+import { Equals, expectTypeToBeFalse, expectTypeToBeTrue } from "../testUtils";
 
 describe("private constructors", () => {
   const fakeCtyString = { type: "string", brand: Symbol() } as const;

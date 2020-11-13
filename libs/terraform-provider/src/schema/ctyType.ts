@@ -1,4 +1,4 @@
-import { valueMap } from "./mapOverObject";
+import { valueMap } from "../mapOverObject";
 
 const unreachable = (_: never): void => {};
 

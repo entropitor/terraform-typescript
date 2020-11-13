@@ -2,8 +2,8 @@ import { ctyTypeToBuffer, CtyType, CtyToTypescript } from "./ctyType";
 import {
   Schema,
   _tfplugin5_Schema_Block as SchemaBlock,
-} from "./generated/tfplugin5/Schema";
-import { StringKind } from "./generated/tfplugin5/StringKind";
+} from "../generated/tfplugin5/Schema";
+import { StringKind } from "../generated/tfplugin5/StringKind";
 
 type PropertyDescriptor =
   | {
