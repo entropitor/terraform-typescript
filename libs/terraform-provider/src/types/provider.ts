@@ -30,7 +30,7 @@ export interface Provider<
   R extends { [key: string]: SchemaDescriptor },
   D extends { [key: string]: SchemaDescriptor }
 > {
-  configure(arsg: {
+  configure(args: {
     config: ProviderSchemaConfig;
     preparedConfig: ProviderSchemaConfig;
   }): AsyncResponse<ConfigureResult<Client>>;
