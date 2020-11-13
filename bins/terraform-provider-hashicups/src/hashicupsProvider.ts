@@ -1,14 +1,15 @@
 /**
  * Implementing https://learn.hashicorp.com/tutorials/terraform/provider-setup
  */
-import * as Either from "fp-ts/Either";
 import {
+  createSchemaDescriptor,
   createSchema,
   ctyString,
-  Diagnostic,
   Provider,
   SchemaConfig,
   Severity,
+  responseDo,
+  SyncResponse,
 } from "@terraform-typescript/terraform-provider";
 import {
   dataSourceCoffees,
@@ -16,26 +17,22 @@ import {
   DataSourceCoffeesState,
 } from "./dataSourceCoffees";
 import { createApiClient, HashicupsApiClient } from "./apiClient";
-import {
-  AsyncResponse,
-  responseDo,
-  SyncResponse,
-} from "@terraform-typescript/terraform-provider/dist/src/types/response";
 
-const schemaDescriptor = {
+const schemaDescriptor = createSchemaDescriptor({
   description: "hashicups",
   properties: {
     username: {
-      type: ctyString,
-      inConfig: "optional",
-      computed: true,
+      type: "raw",
+      ctyType: ctyString,
+      source: "computed-but-overridable",
     },
     password: {
-      type: ctyString,
-      inConfig: "optional",
+      type: "raw",
+      ctyType: ctyString,
+      source: "optional-in-config",
     },
   },
-} as const;
+});
 
 type ProviderConfig = SchemaConfig<typeof schemaDescriptor>;
 

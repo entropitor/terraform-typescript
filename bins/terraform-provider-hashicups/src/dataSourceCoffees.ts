@@ -1,85 +1,83 @@
 import {
   AsyncResponse,
+  createSchema,
+  createSchemaDescriptor,
   ctyNumber,
   ctyString,
-  ctyTypeToBuffer,
   DataSource,
-  Diagnostic,
+  SchemaConfig,
+  SchemaState,
   Severity,
+  SyncResponse,
 } from "@terraform-typescript/terraform-provider";
-import { SyncResponse } from "@terraform-typescript/terraform-provider/dist/src/types/response";
 import { HashicupsApiClient } from "./apiClient";
 
-export interface DataSourceCoffeesConfig {}
-export interface DataSourceCoffeesState {}
+const schemaDescriptor = createSchemaDescriptor({
+  description: "Coffee data source schema",
+  properties: {
+    coffees: {
+      type: "list",
+      itemType: {
+        description: "Test description",
+        properties: {
+          id: {
+            type: "raw",
+            ctyType: ctyNumber,
+            source: "computed",
+          },
+          name: {
+            type: "raw",
+            ctyType: ctyString,
+            source: "computed",
+          },
+          teaser: {
+            type: "raw",
+            ctyType: ctyString,
+            source: "computed",
+          },
+          description: {
+            type: "raw",
+            ctyType: ctyString,
+            source: "computed",
+          },
+          price: {
+            type: "raw",
+            ctyType: ctyNumber,
+            source: "computed",
+          },
+          image: {
+            type: "raw",
+            ctyType: ctyString,
+            source: "computed",
+          },
+          ingredients: {
+            type: "list",
+            itemType: {
+              description: "ingredients description",
+              properties: {
+                ingredient_id: {
+                  type: "raw",
+                  ctyType: ctyNumber,
+                  source: "computed",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+});
+export type DataSourceCoffeesConfig = SchemaConfig<typeof schemaDescriptor>;
+export type DataSourceCoffeesState = SchemaState<typeof schemaDescriptor>;
+
 export const dataSourceCoffees: DataSource<
   DataSourceCoffeesConfig,
   DataSourceCoffeesState,
   HashicupsApiClient
 > = {
   getSchema() {
-    return {
-      version: 1,
-      block: {
-        block_types: [
-          {
-            type_name: "coffees",
-            nesting: "LIST",
-            block: {
-              version: 1,
-              attributes: [
-                {
-                  name: "id",
-                  type: ctyTypeToBuffer(ctyNumber),
-                  computed: true,
-                },
-                {
-                  name: "name",
-                  type: ctyTypeToBuffer(ctyString),
-                  computed: true,
-                },
-                {
-                  name: "teaser",
-                  type: ctyTypeToBuffer(ctyString),
-                  compute: true,
-                },
-                {
-                  name: "description",
-                  type: ctyTypeToBuffer(ctyString),
-                  compute: true,
-                },
-                {
-                  name: "price",
-                  type: ctyTypeToBuffer(ctyNumber),
-                  computed: true,
-                },
-                {
-                  name: "image",
-                  type: ctyTypeToBuffer(ctyString),
-                  compute: true,
-                },
-              ],
-              block_types: [
-                {
-                  type_name: "ingredients",
-                  nesting: "LIST",
-                  block: {
-                    attributes: [
-                      {
-                        name: "ingredient_id",
-                        type: ctyTypeToBuffer(ctyNumber),
-                        computed: true,
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-        version: 1,
-      },
-    };
+    return createSchema(schemaDescriptor);
   },
   read({ client }) {
     return async () => {

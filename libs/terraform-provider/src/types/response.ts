@@ -1,12 +1,12 @@
 import { GrpcResponse } from "@terraform-typescript/grpc-utils";
 import { getMonoid } from "fp-ts/lib/Array";
 import * as TaskThese from "fp-ts/lib/TaskThese";
-import { Diagnostic } from "src/generated/tfplugin5/Diagnostic";
 import { Task } from "fp-ts/lib/Task";
 import { Do } from "fp-ts-contrib/lib/Do";
 import * as These from "fp-ts/lib/These";
 import { pipe } from "fp-ts/lib/function";
 import * as Either from "fp-ts/lib/Either";
+import { Diagnostic } from "../generated/tfplugin5/Diagnostic";
 
 export type AsyncResponse<T> = TaskThese.TaskThese<Diagnostic[], T>;
 export type SyncResponse<T> = These.These<Diagnostic[], T>;

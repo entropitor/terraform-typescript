@@ -3,35 +3,54 @@ import {
   ctyNumber,
   ctyObject,
   ctyString,
-  ctyTypeToBuffer,
   Diagnostic,
   Provider,
   Resource,
   Severity,
   StringKind,
+  responseDo,
+  SyncResponse,
+  createSchemaDescriptor,
+  SchemaConfig,
+  createSchema,
 } from "@terraform-typescript/terraform-provider";
 
 import * as path from "path";
 import { promises as fs } from "fs";
-import {
-  responseDo,
-  SyncResponse,
-} from "@terraform-typescript/terraform-provider/dist/src/types/response";
 
 /**
- * The type of a dynamic value. The first part is a Buffer with the cty encoding of the actual type
+ * The type of a dynamic/any value. The first part is a Buffer with the cty encoding of the actual type
  */
-type Dynamic<T> = [Buffer, T];
+// type Dynamic<T> = [Buffer, T];
 
-interface FsFile {
-  file_name: string;
-  body: {
-    nb_foos: number;
-  };
-  // extra: Dynamic<any>;
-}
+const fsFileSchemaDescriptor = createSchemaDescriptor({
+  description: "a file resource",
+  properties: {
+    file_name: {
+      type: "raw",
+      ctyType: ctyString,
+      // description: "The name of the file to manage",
+      source: "required-in-config",
+    },
+    body: {
+      type: "raw",
+      ctyType: ctyObject({
+        nb_foos: ctyNumber,
+      }),
+      // description: "The body of the file",
+      source: "required-in-config",
+    },
+    // extra: {
+    //   type: "raw",
+    //   ctyType: ctyAny,
+    //   // description: "Som extra properties of the file",
+    //   source: "optional-in-config",
+    // },
+  },
+});
+type FsFileConfig = SchemaConfig<typeof fsFileSchemaDescriptor>;
 
-const fsFile: Resource<FsFile> = {
+const fsFile: Resource<FsFileConfig> = {
   validate({ config }) {
     return async () => {
       if (config.body.nb_foos < 5) {
@@ -58,55 +77,7 @@ const fsFile: Resource<FsFile> = {
     };
   },
   getSchema() {
-    return {
-      version: 1,
-      block: {
-        version: 1,
-        attributes: [
-          {
-            name: "file_name",
-            type: ctyTypeToBuffer(ctyString),
-            description: "The name of the file to manage",
-            required: true,
-            optional: false,
-            computed: false,
-            deprecated: false,
-            description_kind: StringKind.PLAIN,
-            sensitive: false,
-          },
-          {
-            name: "body",
-            type: ctyTypeToBuffer(
-              ctyObject({
-                nb_foos: ctyNumber,
-              })
-            ),
-            description: "The body of the file",
-            description_kind: StringKind.PLAIN,
-            required: true,
-            optional: false,
-            computed: false,
-            deprecated: false,
-            sensitive: false,
-          },
-          // {
-          //   name: "extra",
-          //   type: ctyType(ctyAny),
-          //   description: "Som extra properties of the file",
-          //   description_kind: StringKind.PLAIN,
-          //   required: false,
-          //   optional: true,
-          //   computed: false,
-          //   deprecated: false,
-          //   sensitive: false,
-          // },
-        ],
-        block_types: [],
-        deprecated: false,
-        description: "a file resource",
-        description_kind: StringKind.PLAIN,
-      },
-    };
+    return createSchema(fsFileSchemaDescriptor);
   },
   planChange({ proposedNewState }) {
     return async () => {
@@ -193,44 +164,31 @@ const fsFile: Resource<FsFile> = {
   },
 };
 
-interface FsProviderSchemaType {
-  root_dir: string;
-}
-let configuredConfig: FsProviderSchemaType | null = null;
+const schemaDescriptor = createSchemaDescriptor({
+  description: "test schema",
+  properties: {
+    root_dir: {
+      type: "raw",
+      ctyType: ctyString,
+      // description: "The root dir where all files will be stored",
+      source: "required-in-config",
+    },
+  },
+});
+
+type FsProviderConfig = SchemaConfig<typeof schemaDescriptor>;
+let configuredConfig: FsProviderConfig | null = null;
 
 export const fsProvider: Provider<
-  FsProviderSchemaType,
+  FsProviderConfig,
   null,
   {
-    fs_file: FsFile;
+    fs_file: FsFileConfig;
   },
   {}
 > = {
   getSchema() {
-    return {
-      version: 1,
-      block: {
-        version: 1,
-        attributes: [
-          {
-            name: "root_dir",
-            type: ctyTypeToBuffer(ctyString),
-            description: "The root dir where all files will be stored",
-            description_kind: StringKind.PLAIN,
-            required: true,
-            optional: false,
-            computed: false,
-            sensitive: false,
-            deprecated: false,
-          },
-        ],
-        block_types: [],
-        // blockTypes: [],
-        deprecated: false,
-        description: "test schema",
-        description_kind: StringKind.PLAIN,
-      },
-    };
+    return createSchema(schemaDescriptor);
   },
   configure({ config }) {
     configuredConfig = config;

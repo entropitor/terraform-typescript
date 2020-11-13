@@ -2,10 +2,12 @@ import { valueMap } from "./mapOverObject";
 
 const unreachable = (_: never): void => {};
 
+// This const is exported in this file but not in the global package to ensure typescript
+// can properly infer the 'unique symbol'
 /**
  * Ensure that users should use the constructors defined below instead of type literals
  */
-const brand = Symbol("ctyTypeBrand");
+export const brand = Symbol("ctyTypeBrand");
 
 /**
  * The runtime type system that Terraform uses
@@ -34,6 +36,7 @@ export type CtyType =
       };
       brand: typeof brand;
     };
+
 const ctyTypeToJson = (typ: CtyType): any => {
   switch (typ.type) {
     case "number":
