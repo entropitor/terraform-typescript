@@ -218,16 +218,16 @@ export const run = <
         const dataSourceName = call.request!.type_name!;
         const dataSource = provider.getDataSources()[dataSourceName];
 
-        return Either.map(
-          ({ diagnostics, state }: ReadDataSourceResult<any>) => ({
-            diagnostics,
-            state: serializeDynamicValue(state),
-          })
-        )(
-          await dataSource.read({
+        return pipe(
+          dataSource.read({
             client: client!,
             config: parseDynamicValue(call.request!.config!),
-          })
+          }),
+          TaskThese.map(({ state, ...response }) => ({
+            ...response,
+            state: serializeDynamicValue(state),
+          })),
+          runTaskTillGrpcResponse
         );
       }),
     },

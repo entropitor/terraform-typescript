@@ -1,11 +1,9 @@
 import { Schema } from "src/generated/tfplugin5/Schema";
-import { Diagnostic } from "src/generated/tfplugin5/Diagnostic";
-import { AsyncResponse, GrpcAsyncResponse } from "./response";
+import { AsyncResponse } from "./response";
 
 export type ValidateDataSourceResult = {};
 
 export type ReadDataSourceResult<State> = {
-  diagnostics: Diagnostic[];
   state: State | null;
 };
 
@@ -17,5 +15,5 @@ export interface DataSource<Config, State extends Config, Client> {
   read(args: {
     config: Config;
     client: Client;
-  }): GrpcAsyncResponse<ReadDataSourceResult<State>>;
+  }): AsyncResponse<ReadDataSourceResult<State>>;
 }

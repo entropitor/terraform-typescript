@@ -7,6 +7,7 @@ import {
   Diagnostic,
   Severity,
 } from "@terraform-typescript/terraform-provider";
+import { SyncResponse } from "@terraform-typescript/terraform-provider/dist/src/types/response";
 import * as Either from "fp-ts/either";
 import { HashicupsApiClient } from "./apiClient";
 
@@ -81,29 +82,25 @@ export const dataSourceCoffees: DataSource<
       },
     };
   },
-  async read({ client }) {
-    const diagnostics: Diagnostic[] = [];
-    try {
-      return Either.right({
-        diagnostics: [],
-        state: {
-          coffees: await client.listCoffees(),
-        },
-      });
-    } catch (error) {
-      console.error(error);
-      return Either.right({
-        diagnostics: [
-          ...diagnostics,
+  read({ client }) {
+    return async () => {
+      try {
+        return SyncResponse.right({
+          state: {
+            coffees: await client.listCoffees(),
+          },
+        });
+      } catch (error) {
+        console.error(error);
+        return SyncResponse.left([
           {
             severity: Severity.ERROR,
             summary: "Failure to fetch",
             detail: error.toString(),
           },
-        ],
-        state: null,
-      });
-    }
+        ]);
+      }
+    };
   },
   validate() {
     return AsyncResponse.right({});
