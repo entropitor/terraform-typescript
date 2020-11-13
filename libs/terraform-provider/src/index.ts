@@ -12,12 +12,10 @@ export {
   ctyString,
   ctyTuple,
 } from "./schema/ctyType";
-export {
-  createSchema,
-  createSchemaDescriptor,
-  SchemaState,
-  SchemaConfig,
-} from "./schema/schema";
+export { createSchema } from "./schema/schema";
+export { createSchemaDescriptor } from "./schema/descriptor";
+export { SchemaState } from "./schema/SchemaState";
+export { SchemaConfig } from "./schema/SchemaConfig";
 
 export { DataSource } from "./types/dataSource";
 export { Resource } from "./types/resource";

@@ -1,12 +1,10 @@
 import { ctyString, ctyTypeToBuffer, ctyNumber } from "./ctyType";
 import { StringKind } from "../generated/tfplugin5/StringKind";
-import {
-  createSchemaDescriptor,
-  createSchema,
-  SchemaConfig,
-  SchemaState,
-} from "./schema";
+import { createSchema } from "./schema";
 import { Equals, expectTypeToBeTrue } from "../testUtils";
+import { createSchemaDescriptor } from "./descriptor";
+import { SchemaConfig } from "./SchemaConfig";
+import { SchemaState } from "./SchemaState";
 
 describe("createSchema", () => {
   it("should create a simple schema", () => {
