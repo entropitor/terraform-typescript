@@ -7,7 +7,7 @@
     "@msgpack/msgpack": "^2.3.0",
     "@terraform-typescript/grpc-utils": "1.0.0",
     "@terraform-typescript/hashicorp-plugin": "1.0.0",
-    "fp-ts": "^2.8.5",
+    "fp-ts": "^2.8.6",
     "fp-ts-contrib": "^0.1.21"
   },
   "devDependencies": {
