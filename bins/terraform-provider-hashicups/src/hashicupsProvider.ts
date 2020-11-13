@@ -13,8 +13,7 @@ import {
 } from "@terraform-typescript/terraform-provider";
 import {
   dataSourceCoffees,
-  DataSourceCoffeesConfig,
-  DataSourceCoffeesState,
+  dataSourceCoffeesSchemaDescriptor,
 } from "./dataSourceCoffees";
 import { createApiClient, HashicupsApiClient } from "./apiClient";
 
@@ -41,7 +40,7 @@ export const hashicupsProvider: Provider<
   HashicupsApiClient,
   {},
   {
-    hashicups_coffees: [DataSourceCoffeesConfig, DataSourceCoffeesState];
+    hashicups_coffees: typeof dataSourceCoffeesSchemaDescriptor;
   }
 > = {
   getSchema() {

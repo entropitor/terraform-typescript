@@ -12,7 +12,7 @@ import {
 } from "@terraform-typescript/terraform-provider";
 import { HashicupsApiClient } from "./apiClient";
 
-const schemaDescriptor = createSchemaDescriptor({
+export const dataSourceCoffeesSchemaDescriptor = createSchemaDescriptor({
   description: "Coffee data source schema",
   properties: {
     coffees: {
@@ -68,16 +68,19 @@ const schemaDescriptor = createSchemaDescriptor({
     },
   },
 });
-export type DataSourceCoffeesConfig = SchemaConfig<typeof schemaDescriptor>;
-export type DataSourceCoffeesState = SchemaState<typeof schemaDescriptor>;
+export type DataSourceCoffeesConfig = SchemaConfig<
+  typeof dataSourceCoffeesSchemaDescriptor
+>;
+export type DataSourceCoffeesState = SchemaState<
+  typeof dataSourceCoffeesSchemaDescriptor
+>;
 
 export const dataSourceCoffees: DataSource<
-  DataSourceCoffeesConfig,
-  DataSourceCoffeesState,
+  typeof dataSourceCoffeesSchemaDescriptor,
   HashicupsApiClient
 > = {
   getSchema() {
-    return createSchema(schemaDescriptor);
+    return createSchema(dataSourceCoffeesSchemaDescriptor);
   },
   read({ client }) {
     return async () => {

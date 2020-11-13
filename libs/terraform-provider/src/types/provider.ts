@@ -1,3 +1,4 @@
+import { SchemaDescriptor } from "src/schema/descriptor";
 import { Schema } from "../generated/tfplugin5/Schema";
 import { DataSource } from "./dataSource";
 import { Resource } from "./resource";
@@ -6,12 +7,8 @@ import { AsyncResponse } from "./response";
 type Resources<R extends { [key: string]: any }> = {
   [resourceName in keyof R]: Resource<R[resourceName]>;
 };
-type DataSources<D extends { [key: string]: [any, any] }, Client> = {
-  [dataSourceName in keyof D]: DataSource<
-    D[dataSourceName][0],
-    D[dataSourceName][1],
-    Client
-  >;
+type DataSources<D extends { [key: string]: SchemaDescriptor }, Client> = {
+  [dataSourceName in keyof D]: DataSource<D[dataSourceName], Client>;
 };
 
 type PrepareConfigureResult<C> = {
@@ -26,7 +23,7 @@ export interface Provider<
   ProviderSchemaConfig,
   Client,
   R extends { [key: string]: any },
-  D extends { [key: string]: [any, any] }
+  D extends { [key: string]: SchemaDescriptor }
 > {
   getSchema(): Schema;
 

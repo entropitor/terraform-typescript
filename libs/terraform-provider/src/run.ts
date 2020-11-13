@@ -17,12 +17,13 @@ import {
 } from "./types/response";
 import { pipe } from "fp-ts/lib/function";
 import * as TaskThese from "fp-ts/lib/TaskThese";
+import { SchemaDescriptor } from "./schema/descriptor";
 
 export const run = <
   P,
   Client,
   R extends { [key: string]: any },
-  S extends { [key: string]: [any, any] }
+  S extends { [key: string]: SchemaDescriptor }
 >(
   provider: Provider<P, Client, R, S>
 ) => {
