@@ -6,6 +6,7 @@ import {
   SchemaDescriptor,
   SchemaPropertyDescriptor,
 } from "./descriptor";
+import { SmartOmit } from "./SmartOmit";
 
 type RawPropertyState<
   Descriptor extends RawPropertyDescriptor
@@ -27,13 +28,15 @@ type PropertyState<
   ? RawPropertyState<Descriptor>
   : Descriptor extends ListPropertyDescriptor
   ? ListPropertyState<Descriptor>
-  : void;
+  : never;
 
-export type BlockState<Descriptor extends SchemaBlockDescriptor> = {
-  [propertyName in keyof Descriptor["properties"]]: PropertyState<
-    Descriptor["properties"][propertyName]
-  >;
-};
+export type BlockState<Descriptor extends SchemaBlockDescriptor> = SmartOmit<
+  {
+    [propertyName in keyof Descriptor["properties"]]: PropertyState<
+      Descriptor["properties"][propertyName]
+    >;
+  }
+>;
 
 export type SchemaState<Descriptor extends SchemaDescriptor> = BlockState<
   Descriptor

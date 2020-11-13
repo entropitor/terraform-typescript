@@ -14,7 +14,7 @@ import {
 import { HashicupsApiClient } from "./apiClient";
 
 export const dataSourceCoffeesSchemaDescriptor = createSchemaDescriptor({
-  description: "Coffee data source schema",
+  description: "Coffees data source schema",
   properties: {
     coffees: {
       type: "list",

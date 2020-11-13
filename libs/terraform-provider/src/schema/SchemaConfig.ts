@@ -6,6 +6,7 @@ import {
   SchemaDescriptor,
   SchemaPropertyDescriptor,
 } from "./descriptor";
+import { SmartOmit } from "./SmartOmit";
 
 type RawPropertyConfig<
   Descriptor extends RawPropertyDescriptor
@@ -15,7 +16,7 @@ type RawPropertyConfig<
       | "optional-in-config"
       | "computed-but-overridable"
   ? CtyToTypescript<Descriptor["ctyType"]> | null
-  : void;
+  : never;
 type ListPropertyConfig<Descriptor extends ListPropertyDescriptor> = Array<
   BlockConfig<Descriptor["itemType"]>
 >;
@@ -26,13 +27,15 @@ type PropertyConfig<
   ? RawPropertyConfig<Descriptor>
   : Descriptor extends ListPropertyDescriptor
   ? ListPropertyConfig<Descriptor>
-  : void;
+  : never;
 
-export type BlockConfig<Descriptor extends SchemaBlockDescriptor> = {
-  [propertyName in keyof Descriptor["properties"]]: PropertyConfig<
-    Descriptor["properties"][propertyName]
-  >;
-};
+export type BlockConfig<Descriptor extends SchemaBlockDescriptor> = SmartOmit<
+  {
+    [propertyName in keyof Descriptor["properties"]]: PropertyConfig<
+      Descriptor["properties"][propertyName]
+    >;
+  }
+>;
 
 export type SchemaConfig<Descriptor extends SchemaDescriptor> = BlockConfig<
   Descriptor

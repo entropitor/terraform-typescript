@@ -84,7 +84,6 @@ describe("createSchema", () => {
         {
           username: string | null;
           password: string;
-          url: void;
         }
       >
     >();
@@ -235,24 +234,7 @@ describe("createSchema", () => {
     });
 
     type ComputedConfig = SchemaConfig<typeof descriptor>;
-    expectTypeToBeTrue<
-      Equals<
-        ComputedConfig,
-        {
-          coffees: Array<{
-            id: void;
-            name: void;
-            teaser: void;
-            description: void;
-            price: void;
-            image: void;
-            ingredients: Array<{
-              ingredient_id: void;
-            }>;
-          }>;
-        }
-      >
-    >();
+    expectTypeToBeTrue<Equals<ComputedConfig, {}>>();
 
     type ComputedState = SchemaState<typeof descriptor>;
     expectTypeToBeTrue<
