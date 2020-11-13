@@ -22,6 +22,7 @@
     "build": "yarn lerna run build",
     "build:ts": "yarn tsc -b tsconfig.solution.json",
     "lint": "yarn eslint . --ext ts,js,json --ignore-path .gitignore",
-    "test": "yarn jest"
+    "test": "yarn jest",
+    "check": "yarn lint && yarn jest && yarn build:ts"
   }
 }
