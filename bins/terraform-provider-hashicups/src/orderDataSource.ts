@@ -11,7 +11,7 @@ import {
 
 import { HashicupsApiClient } from './apiClient';
 
-export const dataSourceOrderSchemaDescriptor = createSchemaDescriptor({
+export const orderDataSourceSchemaDescriptor = createSchemaDescriptor({
   description: 'Order data source',
   properties: {
     id: {
@@ -66,11 +66,11 @@ export const dataSourceOrderSchemaDescriptor = createSchemaDescriptor({
 });
 
 type Item = SchemaState<
-  typeof dataSourceOrderSchemaDescriptor
+  typeof orderDataSourceSchemaDescriptor
 >['items'][number];
 
-const ctor = createDataSource(dataSourceOrderSchemaDescriptor);
-export const dataSourceOrder = ctor<HashicupsApiClient>({
+const ctor = createDataSource(orderDataSourceSchemaDescriptor);
+export const orderDataSource = ctor<HashicupsApiClient>({
   read({ client, config }) {
     return async () => {
       try {

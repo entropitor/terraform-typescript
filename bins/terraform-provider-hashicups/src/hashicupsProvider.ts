@@ -14,13 +14,13 @@ import {
 
 import { createApiClient, HashicupsApiClient } from './apiClient';
 import {
-  dataSourceCoffees,
-  dataSourceCoffeesSchemaDescriptor,
-} from './dataSourceCoffees';
+  coffeesDataSource,
+  coffeesDataSourceSchemaDescriptor,
+} from './coffeesDataSource';
 import {
-  dataSourceOrder,
-  dataSourceOrderSchemaDescriptor,
-} from './dataSourceOrder';
+  orderDataSource,
+  orderDataSourceSchemaDescriptor,
+} from './orderDataSource';
 
 const schemaDescriptor = createSchemaDescriptor({
   description: 'hashicups',
@@ -45,8 +45,8 @@ export const hashicupsProvider: Provider<
   HashicupsApiClient,
   {},
   {
-    hashicups_coffees: typeof dataSourceCoffeesSchemaDescriptor;
-    hashicups_order: typeof dataSourceOrderSchemaDescriptor;
+    hashicups_coffees: typeof coffeesDataSourceSchemaDescriptor;
+    hashicups_order: typeof orderDataSourceSchemaDescriptor;
   }
 > = {
   configure({ preparedConfig }) {
@@ -71,8 +71,8 @@ export const hashicupsProvider: Provider<
   },
   getDataSources() {
     return {
-      hashicups_coffees: dataSourceCoffees,
-      hashicups_order: dataSourceOrder,
+      hashicups_coffees: coffeesDataSource,
+      hashicups_order: orderDataSource,
     };
   },
   getResources() {
