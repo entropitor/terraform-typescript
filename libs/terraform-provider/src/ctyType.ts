@@ -3,6 +3,11 @@ import { valueMap } from "./mapOverObject";
 const unreachable = (_: never): void => {};
 
 /**
+ * Ensure that users should use the constructors defined below instead of type literals
+ */
+const brand = Symbol("ctyTypeBrand");
+
+/**
  * The runtime type system that Terraform uses
  *
  * Original Go Library: https://github.com/zclconf/go-cty
@@ -10,20 +15,24 @@ const unreachable = (_: never): void => {};
 export type CtyType =
   | {
       type: "string" | "number" | "boolean" | "any";
+      brand: typeof brand;
     }
   | {
       type: "list" | "set" | "map";
       itemType: CtyType;
+      brand: typeof brand;
     }
   | {
       type: "tuple";
       itemTypes: CtyType[];
+      brand: typeof brand;
     }
   | {
       type: "object";
       itemType: {
         [key: string]: CtyType;
       };
+      brand: typeof brand;
     };
 const ctyTypeToJson = (typ: CtyType): any => {
   switch (typ.type) {
@@ -60,40 +69,49 @@ export const ctyTypeToBuffer = (typ: CtyType): Buffer => {
 
 export const ctyString = {
   type: "string",
+  brand,
 } as const;
 export const ctyNumber = {
   type: "number",
+  brand,
 } as const;
 export const ctyBoolean = {
   type: "boolean",
+  brand,
 } as const;
 export const ctyAny = {
   type: "any",
+  brand,
 } as const;
 export const ctyList = <C extends CtyType>(of: C) =>
   ({
     type: "list",
     itemType: of,
+    brand,
   } as const);
 export const ctySet = <C extends CtyType>(of: C) =>
   ({
     type: "set",
     itemType: of,
+    brand,
   } as const);
 export const ctyMap = <C extends CtyType>(of: C) =>
   ({
     type: "map",
     itemType: of,
+    brand,
   } as const);
 export const ctyTuple = <T extends CtyType[]>(...of: T) =>
   ({
     type: "tuple",
     itemTypes: of,
+    brand,
   } as const);
 export const ctyObject = <R extends { [key: string]: CtyType }>(of: R) =>
   ({
     type: "object",
     itemType: of,
+    brand,
   } as const);
 
 type CtyString = typeof ctyString;

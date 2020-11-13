@@ -9,10 +9,17 @@ import {
   ctyString,
   CtyToTypescript,
   ctyTuple,
-  CtyType,
   ctyTypeToBuffer,
 } from "./ctyType";
-import { Equals, expectTypeToBeTrue } from "./testUtils";
+import { Equals, expectTypeToBeFalse, expectTypeToBeTrue } from "./testUtils";
+
+describe("private constructors", () => {
+  const fakeCtyString = { type: "string", brand: Symbol() } as const;
+  expectTypeToBeFalse<Equals<typeof ctyString, typeof fakeCtyString>>();
+
+  // @ts-expect-error fakeCtyString is not a CtyType
+  ctyTypeToBuffer(fakeCtyString);
+});
 
 describe("ctyString", () => {
   const type = ctyString;

@@ -4,3 +4,4 @@ export type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
   ? true
   : false;
 export const expectTypeToBeTrue = <_ extends true>() => {};
+export const expectTypeToBeFalse = <_ extends false>() => {};
