@@ -8,7 +8,6 @@ import {
   Severity,
 } from "@terraform-typescript/terraform-provider";
 import { SyncResponse } from "@terraform-typescript/terraform-provider/dist/src/types/response";
-import * as Either from "fp-ts/either";
 import { HashicupsApiClient } from "./apiClient";
 
 export interface DataSourceCoffeesConfig {}

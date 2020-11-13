@@ -14,11 +14,11 @@ type DataSources<D extends { [key: string]: [any, any] }, Client> = {
   >;
 };
 
-export type PrepareConfigureResult<C> = {
+type PrepareConfigureResult<C> = {
   preparedConfig: C;
 };
 
-export type ConfigureResult<Client> = {
+type ConfigureResult<Client> = {
   client: Client;
 };
 

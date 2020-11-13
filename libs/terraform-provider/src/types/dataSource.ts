@@ -1,9 +1,9 @@
 import { Schema } from "src/generated/tfplugin5/Schema";
 import { AsyncResponse } from "./response";
 
-export type ValidateDataSourceResult = {};
+type ValidateDataSourceResult = {};
 
-export type ReadDataSourceResult<State> = {
+type ReadDataSourceResult<State> = {
   state: State | null;
 };
 

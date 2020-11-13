@@ -1,57 +1,55 @@
 import { AttributePath } from "src/generated/tfplugin5/AttributePath";
-import { Diagnostic } from "src/generated/tfplugin5/Diagnostic";
 import { Schema } from "src/generated/tfplugin5/Schema";
-import { GrpcAsyncResponse } from "./response";
+import { AsyncResponse } from "./response";
 
-export type ValidateResult = {
-  diagnostics: Diagnostic[];
-};
-export type ApplyChangeResult<S> = {
-  diagnostics: Diagnostic[];
+type ValidateResult = {};
+
+type ApplyChangeResult<S> = {
   privateData: Buffer;
   newState: S | null;
 };
-export type PlanChangeResult<S> = {
-  diagnostics: Diagnostic[];
+
+type PlanChangeResult<S> = {
   plannedPrivateData: Buffer;
   plannedState: S | null;
   requiresReplace: AttributePath[];
 };
-export type UpgradeResult<S> = {
-  diagnostics: Diagnostic[];
+
+type UpgradeResult<S> = {
   upgradedState: S;
 };
-export type ReadResourceResult<S> = {
-  diagnostics: Diagnostic[];
+
+type ReadResourceResult<S> = {
   privateData: Buffer;
   newState: S;
 };
+
 export interface Resource<S> {
   getSchema(): Schema;
 
-  validate(args: { config: S }): GrpcAsyncResponse<ValidateResult>;
+  validate(args: { config: S }): AsyncResponse<ValidateResult>;
 
   planChange(args: {
     config: S | null;
     priorPrivateData: Buffer;
     priorState: S | null;
     proposedNewState: S | null;
-  }): GrpcAsyncResponse<PlanChangeResult<S>>;
+  }): AsyncResponse<PlanChangeResult<S>>;
 
   applyChange(args: {
     config: S;
     plannedPrivateData: Buffer;
     priorState: S | null;
     plannedState: S | null;
-  }): GrpcAsyncResponse<ApplyChangeResult<S>>;
+  }): AsyncResponse<ApplyChangeResult<S>>;
 
   upgrade(args: {
     version: number;
     rawState: any;
-  }): GrpcAsyncResponse<UpgradeResult<S>>;
+  }): AsyncResponse<UpgradeResult<S>>;
 
   read(args: {
     currentState: S;
     privateData: Buffer;
-  }): GrpcAsyncResponse<ReadResourceResult<S>>;
+  }): AsyncResponse<ReadResourceResult<S>>;
 }

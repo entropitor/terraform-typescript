@@ -1,5 +1,3 @@
-import * as Either from "fp-ts/Either";
-
 import {
   AsyncResponse,
   ctyNumber,
@@ -35,28 +33,29 @@ interface FsFile {
 
 const fsFile: Resource<FsFile> = {
   validate({ config }) {
-    const diagnostics: Diagnostic[] = [];
-    if (config.body.nb_foos < 5) {
-      diagnostics.push({
-        severity: Severity.ERROR,
-        attribute: {
-          steps: [
-            {
-              attribute_name: "body",
+    return async () => {
+      if (config.body.nb_foos < 5) {
+        return SyncResponse.left([
+          {
+            severity: Severity.ERROR,
+            attribute: {
+              steps: [
+                {
+                  attribute_name: "body",
+                },
+                {
+                  element_key_string: "nb_foos",
+                },
+              ],
             },
-            {
-              element_key_string: "nb_foos",
-            },
-          ],
-        },
-        detail: "Do you not give a foo?",
-        summary: "You need more foo's",
-      });
-    }
+            detail: "Do you not give a foo?",
+            summary: "You need more foo's",
+          },
+        ]);
+      }
 
-    return Either.right({
-      diagnostics,
-    });
+      return SyncResponse.right({});
+    };
   },
   getSchema() {
     return {
@@ -110,83 +109,87 @@ const fsFile: Resource<FsFile> = {
     };
   },
   planChange({ proposedNewState }) {
-    return Either.right({
-      diagnostics: [],
-      plannedPrivateData: Buffer.from("test"),
-      plannedState: proposedNewState,
-      requiresReplace: [
-        {
-          steps: [
-            {
-              attribute_name: "file_name",
-            },
-          ],
-        },
-      ],
-    });
+    return async () => {
+      return SyncResponse.right({
+        diagnostics: [],
+        plannedPrivateData: Buffer.from("test"),
+        plannedState: proposedNewState,
+        requiresReplace: [
+          {
+            steps: [
+              {
+                attribute_name: "file_name",
+              },
+            ],
+          },
+        ],
+      });
+    };
   },
-  async applyChange({ plannedPrivateData, plannedState, priorState }) {
-    if (plannedState == null) {
+  applyChange({ plannedPrivateData, plannedState, priorState }) {
+    return async () => {
+      if (plannedState == null) {
+        const fileName = path.resolve(
+          configuredConfig!.root_dir,
+          priorState!.file_name
+        );
+        await fs.rm(fileName);
+
+        return SyncResponse.right({
+          newState: null,
+          privateData: plannedPrivateData,
+        });
+      }
+
       const fileName = path.resolve(
         configuredConfig!.root_dir,
-        priorState!.file_name
+        plannedState.file_name
       );
-      await fs.rm(fileName);
+      await fs.writeFile(
+        fileName,
+        JSON.stringify(
+          {
+            body: plannedState.body,
+          },
+          null,
+          2
+        )
+      );
 
-      return Either.right({
-        diagnostics: [],
-        newState: null,
+      console.error(plannedState);
+      console.error(plannedPrivateData);
+
+      return SyncResponse.right({
+        newState: plannedState,
         privateData: plannedPrivateData,
       });
-    }
-
-    const fileName = path.resolve(
-      configuredConfig!.root_dir,
-      plannedState.file_name
-    );
-    await fs.writeFile(
-      fileName,
-      JSON.stringify(
-        {
-          body: plannedState.body,
-        },
-        null,
-        2
-      )
-    );
-
-    console.error(plannedState);
-    console.error(plannedPrivateData);
-
-    return Either.right({
-      diagnostics: [],
-      newState: plannedState,
-      privateData: plannedPrivateData,
-    });
+    };
   },
   upgrade(args) {
-    console.error(args);
-    return Either.right({
-      diagnostics: [],
-      upgradedState: args.rawState,
-    });
+    return async () => {
+      return SyncResponse.right({
+        diagnostics: [],
+        upgradedState: args.rawState,
+      });
+    };
   },
-  async read({ currentState, privateData }) {
-    const fileName = path.resolve(
-      configuredConfig!.root_dir,
-      currentState.file_name
-    );
-    const fileBody = await fs.readFile(fileName);
+  read({ currentState, privateData }) {
+    return async () => {
+      const fileName = path.resolve(
+        configuredConfig!.root_dir,
+        currentState.file_name
+      );
+      const fileBody = await fs.readFile(fileName);
 
-    const content = JSON.parse(fileBody.toString());
-    return Either.right({
-      diagnostics: [],
-      newState: {
-        ...currentState,
-        body: content.body,
-      },
-      privateData,
-    });
+      const content = JSON.parse(fileBody.toString());
+      return SyncResponse.right({
+        newState: {
+          ...currentState,
+          body: content.body,
+        },
+        privateData,
+      });
+    };
   },
 };
 

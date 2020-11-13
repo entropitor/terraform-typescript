@@ -8,7 +8,6 @@ import * as These from "fp-ts/lib/These";
 import { pipe } from "fp-ts/lib/function";
 import * as Either from "fp-ts/lib/Either";
 
-export type GrpcAsyncResponse<T> = Promise<GrpcResponse<T>> | GrpcResponse<T>;
 export type AsyncResponse<T> = TaskThese.TaskThese<Diagnostic[], T>;
 export type SyncResponse<T> = These.These<Diagnostic[], T>;
 

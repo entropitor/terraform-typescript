@@ -7,14 +7,7 @@ import { valueMap } from "./mapOverObject";
 import { Provider } from "./types/provider";
 import { ProtoGrpcType } from "./generated/tfplugin5";
 import { ProviderHandlers } from "./generated/tfplugin5/Provider";
-import {
-  ApplyChangeResult,
-  PlanChangeResult,
-  ReadResourceResult,
-  Resource,
-  UpgradeResult,
-  ValidateResult,
-} from "./types/resource";
+import { Resource } from "./types/resource";
 import {
   AsyncResponse,
   getDiagnostics,
@@ -62,8 +55,7 @@ export const run = <
           provider.prepareProviderConfig({
             config: parseDynamicValue(call.request!.config!),
           }),
-          TaskThese.map(({ preparedConfig, ...res }) => ({
-            ...res,
+          TaskThese.map(({ preparedConfig }) => ({
             prepared_config: serializeDynamicValue(preparedConfig),
           })),
           runTaskTillGrpcResponse
@@ -84,7 +76,7 @@ export const run = <
             client = configuredResult.client;
             return AsyncResponse.right(null);
           })
-          .return(({ configuredResult }) => configuredResult);
+          .return(() => ({}));
 
         return runTaskTillGrpcResponse(configuredAsyncResult);
       }),
@@ -93,95 +85,83 @@ export const run = <
         const resourceName = call.request!.type_name!;
         const resource = provider.getResources()[resourceName];
 
-        return Either.map(({ diagnostics }: ValidateResult) => ({
-          diagnostics,
-        }))(
-          await resource.validate({
+        return pipe(
+          resource.validate({
             config: parseDynamicValue(call.request!.config!),
-          })
+          }),
+          runTaskTillGrpcResponse
         );
       }),
       ReadResource: unary(async (call) => {
         const resourceName = call.request!.type_name!;
         const resource = provider.getResources()[resourceName];
 
-        return Either.map(
-          ({
-            diagnostics,
-            newState,
-            privateData,
-          }: ReadResourceResult<any>) => ({
-            diagnostics,
-            private: privateData,
-            new_state: serializeDynamicValue(newState),
-          })
-        )(
-          await resource.read({
+        return pipe(
+          resource.read({
             currentState: parseDynamicValue(call.request!.current_state!),
             privateData: call.request!.private!,
-          })
+          }),
+          TaskThese.map(({ newState, privateData }) => ({
+            private: privateData,
+            new_state: serializeDynamicValue(newState),
+          })),
+          runTaskTillGrpcResponse
         );
       }),
       PlanResourceChange: unary(async (call) => {
         const resourceName = call.request!.type_name!;
         const resource = provider.getResources()[resourceName];
 
-        return Either.map(
-          ({
-            diagnostics,
-            plannedPrivateData,
-            plannedState,
-            requiresReplace,
-          }: PlanChangeResult<any>) => ({
-            diagnostics,
-            planned_private: plannedPrivateData,
-            planned_state: serializeDynamicValue(plannedState),
-            requires_replace: requiresReplace,
-          })
-        )(
-          await resource.planChange({
+        return pipe(
+          resource.planChange({
             config: parseDynamicValue(call.request!.config!),
             priorPrivateData: call.request!.prior_private!,
             priorState: parseDynamicValue(call.request!.prior_state!),
             proposedNewState: parseDynamicValue(
               call.request!.proposed_new_state!
             ),
-          })
+          }),
+          TaskThese.map(
+            ({ plannedPrivateData, plannedState, requiresReplace }) => ({
+              planned_private: plannedPrivateData,
+              planned_state: serializeDynamicValue(plannedState),
+              requires_replace: requiresReplace,
+            })
+          ),
+          runTaskTillGrpcResponse
         );
       }),
       ApplyResourceChange: unary(async (call) => {
         const resourceName = call.request!.type_name!;
         const resource = provider.getResources()[resourceName];
 
-        return Either.map(
-          ({ diagnostics, newState, privateData }: ApplyChangeResult<any>) => ({
-            private: privateData,
-            diagnostics,
-            new_state: serializeDynamicValue(newState),
-          })
-        )(
-          await resource.applyChange({
+        return pipe(
+          resource.applyChange({
             config: parseDynamicValue(call.request!.config!),
             plannedPrivateData: call.request!.planned_private!,
             priorState: parseDynamicValue(call.request!.prior_state!),
             plannedState: parseDynamicValue(call.request!.planned_state!),
-          })
+          }),
+          TaskThese.map(({ newState, privateData }) => ({
+            private: privateData,
+            new_state: serializeDynamicValue(newState),
+          })),
+          runTaskTillGrpcResponse
         );
       }),
       UpgradeResourceState: unary(async (call) => {
         const resourceName = call.request!.type_name!;
         const resource = provider.getResources()[resourceName];
 
-        return Either.map(
-          ({ diagnostics, upgradedState }: UpgradeResult<any>) => ({
-            diagnostics,
-            upgraded_state: serializeDynamicValue(upgradedState),
-          })
-        )(
-          await resource.upgrade({
+        return pipe(
+          resource.upgrade({
             version: call.request!.version!,
             rawState: parseDynamicValue(call.request!.raw_state!),
-          })
+          }),
+          TaskThese.map(({ upgradedState }) => ({
+            upgraded_state: serializeDynamicValue(upgradedState),
+          })),
+          runTaskTillGrpcResponse
         );
       }),
       ImportResourceState: unary(async (call) => {
