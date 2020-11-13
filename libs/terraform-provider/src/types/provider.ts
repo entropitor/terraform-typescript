@@ -5,11 +5,15 @@ import { DataSource } from './dataSource';
 import { Resource } from './resource';
 import { AsyncResponse } from './response';
 
-type Resources<R extends { [key: string]: any }> = {
-  [resourceName in keyof R]: Resource<R[resourceName]>;
+export type StringKeys<T> = {
+  [P in keyof T]: T[P] extends string ? P : never;
+}[keyof T];
+
+type Resources<R extends Record<string, SchemaDescriptor>, Client> = {
+  [resourceName in StringKeys<R>]: Resource<R[resourceName], Client>;
 };
 type DataSources<D extends Record<string, SchemaDescriptor>, Client> = {
-  [dataSourceName in keyof D]: DataSource<D[dataSourceName], Client>;
+  [dataSourceName in StringKeys<D>]: DataSource<D[dataSourceName], Client>;
 };
 
 type PrepareConfigureResult<C> = {
@@ -23,7 +27,7 @@ type ConfigureResult<Client> = {
 export interface Provider<
   ProviderSchemaConfig,
   Client,
-  R extends { [key: string]: any },
+  R extends { [key: string]: SchemaDescriptor },
   D extends { [key: string]: SchemaDescriptor }
 > {
   configure(arsg: {
@@ -33,7 +37,7 @@ export interface Provider<
 
   getDataSources(): DataSources<D, Client>;
 
-  getResources(): Resources<R>;
+  getResources(): Resources<R, Client>;
 
   getSchema(): Schema;
 

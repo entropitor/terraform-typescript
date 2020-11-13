@@ -10,21 +10,21 @@ type ReadDataSourceResult<State> = {
   state: State | null;
 };
 
-export interface DataSource<S extends SchemaDescriptor, Client> {
-  getSchemaDescriptor(): S;
+export interface DataSource<SD extends SchemaDescriptor, Client> {
+  getSchemaDescriptor(): SD;
 
   read(args: {
     client: Client;
-    config: SchemaConfig<S>;
-  }): AsyncResponse<ReadDataSourceResult<SchemaState<S>>>;
+    config: SchemaConfig<SD>;
+  }): AsyncResponse<ReadDataSourceResult<SchemaState<SD>>>;
 
   validate(args: {
-    config: SchemaConfig<S>;
+    config: SchemaConfig<SD>;
   }): AsyncResponse<ValidateDataSourceResult>;
 }
 
 export const createDataSource = <S extends SchemaDescriptor>(descriptor: S) => <
-  Client
+  Client = void
 >(
   dataSource: Omit<DataSource<S, Client>, 'getSchemaDescriptor'>,
 ): DataSource<S, Client> => {

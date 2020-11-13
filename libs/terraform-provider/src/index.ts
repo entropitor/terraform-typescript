@@ -18,7 +18,7 @@ export { SchemaState } from './schema/SchemaState';
 export { SchemaConfig } from './schema/SchemaConfig';
 
 export { DataSource, createDataSource } from './types/dataSource';
-export { Resource } from './types/resource';
+export { Resource, createResource } from './types/resource';
 export { Provider } from './types/provider';
 export { AsyncResponse, SyncResponse, responseDo } from './types/response';
 

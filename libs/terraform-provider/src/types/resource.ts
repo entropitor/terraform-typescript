@@ -1,5 +1,7 @@
 import { AttributePath } from '../generated/tfplugin5/AttributePath';
-import { Schema } from '../generated/tfplugin5/Schema';
+import { SchemaDescriptor } from '../schema/descriptor';
+import { SchemaConfig } from '../schema/SchemaConfig';
+import { SchemaState } from '../schema/SchemaState';
 
 import { AsyncResponse } from './response';
 
@@ -25,32 +27,49 @@ type ReadResourceResult<S> = {
   privateData: Buffer;
 };
 
-export interface Resource<S> {
+export interface Resource<SD extends SchemaDescriptor, Client> {
   applyChange(args: {
-    config: S;
+    client: Client;
+    config: SchemaConfig<SD>;
     plannedPrivateData: Buffer;
-    plannedState: S | null;
-    priorState: S | null;
-  }): AsyncResponse<ApplyChangeResult<S>>;
+    plannedState: SchemaState<SD> | null;
+    priorState: SchemaState<SD> | null;
+  }): AsyncResponse<ApplyChangeResult<SchemaState<SD>>>;
 
-  getSchema(): Schema;
+  getSchemaDescriptor(): SD;
 
   planChange(args: {
-    config: S | null;
+    client: Client;
+    config: SchemaConfig<SD> | null;
     priorPrivateData: Buffer;
-    priorState: S | null;
-    proposedNewState: S | null;
-  }): AsyncResponse<PlanChangeResult<S>>;
+    priorState: SchemaState<SD> | null;
+    proposedNewState: SchemaState<SD> | null;
+  }): AsyncResponse<PlanChangeResult<SchemaState<SD>>>;
 
   read(args: {
-    currentState: S;
+    client: Client;
+    currentState: SchemaState<SD>;
     privateData: Buffer;
-  }): AsyncResponse<ReadResourceResult<S>>;
+  }): AsyncResponse<ReadResourceResult<SchemaState<SD>>>;
 
   upgrade(args: {
+    client: Client;
     rawState: any;
     version: number;
-  }): AsyncResponse<UpgradeResult<S>>;
+  }): AsyncResponse<UpgradeResult<SchemaState<SD>>>;
 
-  validate(args: { config: S }): AsyncResponse<ValidateResult>;
+  validate(args: { config: SchemaConfig<SD> }): AsyncResponse<ValidateResult>;
 }
+
+export const createResource = <SD extends SchemaDescriptor>(descriptor: SD) => <
+  Client = void
+>(
+  dataSource: Omit<Resource<SD, Client>, 'getSchemaDescriptor'>,
+): Resource<SD, Client> => {
+  return {
+    ...dataSource,
+    getSchemaDescriptor() {
+      return descriptor;
+    },
+  };
+};

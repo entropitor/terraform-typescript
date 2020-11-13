@@ -11,7 +11,8 @@ import { ProviderHandlers } from './generated/tfplugin5/Provider';
 import { valueMap } from './mapOverObject';
 import { SchemaDescriptor } from './schema/descriptor';
 import { createSchema } from './schema/schema';
-import { Provider } from './types/provider';
+import { DataSource } from './types/dataSource';
+import { Provider, StringKeys } from './types/provider';
 import { Resource } from './types/resource';
 import {
   AsyncResponse,
@@ -24,7 +25,7 @@ import {
 export const run = <
   P,
   Client,
-  R extends { [key: string]: any },
+  R extends { [key: string]: SchemaDescriptor },
   D extends { [key: string]: SchemaDescriptor }
 >(
   provider: Provider<P, Client, R, D>,
@@ -43,16 +44,14 @@ export const run = <
         return Either.right({
           provider: provider.getSchema(),
           resource_schemas: valueMap(
-            (resource) => resource.getSchema(),
-            provider.getResources() as { [key: string]: Resource<any> },
-          ),
-          data_source_schemas: Object.fromEntries(
-            Object.entries(
-              provider.getDataSources(),
-            ).map(([key, dataSource]) => [
-              key,
+            (dataSource: Resource<any, Client>) =>
               createSchema(dataSource.getSchemaDescriptor()),
-            ]),
+            provider.getResources(),
+          ),
+          data_source_schemas: valueMap(
+            (dataSource: DataSource<any, Client>) =>
+              createSchema(dataSource.getSchemaDescriptor()),
+            provider.getDataSources(),
           ),
         });
       }),
@@ -100,13 +99,14 @@ export const run = <
         );
       }),
       ReadResource: unary(async (call) => {
-        const resourceName = call.request!.type_name!;
+        const resourceName = call.request!.type_name! as StringKeys<R>;
         const resource = provider.getResources()[resourceName];
 
         return pipe(
           resource.read({
             currentState: parseDynamicValue(call.request!.current_state!),
             privateData: call.request!.private!,
+            client: client!,
           }),
           TaskThese.map(({ newState, privateData }) => ({
             private: privateData,
@@ -116,11 +116,12 @@ export const run = <
         );
       }),
       PlanResourceChange: unary(async (call) => {
-        const resourceName = call.request!.type_name!;
+        const resourceName = call.request!.type_name! as StringKeys<R>;
         const resource = provider.getResources()[resourceName];
 
         return pipe(
           resource.planChange({
+            client: client!,
             config: parseDynamicValue(call.request!.config!),
             priorPrivateData: call.request!.prior_private!,
             priorState: parseDynamicValue(call.request!.prior_state!),
@@ -139,12 +140,13 @@ export const run = <
         );
       }),
       ApplyResourceChange: unary(async (call) => {
-        const resourceName = call.request!.type_name!;
+        const resourceName = call.request!.type_name! as StringKeys<R>;
         const resource = provider.getResources()[resourceName];
 
         return pipe(
           resource.applyChange({
             config: parseDynamicValue(call.request!.config!),
+            client: client!,
             plannedPrivateData: call.request!.planned_private!,
             priorState: parseDynamicValue(call.request!.prior_state!),
             plannedState: parseDynamicValue(call.request!.planned_state!),
@@ -157,11 +159,12 @@ export const run = <
         );
       }),
       UpgradeResourceState: unary(async (call) => {
-        const resourceName = call.request!.type_name!;
+        const resourceName = call.request!.type_name! as StringKeys<R>;
         const resource = provider.getResources()[resourceName];
 
         return pipe(
           resource.upgrade({
+            client: client!,
             version: call.request!.version!,
             rawState: parseDynamicValue(call.request!.raw_state!),
           }),
@@ -202,7 +205,7 @@ export const run = <
         });
       }),
       ReadDataSource: unary(async (call) => {
-        const dataSourceName = call.request!.type_name!;
+        const dataSourceName = call.request!.type_name! as StringKeys<D>;
         const dataSource = provider.getDataSources()[dataSourceName];
 
         return pipe(
