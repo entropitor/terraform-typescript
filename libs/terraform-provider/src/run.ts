@@ -18,14 +18,15 @@ import {
 import { pipe } from "fp-ts/lib/function";
 import * as TaskThese from "fp-ts/lib/TaskThese";
 import { SchemaDescriptor } from "./schema/descriptor";
+import { createSchema } from "./schema/schema";
 
 export const run = <
   P,
   Client,
   R extends { [key: string]: any },
-  S extends { [key: string]: SchemaDescriptor }
+  D extends { [key: string]: SchemaDescriptor }
 >(
-  provider: Provider<P, Client, R, S>
+  provider: Provider<P, Client, R, D>
 ) => {
   // type PSchema = ProviderSchema<typeof provider>;
 
@@ -44,9 +45,13 @@ export const run = <
             (resource) => resource.getSchema(),
             provider.getResources() as { [key: string]: Resource<any> }
           ),
-          data_source_schemas: valueMap(
-            (dataSource) => dataSource.getSchema(),
-            provider.getDataSources()
+          data_source_schemas: Object.fromEntries(
+            Object.entries(
+              provider.getDataSources()
+            ).map(([key, dataSource]) => [
+              key,
+              createSchema(dataSource.getSchemaDescriptor()),
+            ])
           ),
         });
       }),

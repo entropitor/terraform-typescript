@@ -17,7 +17,7 @@ export { createSchemaDescriptor } from "./schema/descriptor";
 export { SchemaState } from "./schema/SchemaState";
 export { SchemaConfig } from "./schema/SchemaConfig";
 
-export { DataSource } from "./types/dataSource";
+export { DataSource, createDataSource } from "./types/dataSource";
 export { Resource } from "./types/resource";
 export * from "./types/provider";
 export { AsyncResponse, SyncResponse, responseDo } from "./types/response";

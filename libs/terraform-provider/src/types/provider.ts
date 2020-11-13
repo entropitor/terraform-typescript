@@ -7,7 +7,7 @@ import { AsyncResponse } from "./response";
 type Resources<R extends { [key: string]: any }> = {
   [resourceName in keyof R]: Resource<R[resourceName]>;
 };
-type DataSources<D extends { [key: string]: SchemaDescriptor }, Client> = {
+type DataSources<D extends Record<string, SchemaDescriptor>, Client> = {
   [dataSourceName in keyof D]: DataSource<D[dataSourceName], Client>;
 };
 

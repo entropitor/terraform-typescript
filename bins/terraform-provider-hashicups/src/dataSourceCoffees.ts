@@ -1,5 +1,6 @@
 import {
   AsyncResponse,
+  createDataSource,
   createSchema,
   createSchemaDescriptor,
   ctyNumber,
@@ -68,20 +69,9 @@ export const dataSourceCoffeesSchemaDescriptor = createSchemaDescriptor({
     },
   },
 });
-export type DataSourceCoffeesConfig = SchemaConfig<
-  typeof dataSourceCoffeesSchemaDescriptor
->;
-export type DataSourceCoffeesState = SchemaState<
-  typeof dataSourceCoffeesSchemaDescriptor
->;
 
-export const dataSourceCoffees: DataSource<
-  typeof dataSourceCoffeesSchemaDescriptor,
-  HashicupsApiClient
-> = {
-  getSchema() {
-    return createSchema(dataSourceCoffeesSchemaDescriptor);
-  },
+const ctor = createDataSource(dataSourceCoffeesSchemaDescriptor);
+export const dataSourceCoffees = ctor<HashicupsApiClient>({
   read({ client }) {
     return async () => {
       try {
@@ -105,4 +95,4 @@ export const dataSourceCoffees: DataSource<
   validate() {
     return AsyncResponse.right({});
   },
-};
+});

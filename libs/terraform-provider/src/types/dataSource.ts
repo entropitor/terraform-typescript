@@ -1,7 +1,6 @@
 import { SchemaDescriptor } from "src/schema/descriptor";
 import { SchemaConfig } from "src/schema/SchemaConfig";
 import { SchemaState } from "src/schema/SchemaState";
-import { Schema } from "../generated/tfplugin5/Schema";
 import { AsyncResponse } from "./response";
 
 type ValidateDataSourceResult = {};
@@ -11,7 +10,7 @@ type ReadDataSourceResult<State> = {
 };
 
 export interface DataSource<S extends SchemaDescriptor, Client> {
-  getSchema(): Schema;
+  getSchemaDescriptor(): S;
 
   validate(args: {
     config: SchemaConfig<S>;
@@ -22,3 +21,16 @@ export interface DataSource<S extends SchemaDescriptor, Client> {
     client: Client;
   }): AsyncResponse<ReadDataSourceResult<SchemaState<S>>>;
 }
+
+export const createDataSource = <S extends SchemaDescriptor>(descriptor: S) => <
+  Client
+>(
+  dataSource: Omit<DataSource<S, Client>, "getSchemaDescriptor">
+): DataSource<S, Client> => {
+  return {
+    ...dataSource,
+    getSchemaDescriptor() {
+      return descriptor;
+    },
+  };
+};
