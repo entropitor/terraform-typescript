@@ -1,4 +1,4 @@
-export * from "./run";
+export { run } from "./run";
 
 export {
   CtyType,
@@ -19,10 +19,10 @@ export { SchemaConfig } from "./schema/SchemaConfig";
 
 export { DataSource, createDataSource } from "./types/dataSource";
 export { Resource } from "./types/resource";
-export * from "./types/provider";
+export { Provider } from "./types/provider";
 export { AsyncResponse, SyncResponse, responseDo } from "./types/response";
 
-export * from "./generated/tfplugin5/AttributePath";
-export * from "./generated/tfplugin5/Diagnostic";
-export * from "./generated/tfplugin5/StringKind";
+export { AttributePath } from "./generated/tfplugin5/AttributePath";
+export { Diagnostic } from "./generated/tfplugin5/Diagnostic";
+export { StringKind } from "./generated/tfplugin5/StringKind";
 export { _tfplugin5_Diagnostic_Severity as Severity } from "./generated/tfplugin5/Diagnostic";
