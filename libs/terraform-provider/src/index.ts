@@ -4,7 +4,7 @@ export * from "./run";
 export * from "./schema";
 
 export { Resource } from "./types/resource";
-export { DataSource } from "./types/datasource";
+export { DataSource } from "./types/dataSource";
 
 export { AsyncResponse, responseDo } from "./types/response";
 

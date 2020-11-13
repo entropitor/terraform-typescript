@@ -1,5 +1,5 @@
 import { Schema } from "src/generated/tfplugin5/Schema";
-import { DataSource } from "./datasource";
+import { DataSource } from "./dataSource";
 import { Resource } from "./resource";
 import { AsyncResponse } from "./response";
 

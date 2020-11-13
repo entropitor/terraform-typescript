@@ -15,7 +15,6 @@ import {
   UpgradeResult,
   ValidateResult,
 } from "./types/resource";
-import { ReadDataSourceResult } from "./types/datasource";
 import {
   AsyncResponse,
   getDiagnostics,
