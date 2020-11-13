@@ -1,9 +1,7 @@
-import { GrpcResponse } from "@terraform-typescript/grpc-utils";
-import { Diagnostic } from "src/generated/tfplugin5/Diagnostic";
 import { Schema } from "src/generated/tfplugin5/Schema";
 import { DataSource } from "./datasource";
 import { Resource } from "./resource";
-import { GrpcAsyncResponse } from "./response";
+import { AsyncResponse } from "./response";
 
 type Resources<R extends { [key: string]: any }> = {
   [resourceName in keyof R]: Resource<R[resourceName]>;
@@ -17,13 +15,13 @@ type DataSources<D extends { [key: string]: [any, any] }, Client> = {
 };
 
 export type PrepareConfigureResult<C> = {
-  diagnostics: Diagnostic[];
   preparedConfig: C;
 };
+
 export type ConfigureResult<Client> = {
-  diagnostics: Diagnostic[];
   client: Client;
 };
+
 export interface Provider<
   ProviderSchemaConfig,
   Client,
@@ -38,12 +36,12 @@ export interface Provider<
 
   prepareProviderConfig(args: {
     config: ProviderSchemaConfig;
-  }): GrpcAsyncResponse<PrepareConfigureResult<ProviderSchemaConfig>>;
+  }): AsyncResponse<PrepareConfigureResult<ProviderSchemaConfig>>;
 
   configure(arsg: {
     config: ProviderSchemaConfig;
     preparedConfig: ProviderSchemaConfig;
-  }): GrpcAsyncResponse<ConfigureResult<Client>>;
+  }): AsyncResponse<ConfigureResult<Client>>;
 }
 
 export type ProviderSchema<P> = P extends Provider<infer S, any, any, any>

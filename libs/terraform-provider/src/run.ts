@@ -1,15 +1,10 @@
-import path from "path";
 import { hashicorpPlugin } from "@terraform-typescript/hashicorp-plugin";
 import { loadProto, unary } from "@terraform-typescript/grpc-utils";
 import * as Either from "fp-ts/Either";
 import * as grpc from "@grpc/grpc-js";
 import { parseDynamicValue, serializeDynamicValue } from "./dynamicValue";
 import { valueMap } from "./mapOverObject";
-import {
-  PrepareConfigureResult,
-  Provider,
-  ProviderSchema,
-} from "./types/provider";
+import { Provider } from "./types/provider";
 import { ProtoGrpcType } from "./generated/tfplugin5";
 import { ProviderHandlers } from "./generated/tfplugin5/Provider";
 import {
@@ -21,7 +16,15 @@ import {
   ValidateResult,
 } from "./types/resource";
 import { ReadDataSourceResult } from "./types/datasource";
-import { getDiagnostics, runTask } from "./types/response";
+import {
+  AsyncResponse,
+  getDiagnostics,
+  responseDo,
+  runTask,
+  runTaskTillGrpcResponse,
+} from "./types/response";
+import { pipe } from "fp-ts/lib/function";
+import * as TaskThese from "fp-ts/lib/TaskThese";
 
 export const run = <
   P,
@@ -31,7 +34,7 @@ export const run = <
 >(
   provider: Provider<P, Client, R, S>
 ) => {
-  type PSchema = ProviderSchema<typeof provider>;
+  // type PSchema = ProviderSchema<typeof provider>;
 
   let client: Client | null = null;
 
@@ -56,32 +59,35 @@ export const run = <
       }),
 
       PrepareProviderConfig: unary(async (call) => {
-        const config = parseDynamicValue<PSchema>(call.request!.config!);
-        return Either.map(
-          ({ diagnostics, preparedConfig }: PrepareConfigureResult<any>) => ({
-            diagnostics,
+        return pipe(
+          provider.prepareProviderConfig({
+            config: parseDynamicValue(call.request!.config!),
+          }),
+          TaskThese.map(({ preparedConfig, ...res }) => ({
+            ...res,
             prepared_config: serializeDynamicValue(preparedConfig),
-          })
-        )(await provider.prepareProviderConfig({ config }));
+          })),
+          runTaskTillGrpcResponse
+        );
       }),
       Configure: unary(async (call) => {
         const config = parseDynamicValue<P>(call.request!.config!);
-        const result = await provider.prepareProviderConfig({ config });
-        if (Either.isLeft(result)) {
-          return result;
-        }
 
-        const configuredResult = await provider.configure({
-          config,
-          preparedConfig: result.right.preparedConfig,
-        });
-        if (Either.isLeft(configuredResult)) {
-          return result;
-        }
-        client = configuredResult.right.client;
-        return Either.right({
-          diagnostics: configuredResult.right.diagnostics,
-        });
+        const configuredAsyncResult = responseDo
+          .bind("prepareResult", provider.prepareProviderConfig({ config }))
+          .bindL("configuredResult", ({ prepareResult }) =>
+            provider.configure({
+              config,
+              preparedConfig: prepareResult.preparedConfig,
+            })
+          )
+          .doL(({ configuredResult }) => {
+            client = configuredResult.client;
+            return AsyncResponse.right(null);
+          })
+          .return(({ configuredResult }) => configuredResult);
+
+        return runTaskTillGrpcResponse(configuredAsyncResult);
       }),
 
       ValidateResourceTypeConfig: unary(async (call) => {

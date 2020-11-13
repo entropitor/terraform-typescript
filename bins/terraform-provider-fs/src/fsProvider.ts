@@ -1,6 +1,7 @@
 import * as Either from "fp-ts/Either";
 
 import {
+  AsyncResponse,
   ctyNumber,
   ctyObject,
   ctyString,
@@ -14,6 +15,10 @@ import {
 
 import * as path from "path";
 import { promises as fs } from "fs";
+import {
+  responseDo,
+  SyncResponse,
+} from "@terraform-typescript/terraform-provider/dist/src/types/response";
 
 /**
  * The type of a dynamic value. The first part is a Buffer with the cty encoding of the actual type
@@ -224,17 +229,18 @@ export const fsProvider: Provider<
       },
     };
   },
-  async configure({ config }) {
+  configure({ config }) {
     configuredConfig = config;
 
-    await fs.mkdir(config.root_dir, {
-      recursive: true,
-    });
+    return async () => {
+      await fs.mkdir(config.root_dir, {
+        recursive: true,
+      });
 
-    return Either.right({
-      diagnostics: [],
-      client: null,
-    });
+      return SyncResponse.right({
+        client: null,
+      });
+    };
   },
   getResources() {
     return {
@@ -247,24 +253,28 @@ export const fsProvider: Provider<
   prepareProviderConfig({ config }) {
     const diagnostics: Diagnostic[] = [];
 
-    if (!path.isAbsolute(config.root_dir)) {
-      diagnostics.push({
-        severity: Severity.ERROR,
-        attribute: {
-          steps: [
+    return responseDo
+      .bind("preparedConfig", AsyncResponse.right(config))
+      .doL(() => {
+        if (!path.isAbsolute(config.root_dir)) {
+          return AsyncResponse.left([
             {
-              attribute_name: "root_dir",
+              severity: Severity.ERROR,
+              attribute: {
+                steps: [
+                  {
+                    attribute_name: "root_dir",
+                  },
+                ],
+              },
+              detail: "You need to provide an absolute path as root_dir",
+              summary: "Relative root_dir",
             },
-          ],
-        },
-        detail: "You need to provide an absolute path as root_dir",
-        summary: "Relative root_dir",
-      });
-    }
+          ]);
+        }
 
-    return Either.right({
-      preparedConfig: config,
-      diagnostics,
-    });
+        return AsyncResponse.right(null);
+      })
+      .done();
   },
 };

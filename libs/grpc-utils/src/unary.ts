@@ -18,7 +18,7 @@ export const cbReturn = <E, V>(
 
 export type GrpcResponse<Res> = Either.Either<
   Exclude<Parameters<grpc.sendUnaryData<Res>>[0], null>,
-  Exclude<Parameters<grpc.sendUnaryData<Res>>[1], null>
+  Res
 >;
 
 export type UnaryCall<Req, Res> = (

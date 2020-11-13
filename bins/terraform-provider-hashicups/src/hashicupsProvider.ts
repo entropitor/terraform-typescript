@@ -16,6 +16,11 @@ import {
   DataSourceCoffeesState,
 } from "./dataSourceCoffees";
 import { createApiClient, HashicupsApiClient } from "./apiClient";
+import {
+  AsyncResponse,
+  responseDo,
+  SyncResponse,
+} from "@terraform-typescript/terraform-provider/dist/src/types/response";
 
 const schemaDescriptor = {
   description: "hashicups",
@@ -45,14 +50,15 @@ export const hashicupsProvider: Provider<
   getSchema() {
     return createSchema(schemaDescriptor);
   },
-  async configure({ preparedConfig }) {
-    return Either.right({
-      diagnostics: [],
-      client: await createApiClient({
-        username: preparedConfig.username!,
-        password: preparedConfig.password!,
-      }),
-    });
+  configure({ preparedConfig }) {
+    return async () => {
+      return SyncResponse.right({
+        client: await createApiClient({
+          username: preparedConfig.username!,
+          password: preparedConfig.password!,
+        }),
+      });
+    };
   },
   getResources() {
     return {};
@@ -63,49 +69,62 @@ export const hashicupsProvider: Provider<
     };
   },
   prepareProviderConfig({ config }) {
-    const diagnostics: Diagnostic[] = [];
-
-    const username = config.username || process.env.HASHICUPS_USERNAME || null;
-    const password = config.password || process.env.HASHICUPS_PASSWORD || null;
-
-    if (username == null) {
-      diagnostics.push({
-        severity: Severity.ERROR,
-        attribute: {
-          steps: [
-            {
-              attribute_name: "username",
+    const usernameTask = async () => {
+      const username = config.username || process.env.HASHICUPS_USERNAME;
+      if (username == null) {
+        return SyncResponse.left([
+          {
+            severity: Severity.ERROR,
+            attribute: {
+              steps: [
+                {
+                  attribute_name: "username",
+                },
+              ],
             },
-          ],
-        },
-        detail:
-          "You did not set an username nor an env variable HASHICUPS_USERNAME",
-        summary: "Username missing",
-      });
-    }
+            detail:
+              "You did not set an username nor an env variable HASHICUPS_USERNAME",
+            summary: "Username missing",
+          },
+        ]);
+      }
+      return SyncResponse.right(username);
+    };
 
-    if (password == null) {
-      diagnostics.push({
-        severity: Severity.ERROR,
-        attribute: {
-          steps: [
-            {
-              attribute_name: "password",
+    const passwordTask = async () => {
+      const password = config.password || process.env.HASHICUPS_PASSWORD;
+      if (password == null) {
+        return SyncResponse.left([
+          {
+            severity: Severity.ERROR,
+            attribute: {
+              steps: [
+                {
+                  attribute_name: "password",
+                },
+              ],
             },
-          ],
-        },
-        detail:
-          "You did not set a password nor an env variable HASHICUPS_PASSWORD",
-        summary: "Password missing",
-      });
-    }
+            detail:
+              "You did not set a password nor an env variable HASHICUPS_PASSWORD",
+            summary: "Password missing",
+          },
+        ]);
+      }
+      return SyncResponse.right(password);
+    };
 
-    return Either.right({
-      preparedConfig: {
-        username,
-        password,
-      },
-      diagnostics,
-    });
+    return responseDo
+      .sequenceSL(() => {
+        return {
+          username: usernameTask,
+          password: passwordTask,
+        };
+      })
+      .return(({ username, password }) => ({
+        preparedConfig: {
+          username,
+          password,
+        },
+      }));
   },
 };
