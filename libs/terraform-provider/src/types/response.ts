@@ -1,12 +1,12 @@
-import { GrpcResponse } from "@terraform-typescript/grpc-utils";
-import { getMonoid } from "fp-ts/lib/Array";
-import * as TaskThese from "fp-ts/lib/TaskThese";
-import { Task } from "fp-ts/lib/Task";
-import { Do } from "fp-ts-contrib/lib/Do";
-import * as These from "fp-ts/lib/These";
-import { pipe } from "fp-ts/lib/function";
-import * as Either from "fp-ts/lib/Either";
-import { Diagnostic } from "../generated/tfplugin5/Diagnostic";
+import { GrpcResponse } from '@terraform-typescript/grpc-utils';
+import { getMonoid } from 'fp-ts/lib/Array';
+import * as TaskThese from 'fp-ts/lib/TaskThese';
+import { Task } from 'fp-ts/lib/Task';
+import { Do } from 'fp-ts-contrib/lib/Do';
+import * as These from 'fp-ts/lib/These';
+import { pipe } from 'fp-ts/lib/function';
+import * as Either from 'fp-ts/lib/Either';
+import { Diagnostic } from '../generated/tfplugin5/Diagnostic';
 
 export type AsyncResponse<T> = TaskThese.TaskThese<Diagnostic[], T>;
 export type SyncResponse<T> = These.These<Diagnostic[], T>;
@@ -24,8 +24,8 @@ export const getDiagnostics = <T = never>(response: SyncResponse<T>) => {
     These.fold(
       (left) => left,
       (_right) => [],
-      (left, _right) => left
-    )
+      (left, _right) => left,
+    ),
   );
 };
 
@@ -50,7 +50,7 @@ export const SyncResponse = {
 };
 
 const asGrpcResponse = <T = never>(
-  response: SyncResponse<T>
+  response: SyncResponse<T>,
 ): GrpcResponse<
   Partial<T> & {
     diagnostics?: Diagnostic[];
@@ -74,7 +74,7 @@ const asGrpcResponse = <T = never>(
 };
 
 export const runTaskTillGrpcResponse = async <T = never>(
-  response: AsyncResponse<T>
+  response: AsyncResponse<T>,
 ): Promise<
   GrpcResponse<
     Partial<T> & {

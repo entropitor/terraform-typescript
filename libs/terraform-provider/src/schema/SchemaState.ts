@@ -1,25 +1,25 @@
-import { CtyToTypescript } from "./ctyType";
+import { CtyToTypescript } from './ctyType';
 import {
   ListPropertyDescriptor,
   RawPropertyDescriptor,
   SchemaBlockDescriptor,
   SchemaDescriptor,
   SchemaPropertyDescriptor,
-} from "./descriptor";
-import { SmartOmit } from "./SmartOmit";
+} from './descriptor';
+import { SmartOmit } from './SmartOmit';
 
 type RawPropertyState<
   Descriptor extends RawPropertyDescriptor
-> = Descriptor["source"] extends "required-in-config"
-  ? CtyToTypescript<Descriptor["ctyType"]>
-  : Descriptor["source"] extends "optional-in-config"
-  ? CtyToTypescript<Descriptor["ctyType"]> | null
-  : Descriptor["source"] extends "computed" | "computed-but-overridable"
-  ? CtyToTypescript<Descriptor["ctyType"]>
+> = Descriptor['source'] extends 'required-in-config'
+  ? CtyToTypescript<Descriptor['ctyType']>
+  : Descriptor['source'] extends 'optional-in-config'
+  ? CtyToTypescript<Descriptor['ctyType']> | null
+  : Descriptor['source'] extends 'computed' | 'computed-but-overridable'
+  ? CtyToTypescript<Descriptor['ctyType']>
   : never;
 
 type ListPropertyState<Descriptor extends ListPropertyDescriptor> = Array<
-  BlockState<Descriptor["itemType"]>
+  BlockState<Descriptor['itemType']>
 >;
 
 type PropertyState<
@@ -32,8 +32,8 @@ type PropertyState<
 
 export type BlockState<Descriptor extends SchemaBlockDescriptor> = SmartOmit<
   {
-    [propertyName in keyof Descriptor["properties"]]: PropertyState<
-      Descriptor["properties"][propertyName]
+    [propertyName in keyof Descriptor['properties']]: PropertyState<
+      Descriptor['properties'][propertyName]
     >;
   }
 >;

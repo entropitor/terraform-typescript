@@ -13,10 +13,10 @@ import {
   createSchemaDescriptor,
   SchemaConfig,
   createSchema,
-} from "@terraform-typescript/terraform-provider";
+} from '@terraform-typescript/terraform-provider';
 
-import * as path from "path";
-import { promises as fs } from "fs";
+import * as path from 'path';
+import { promises as fs } from 'fs';
 
 /**
  * The type of a dynamic/any value. The first part is a Buffer with the cty encoding of the actual type
@@ -24,21 +24,21 @@ import { promises as fs } from "fs";
 // type Dynamic<T> = [Buffer, T];
 
 const fsFileSchemaDescriptor = createSchemaDescriptor({
-  description: "a file resource",
+  description: 'a file resource',
   properties: {
     file_name: {
-      type: "raw",
+      type: 'raw',
       ctyType: ctyString,
       // description: "The name of the file to manage",
-      source: "required-in-config",
+      source: 'required-in-config',
     },
     body: {
-      type: "raw",
+      type: 'raw',
       ctyType: ctyObject({
         nb_foos: ctyNumber,
       }),
       // description: "The body of the file",
-      source: "required-in-config",
+      source: 'required-in-config',
     },
     // extra: {
     //   type: "raw",
@@ -60,14 +60,14 @@ const fsFile: Resource<FsFileConfig> = {
             attribute: {
               steps: [
                 {
-                  attribute_name: "body",
+                  attribute_name: 'body',
                 },
                 {
-                  element_key_string: "nb_foos",
+                  element_key_string: 'nb_foos',
                 },
               ],
             },
-            detail: "Do you not give a foo?",
+            detail: 'Do you not give a foo?',
             summary: "You need more foo's",
           },
         ]);
@@ -83,13 +83,13 @@ const fsFile: Resource<FsFileConfig> = {
     return async () => {
       return SyncResponse.right({
         diagnostics: [],
-        plannedPrivateData: Buffer.from("test"),
+        plannedPrivateData: Buffer.from('test'),
         plannedState: proposedNewState,
         requiresReplace: [
           {
             steps: [
               {
-                attribute_name: "file_name",
+                attribute_name: 'file_name',
               },
             ],
           },
@@ -102,7 +102,7 @@ const fsFile: Resource<FsFileConfig> = {
       if (plannedState == null) {
         const fileName = path.resolve(
           configuredConfig!.root_dir,
-          priorState!.file_name
+          priorState!.file_name,
         );
         await fs.rm(fileName);
 
@@ -114,7 +114,7 @@ const fsFile: Resource<FsFileConfig> = {
 
       const fileName = path.resolve(
         configuredConfig!.root_dir,
-        plannedState.file_name
+        plannedState.file_name,
       );
       await fs.writeFile(
         fileName,
@@ -123,8 +123,8 @@ const fsFile: Resource<FsFileConfig> = {
             body: plannedState.body,
           },
           null,
-          2
-        )
+          2,
+        ),
       );
 
       console.error(plannedState);
@@ -148,7 +148,7 @@ const fsFile: Resource<FsFileConfig> = {
     return async () => {
       const fileName = path.resolve(
         configuredConfig!.root_dir,
-        currentState.file_name
+        currentState.file_name,
       );
       const fileBody = await fs.readFile(fileName);
 
@@ -165,13 +165,13 @@ const fsFile: Resource<FsFileConfig> = {
 };
 
 const schemaDescriptor = createSchemaDescriptor({
-  description: "test schema",
+  description: 'test schema',
   properties: {
     root_dir: {
-      type: "raw",
+      type: 'raw',
       ctyType: ctyString,
       // description: "The root dir where all files will be stored",
-      source: "required-in-config",
+      source: 'required-in-config',
     },
   },
 });
@@ -215,7 +215,7 @@ export const fsProvider: Provider<
     const diagnostics: Diagnostic[] = [];
 
     return responseDo
-      .bind("preparedConfig", AsyncResponse.right(config))
+      .bind('preparedConfig', AsyncResponse.right(config))
       .doL(() => {
         if (!path.isAbsolute(config.root_dir)) {
           return AsyncResponse.left([
@@ -224,12 +224,12 @@ export const fsProvider: Provider<
               attribute: {
                 steps: [
                   {
-                    attribute_name: "root_dir",
+                    attribute_name: 'root_dir',
                   },
                 ],
               },
-              detail: "You need to provide an absolute path as root_dir",
-              summary: "Relative root_dir",
+              detail: 'You need to provide an absolute path as root_dir',
+              summary: 'Relative root_dir',
             },
           ]);
         }

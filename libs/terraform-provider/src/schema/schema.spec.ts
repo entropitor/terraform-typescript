@@ -1,18 +1,18 @@
-import { ctyString, ctyTypeToBuffer, ctyNumber } from "./ctyType";
-import { StringKind } from "../generated/tfplugin5/StringKind";
-import { createSchema } from "./schema";
-import { Equals, expectTypeToBeTrue } from "../testUtils";
-import { createSchemaDescriptor } from "./descriptor";
-import { SchemaConfig } from "./SchemaConfig";
-import { SchemaState } from "./SchemaState";
+import { ctyString, ctyTypeToBuffer, ctyNumber } from './ctyType';
+import { StringKind } from '../generated/tfplugin5/StringKind';
+import { createSchema } from './schema';
+import { Equals, expectTypeToBeTrue } from '../testUtils';
+import { createSchemaDescriptor } from './descriptor';
+import { SchemaConfig } from './SchemaConfig';
+import { SchemaState } from './SchemaState';
 
-describe("createSchema", () => {
-  it("should create a simple schema", () => {
+describe('createSchema', () => {
+  it('should create a simple schema', () => {
     expect(
       createSchema({
-        description: "Empty schema",
+        description: 'Empty schema',
         properties: {},
-      })
+      }),
     ).toEqual({
       version: 1,
       block: {
@@ -20,30 +20,30 @@ describe("createSchema", () => {
         attributes: [],
         block_types: [],
         deprecated: false,
-        description: "Empty schema",
+        description: 'Empty schema',
         description_kind: StringKind.PLAIN,
       },
     });
   });
 
-  it("should create a simple schema with attributes", () => {
+  it('should create a simple schema with attributes', () => {
     const descriptor = createSchemaDescriptor({
-      description: "Test schema",
+      description: 'Test schema',
       properties: {
         username: {
-          type: "raw",
+          type: 'raw',
           ctyType: ctyString,
-          source: "computed-but-overridable",
+          source: 'computed-but-overridable',
         },
         password: {
-          type: "raw",
+          type: 'raw',
           ctyType: ctyString,
-          source: "required-in-config",
+          source: 'required-in-config',
         },
         url: {
-          type: "raw",
+          type: 'raw',
           ctyType: ctyString,
-          source: "computed",
+          source: 'computed',
         },
       },
     });
@@ -54,25 +54,25 @@ describe("createSchema", () => {
         version: 1,
         attributes: [
           {
-            name: "username",
+            name: 'username',
             type: ctyTypeToBuffer(ctyString),
             optional: true,
             computed: true,
           },
           {
-            name: "password",
+            name: 'password',
             type: ctyTypeToBuffer(ctyString),
             required: true,
           },
           {
-            name: "url",
+            name: 'url',
             type: ctyTypeToBuffer(ctyString),
             computed: true,
           },
         ],
         block_types: [],
         deprecated: false,
-        description: "Test schema",
+        description: 'Test schema',
         description_kind: StringKind.PLAIN,
       },
     });
@@ -101,54 +101,54 @@ describe("createSchema", () => {
     >();
   });
 
-  it("should create a more complex schema with attributes and list block_types", () => {
+  it('should create a more complex schema with attributes and list block_types', () => {
     const descriptor = createSchemaDescriptor({
-      description: "Test schema",
+      description: 'Test schema',
       properties: {
         coffees: {
-          type: "list",
+          type: 'list',
           itemType: {
-            description: "Test description",
+            description: 'Test description',
             properties: {
               id: {
-                type: "raw",
+                type: 'raw',
                 ctyType: ctyNumber,
-                source: "computed",
+                source: 'computed',
               },
               name: {
-                type: "raw",
+                type: 'raw',
                 ctyType: ctyString,
-                source: "computed",
+                source: 'computed',
               },
               teaser: {
-                type: "raw",
+                type: 'raw',
                 ctyType: ctyString,
-                source: "computed",
+                source: 'computed',
               },
               description: {
-                type: "raw",
+                type: 'raw',
                 ctyType: ctyString,
-                source: "computed",
+                source: 'computed',
               },
               price: {
-                type: "raw",
+                type: 'raw',
                 ctyType: ctyNumber,
-                source: "computed",
+                source: 'computed',
               },
               image: {
-                type: "raw",
+                type: 'raw',
                 ctyType: ctyString,
-                source: "computed",
+                source: 'computed',
               },
               ingredients: {
-                type: "list",
+                type: 'list',
                 itemType: {
-                  description: "ingredients description",
+                  description: 'ingredients description',
                   properties: {
                     ingredient_id: {
-                      type: "raw",
+                      type: 'raw',
                       ctyType: ctyNumber,
-                      source: "computed",
+                      source: 'computed',
                     },
                   },
                 },
@@ -162,65 +162,65 @@ describe("createSchema", () => {
       version: 1,
       block: {
         deprecated: false,
-        description: "Test schema",
+        description: 'Test schema',
         description_kind: StringKind.PLAIN,
         attributes: [],
         block_types: [
           {
-            type_name: "coffees",
-            nesting: "LIST",
+            type_name: 'coffees',
+            nesting: 'LIST',
             block: {
               version: 1,
               deprecated: false,
-              description: "Test description",
+              description: 'Test description',
               description_kind: StringKind.PLAIN,
               attributes: [
                 {
-                  name: "id",
+                  name: 'id',
                   type: ctyTypeToBuffer(ctyNumber),
                   computed: true,
                 },
                 {
-                  name: "name",
+                  name: 'name',
                   type: ctyTypeToBuffer(ctyString),
                   computed: true,
                 },
                 {
-                  name: "teaser",
+                  name: 'teaser',
                   type: ctyTypeToBuffer(ctyString),
                   computed: true,
                 },
                 {
-                  name: "description",
+                  name: 'description',
                   type: ctyTypeToBuffer(ctyString),
                   computed: true,
                 },
                 {
-                  name: "price",
+                  name: 'price',
                   type: ctyTypeToBuffer(ctyNumber),
                   computed: true,
                 },
                 {
-                  name: "image",
+                  name: 'image',
                   type: ctyTypeToBuffer(ctyString),
                   computed: true,
                 },
               ],
               block_types: [
                 {
-                  type_name: "ingredients",
-                  nesting: "LIST",
+                  type_name: 'ingredients',
+                  nesting: 'LIST',
                   block: {
                     attributes: [
                       {
-                        name: "ingredient_id",
+                        name: 'ingredient_id',
                         type: ctyTypeToBuffer(ctyNumber),
                         computed: true,
                       },
                     ],
                     block_types: [],
                     deprecated: false,
-                    description: "ingredients description",
+                    description: 'ingredients description',
                     description_kind: StringKind.PLAIN,
                     version: 1,
                   },

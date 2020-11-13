@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
 
 export type HashicupsApiClient = {
   listCoffees: () => Promise<
@@ -15,7 +15,7 @@ export type HashicupsApiClient = {
     }>
   >;
   getOrder: (
-    orderId: number
+    orderId: number,
   ) => Promise<{
     id: number;
     items: Array<{
@@ -39,12 +39,12 @@ export type CreateApiClientArgs = {
 };
 
 export const createApiClient = async (
-  config: CreateApiClientArgs
+  config: CreateApiClientArgs,
 ): Promise<HashicupsApiClient> => {
-  const url = "http://localhost:19090";
+  const url = 'http://localhost:19090';
 
   const tokenResponse = await fetch(`${url}/signin`, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       username: config.username,
       password: config.password,
@@ -68,7 +68,7 @@ export const createApiClient = async (
 
   return {
     async listCoffees() {
-      return get("/coffees");
+      return get('/coffees');
     },
     async getOrder(orderId: number) {
       return getAuthorized(`/orders/${orderId}`);

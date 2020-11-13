@@ -1,11 +1,11 @@
-import { pki, md, random } from "node-forge";
+import { pki, md, random } from 'node-forge';
 
 const ONE_SECOND = 1000;
 const ONE_MINUTE = 60 * ONE_SECOND;
 const ONE_HOUR = 60 * ONE_MINUTE;
 
 export const generateIdentity = () => {
-  const host = "localhost";
+  const host = 'localhost';
 
   const cert = pki.createCertificate();
 
@@ -14,40 +14,40 @@ export const generateIdentity = () => {
   // - no more than 20 octets
   // - non-negative (prefix a '00' if your value starts with a '1' bit)
   // cert.serialNumber = Buffer.from(random.getBytesSync(16)).toString("hex");
-  cert.serialNumber = "01";
+  cert.serialNumber = '01';
 
   cert.validity.notBefore = new Date(Date.now() - 30 * ONE_SECOND);
   cert.validity.notAfter = new Date(Date.now() + ONE_HOUR);
 
   cert.setSubject([
     {
-      name: "commonName",
+      name: 'commonName',
       value: host,
     },
     {
-      name: "organizationName",
-      value: "HashiCorp",
+      name: 'organizationName',
+      value: 'HashiCorp',
     },
   ]);
   cert.setExtensions([
     {
-      name: "basicConstraints",
+      name: 'basicConstraints',
       cA: true,
     },
     {
-      name: "keyUsage",
+      name: 'keyUsage',
       keyCertSign: true,
       digitalSignature: true,
       keyEncipherment: true,
       keyAgreement: true,
     },
     {
-      name: "extKeyUsage",
+      name: 'extKeyUsage',
       clientAuth: true,
       serverAuth: true,
     },
     {
-      name: "subjectAltName",
+      name: 'subjectAltName',
       altNames: [
         {
           type: 2, // DNS

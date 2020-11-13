@@ -10,29 +10,29 @@ import {
   Severity,
   responseDo,
   SyncResponse,
-} from "@terraform-typescript/terraform-provider";
+} from '@terraform-typescript/terraform-provider';
 import {
   dataSourceCoffees,
   dataSourceCoffeesSchemaDescriptor,
-} from "./dataSourceCoffees";
-import { createApiClient, HashicupsApiClient } from "./apiClient";
+} from './dataSourceCoffees';
+import { createApiClient, HashicupsApiClient } from './apiClient';
 import {
   dataSourceOrder,
   dataSourceOrderSchemaDescriptor,
-} from "./dataSourceOrder";
+} from './dataSourceOrder';
 
 const schemaDescriptor = createSchemaDescriptor({
-  description: "hashicups",
+  description: 'hashicups',
   properties: {
     username: {
-      type: "raw",
+      type: 'raw',
       ctyType: ctyString,
-      source: "computed-but-overridable",
+      source: 'computed-but-overridable',
     },
     password: {
-      type: "raw",
+      type: 'raw',
       ctyType: ctyString,
-      source: "optional-in-config",
+      source: 'optional-in-config',
     },
   },
 });
@@ -65,7 +65,7 @@ export const hashicupsProvider: Provider<
           {
             severity: Severity.ERROR,
             detail: error.message,
-            summary: "Wrong credentials (?)",
+            summary: 'Wrong credentials (?)',
           },
         ]);
       }
@@ -90,13 +90,13 @@ export const hashicupsProvider: Provider<
             attribute: {
               steps: [
                 {
-                  attribute_name: "username",
+                  attribute_name: 'username',
                 },
               ],
             },
             detail:
-              "You did not set an username nor an env variable HASHICUPS_USERNAME",
-            summary: "Username missing",
+              'You did not set an username nor an env variable HASHICUPS_USERNAME',
+            summary: 'Username missing',
           },
         ]);
       }
@@ -112,13 +112,13 @@ export const hashicupsProvider: Provider<
             attribute: {
               steps: [
                 {
-                  attribute_name: "password",
+                  attribute_name: 'password',
                 },
               ],
             },
             detail:
-              "You did not set a password nor an env variable HASHICUPS_PASSWORD",
-            summary: "Password missing",
+              'You did not set a password nor an env variable HASHICUPS_PASSWORD',
+            summary: 'Password missing',
           },
         ]);
       }

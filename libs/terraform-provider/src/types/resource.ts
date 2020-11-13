@@ -1,6 +1,6 @@
-import { AttributePath } from "../generated/tfplugin5/AttributePath";
-import { Schema } from "../generated/tfplugin5/Schema";
-import { AsyncResponse } from "./response";
+import { AttributePath } from '../generated/tfplugin5/AttributePath';
+import { Schema } from '../generated/tfplugin5/Schema';
+import { AsyncResponse } from './response';
 
 type ValidateResult = {};
 

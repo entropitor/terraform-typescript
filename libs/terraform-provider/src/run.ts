@@ -1,24 +1,24 @@
-import { hashicorpPlugin } from "@terraform-typescript/hashicorp-plugin";
-import { loadProto, unary } from "@terraform-typescript/grpc-utils";
-import * as Either from "fp-ts/Either";
-import * as grpc from "@grpc/grpc-js";
-import { parseDynamicValue, serializeDynamicValue } from "./dynamicValue";
-import { valueMap } from "./mapOverObject";
-import { Provider } from "./types/provider";
-import { ProtoGrpcType } from "./generated/tfplugin5";
-import { ProviderHandlers } from "./generated/tfplugin5/Provider";
-import { Resource } from "./types/resource";
+import { hashicorpPlugin } from '@terraform-typescript/hashicorp-plugin';
+import { loadProto, unary } from '@terraform-typescript/grpc-utils';
+import * as Either from 'fp-ts/Either';
+import * as grpc from '@grpc/grpc-js';
+import { parseDynamicValue, serializeDynamicValue } from './dynamicValue';
+import { valueMap } from './mapOverObject';
+import { Provider } from './types/provider';
+import { ProtoGrpcType } from './generated/tfplugin5';
+import { ProviderHandlers } from './generated/tfplugin5/Provider';
+import { Resource } from './types/resource';
 import {
   AsyncResponse,
   getDiagnostics,
   responseDo,
   runTask,
   runTaskTillGrpcResponse,
-} from "./types/response";
-import { pipe } from "fp-ts/lib/function";
-import * as TaskThese from "fp-ts/lib/TaskThese";
-import { SchemaDescriptor } from "./schema/descriptor";
-import { createSchema } from "./schema/schema";
+} from './types/response';
+import { pipe } from 'fp-ts/lib/function';
+import * as TaskThese from 'fp-ts/lib/TaskThese';
+import { SchemaDescriptor } from './schema/descriptor';
+import { createSchema } from './schema/schema';
 
 export const run = <
   P,
@@ -26,32 +26,32 @@ export const run = <
   R extends { [key: string]: any },
   D extends { [key: string]: SchemaDescriptor }
 >(
-  provider: Provider<P, Client, R, D>
+  provider: Provider<P, Client, R, D>,
 ) => {
   // type PSchema = ProviderSchema<typeof provider>;
 
   let client: Client | null = null;
 
-  const proto = loadProto<ProtoGrpcType, ProviderHandlers, "tfplugin5">({
+  const proto = loadProto<ProtoGrpcType, ProviderHandlers, 'tfplugin5'>({
     dirname: __dirname,
-    fileName: "tfplugin5.proto",
-    packageName: "tfplugin5",
-    serviceName: "Provider",
+    fileName: 'tfplugin5.proto',
+    packageName: 'tfplugin5',
+    serviceName: 'Provider',
     implementation: {
       GetSchema: unary(async (_call) => {
         return Either.right({
           provider: provider.getSchema(),
           resource_schemas: valueMap(
             (resource) => resource.getSchema(),
-            provider.getResources() as { [key: string]: Resource<any> }
+            provider.getResources() as { [key: string]: Resource<any> },
           ),
           data_source_schemas: Object.fromEntries(
             Object.entries(
-              provider.getDataSources()
+              provider.getDataSources(),
             ).map(([key, dataSource]) => [
               key,
               createSchema(dataSource.getSchemaDescriptor()),
-            ])
+            ]),
           ),
         });
       }),
@@ -64,19 +64,19 @@ export const run = <
           TaskThese.map(({ preparedConfig }) => ({
             prepared_config: serializeDynamicValue(preparedConfig),
           })),
-          runTaskTillGrpcResponse
+          runTaskTillGrpcResponse,
         );
       }),
       Configure: unary(async (call) => {
         const config = parseDynamicValue<P>(call.request!.config!);
 
         const configuredAsyncResult = responseDo
-          .bind("prepareResult", provider.prepareProviderConfig({ config }))
-          .bindL("configuredResult", ({ prepareResult }) =>
+          .bind('prepareResult', provider.prepareProviderConfig({ config }))
+          .bindL('configuredResult', ({ prepareResult }) =>
             provider.configure({
               config,
               preparedConfig: prepareResult.preparedConfig,
-            })
+            }),
           )
           .doL(({ configuredResult }) => {
             client = configuredResult.client;
@@ -95,7 +95,7 @@ export const run = <
           resource.validate({
             config: parseDynamicValue(call.request!.config!),
           }),
-          runTaskTillGrpcResponse
+          runTaskTillGrpcResponse,
         );
       }),
       ReadResource: unary(async (call) => {
@@ -111,7 +111,7 @@ export const run = <
             private: privateData,
             new_state: serializeDynamicValue(newState),
           })),
-          runTaskTillGrpcResponse
+          runTaskTillGrpcResponse,
         );
       }),
       PlanResourceChange: unary(async (call) => {
@@ -124,7 +124,7 @@ export const run = <
             priorPrivateData: call.request!.prior_private!,
             priorState: parseDynamicValue(call.request!.prior_state!),
             proposedNewState: parseDynamicValue(
-              call.request!.proposed_new_state!
+              call.request!.proposed_new_state!,
             ),
           }),
           TaskThese.map(
@@ -132,9 +132,9 @@ export const run = <
               planned_private: plannedPrivateData,
               planned_state: serializeDynamicValue(plannedState),
               requires_replace: requiresReplace,
-            })
+            }),
           ),
-          runTaskTillGrpcResponse
+          runTaskTillGrpcResponse,
         );
       }),
       ApplyResourceChange: unary(async (call) => {
@@ -152,7 +152,7 @@ export const run = <
             private: privateData,
             new_state: serializeDynamicValue(newState),
           })),
-          runTaskTillGrpcResponse
+          runTaskTillGrpcResponse,
         );
       }),
       UpgradeResourceState: unary(async (call) => {
@@ -167,7 +167,7 @@ export const run = <
           TaskThese.map(({ upgradedState }) => ({
             upgraded_state: serializeDynamicValue(upgradedState),
           })),
-          runTaskTillGrpcResponse
+          runTaskTillGrpcResponse,
         );
       }),
       ImportResourceState: unary(async (call) => {
@@ -178,7 +178,7 @@ export const run = <
       }),
 
       Stop: unary(async (_call) => {
-        console.error("Hello from Stop");
+        console.error('Hello from Stop');
         setTimeout(() => {
           process.exit(0);
         }, 100);
@@ -192,7 +192,7 @@ export const run = <
         const validateResult = await runTask(
           dataSource.validate({
             config: parseDynamicValue(call.request!.config!),
-          })
+          }),
         );
 
         return Either.right({
@@ -212,16 +212,16 @@ export const run = <
             ...response,
             state: serializeDynamicValue(state),
           })),
-          runTaskTillGrpcResponse
+          runTaskTillGrpcResponse,
         );
       }),
     },
   });
 
-  process.on("SIGTERM", () => {
+  process.on('SIGTERM', () => {
     process.exit(0);
   });
-  process.on("SIGINT", () => {
+  process.on('SIGINT', () => {
     process.exit(0);
   });
 

@@ -1,5 +1,5 @@
-import * as msgpack from "@msgpack/msgpack";
-import { DynamicValue } from "./generated/tfplugin5/DynamicValue";
+import * as msgpack from '@msgpack/msgpack';
+import { DynamicValue } from './generated/tfplugin5/DynamicValue';
 
 export const parseDynamicValue = <T>(value: DynamicValue): T => {
   if (value.msgpack) {
@@ -16,7 +16,7 @@ export const serializeDynamicValue = (value: any): DynamicValue => {
   const buffer: Buffer = Buffer.from(
     encoded.buffer,
     encoded.byteOffset,
-    encoded.byteLength
+    encoded.byteLength,
   );
 
   return {

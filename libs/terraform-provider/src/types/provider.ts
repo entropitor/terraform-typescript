@@ -1,8 +1,8 @@
-import { SchemaDescriptor } from "src/schema/descriptor";
-import { Schema } from "../generated/tfplugin5/Schema";
-import { DataSource } from "./dataSource";
-import { Resource } from "./resource";
-import { AsyncResponse } from "./response";
+import { SchemaDescriptor } from 'src/schema/descriptor';
+import { Schema } from '../generated/tfplugin5/Schema';
+import { DataSource } from './dataSource';
+import { Resource } from './resource';
+import { AsyncResponse } from './response';
 
 type Resources<R extends { [key: string]: any }> = {
   [resourceName in keyof R]: Resource<R[resourceName]>;

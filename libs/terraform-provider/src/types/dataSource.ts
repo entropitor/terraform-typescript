@@ -1,7 +1,7 @@
-import { SchemaDescriptor } from "src/schema/descriptor";
-import { SchemaConfig } from "src/schema/SchemaConfig";
-import { SchemaState } from "src/schema/SchemaState";
-import { AsyncResponse } from "./response";
+import { SchemaDescriptor } from 'src/schema/descriptor';
+import { SchemaConfig } from 'src/schema/SchemaConfig';
+import { SchemaState } from 'src/schema/SchemaState';
+import { AsyncResponse } from './response';
 
 type ValidateDataSourceResult = {};
 
@@ -25,7 +25,7 @@ export interface DataSource<S extends SchemaDescriptor, Client> {
 export const createDataSource = <S extends SchemaDescriptor>(descriptor: S) => <
   Client
 >(
-  dataSource: Omit<DataSource<S, Client>, "getSchemaDescriptor">
+  dataSource: Omit<DataSource<S, Client>, 'getSchemaDescriptor'>,
 ): DataSource<S, Client> => {
   return {
     ...dataSource,

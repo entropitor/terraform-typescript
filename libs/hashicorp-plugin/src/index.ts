@@ -1,38 +1,38 @@
-import * as grpc from "@grpc/grpc-js";
-import * as GrpcStdio from "src/generated/grpc_stdio";
+import * as grpc from '@grpc/grpc-js';
+import * as GrpcStdio from 'src/generated/grpc_stdio';
 // @ts-expect-error no definition file
-import health from "grpc-health-check";
-import * as forge from "node-forge";
-import { loadProto } from "@terraform-typescript/grpc-utils";
-import { Http2Server } from "http2";
-import { generateIdentity } from "./certificate";
-import { GRPCStdioHandlers } from "./generated/plugin/GRPCStdio";
+import health from 'grpc-health-check';
+import * as forge from 'node-forge';
+import { loadProto } from '@terraform-typescript/grpc-utils';
+import { Http2Server } from 'http2';
+import { generateIdentity } from './certificate';
+import { GRPCStdioHandlers } from './generated/plugin/GRPCStdio';
 
 const CORE_PROTOCOL_VERSION = 1;
-const PROTOCOL = "grpc";
+const PROTOCOL = 'grpc';
 
 const grpcStdioProto = loadProto<
   GrpcStdio.ProtoGrpcType,
   GRPCStdioHandlers,
-  "plugin"
+  'plugin'
 >({
   dirname: __dirname,
-  fileName: "grpc_stdio.proto",
+  fileName: 'grpc_stdio.proto',
   implementation: {
     StreamStdio(call) {
-      call.emit("error", {
+      call.emit('error', {
         code: grpc.status.UNIMPLEMENTED,
-        message: "Unimplemented",
+        message: 'Unimplemented',
       });
     },
   },
-  packageName: "plugin",
-  serviceName: "GRPCStdio",
+  packageName: 'plugin',
+  serviceName: 'GRPCStdio',
 });
 
 const statusMap = {
   plugin: health.messages.HealthCheckResponse.ServingStatus.SERVING,
-  "": health.messages.HealthCheckResponse.ServingStatus.NOT_SERVING,
+  '': health.messages.HealthCheckResponse.ServingStatus.NOT_SERVING,
 };
 const healthImpl = new health.Implementation(statusMap);
 
@@ -52,7 +52,7 @@ export const hashicorpPlugin = async ({
   await configureServer(server);
 
   let credentials = grpc.ServerCredentials.createInsecure();
-  let serverCertificateString = "";
+  let serverCertificateString = '';
   if (process.env.PLUGIN_CLIENT_CERT) {
     const clientCertString = process.env.PLUGIN_CLIENT_CERT;
     // const clientCertificate = forge.pki.certificateFromPem(clientCertString);
@@ -70,29 +70,29 @@ export const hashicorpPlugin = async ({
           private_key: Buffer.from(privateKey),
         },
       ],
-      true
+      true,
     );
     serverCertificateString = forge.util
       .encode64(
         forge.asn1
           .toDer(forge.pki.certificateToAsn1(serverCertificate))
-          .getBytes()
+          .getBytes(),
       )
       // Remove padding
-      .replace(/=*$/, "");
+      .replace(/=*$/, '');
   }
 
-  server.bindAsync("0.0.0.0:0", credentials, (_err, port) => {
+  server.bindAsync('0.0.0.0:0', credentials, (_err, port) => {
     server.start();
-    const networkType = "tcp";
+    const networkType = 'tcp';
     const address = `127.0.0.1:${port}`;
     console.log(
-      `${CORE_PROTOCOL_VERSION}|${appVersion}|${networkType}|${address}|${PROTOCOL}|${serverCertificateString}`
+      `${CORE_PROTOCOL_VERSION}|${appVersion}|${networkType}|${address}|${PROTOCOL}|${serverCertificateString}`,
     );
     // @ts-expect-error
     server.http2ServerList.forEach((http2Server: Http2Server) => {
-      http2Server.on("connection", (socket) => {
-        socket.on("close", () => {
+      http2Server.on('connection', (socket) => {
+        socket.on('close', () => {
           process.exit(0);
         });
       });

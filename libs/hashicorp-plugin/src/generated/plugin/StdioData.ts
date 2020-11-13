@@ -1,6 +1,5 @@
 // Original file: src/proto/grpc_stdio.proto
 
-
 // Original file: src/proto/grpc_stdio.proto
 
 export enum _plugin_StdioData_Channel {
@@ -10,11 +9,11 @@ export enum _plugin_StdioData_Channel {
 }
 
 export interface StdioData {
-  'channel'?: (_plugin_StdioData_Channel | keyof typeof _plugin_StdioData_Channel);
-  'data'?: (Buffer | Uint8Array | string);
+  channel?: _plugin_StdioData_Channel | keyof typeof _plugin_StdioData_Channel;
+  data?: Buffer | Uint8Array | string;
 }
 
 export interface StdioData__Output {
-  'channel'?: (_plugin_StdioData_Channel);
-  'data'?: (Buffer);
+  channel?: _plugin_StdioData_Channel;
+  data?: Buffer;
 }

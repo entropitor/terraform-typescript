@@ -10,56 +10,56 @@ import {
   SchemaState,
   Severity,
   SyncResponse,
-} from "@terraform-typescript/terraform-provider";
-import { HashicupsApiClient } from "./apiClient";
+} from '@terraform-typescript/terraform-provider';
+import { HashicupsApiClient } from './apiClient';
 
 export const dataSourceCoffeesSchemaDescriptor = createSchemaDescriptor({
-  description: "Coffees data source schema",
+  description: 'Coffees data source schema',
   properties: {
     coffees: {
-      type: "list",
+      type: 'list',
       itemType: {
-        description: "Test description",
+        description: 'Test description',
         properties: {
           id: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyNumber,
-            source: "computed",
+            source: 'computed',
           },
           name: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyString,
-            source: "computed",
+            source: 'computed',
           },
           teaser: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyString,
-            source: "computed",
+            source: 'computed',
           },
           description: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyString,
-            source: "computed",
+            source: 'computed',
           },
           price: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyNumber,
-            source: "computed",
+            source: 'computed',
           },
           image: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyString,
-            source: "computed",
+            source: 'computed',
           },
           ingredients: {
-            type: "list",
+            type: 'list',
             itemType: {
-              description: "ingredients description",
+              description: 'ingredients description',
               properties: {
                 ingredient_id: {
-                  type: "raw",
+                  type: 'raw',
                   ctyType: ctyNumber,
-                  source: "computed",
+                  source: 'computed',
                 },
               },
             },
@@ -85,7 +85,7 @@ export const dataSourceCoffees = ctor<HashicupsApiClient>({
         return SyncResponse.left([
           {
             severity: Severity.ERROR,
-            summary: "Failure to fetch",
+            summary: 'Failure to fetch',
             detail: error.toString(),
           },
         ]);

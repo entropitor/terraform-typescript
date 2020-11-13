@@ -1,6 +1,6 @@
-import * as grpc from "@grpc/grpc-js";
-import * as protoLoader from "@grpc/proto-loader";
-import path from "path";
+import * as grpc from '@grpc/grpc-js';
+import * as protoLoader from '@grpc/proto-loader';
+import path from 'path';
 
 type Proto<PackageName extends string, ServiceName extends string> = {
   [packageName in PackageName]: {
@@ -40,7 +40,7 @@ export const loadProto = <
   serviceName,
   implementation,
 }: LoadProtoArgs<ProtoGrpcType, ServiceHandlers, PN>) => {
-  const fullPath = path.resolve(dirname, "proto", fileName);
+  const fullPath = path.resolve(dirname, 'proto', fileName);
   const packageDefinition = protoLoader.loadSync(fullPath, {
     keepCase: true,
     longs: Number,

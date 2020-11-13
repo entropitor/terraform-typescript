@@ -10,21 +10,21 @@ import {
   CtyToTypescript,
   ctyTuple,
   ctyTypeToBuffer,
-} from "./ctyType";
-import { Equals, expectTypeToBeFalse, expectTypeToBeTrue } from "../testUtils";
+} from './ctyType';
+import { Equals, expectTypeToBeFalse, expectTypeToBeTrue } from '../testUtils';
 
-describe("private constructors", () => {
-  const fakeCtyString = { type: "string", brand: Symbol() } as const;
+describe('private constructors', () => {
+  const fakeCtyString = { type: 'string', brand: Symbol() } as const;
   expectTypeToBeFalse<Equals<typeof ctyString, typeof fakeCtyString>>();
 
   // @ts-expect-error fakeCtyString is not a CtyType
   ctyTypeToBuffer(fakeCtyString);
 });
 
-describe("ctyString", () => {
+describe('ctyString', () => {
   const type = ctyString;
 
-  it("ctyTypeToBuffer", () => {
+  it('ctyTypeToBuffer', () => {
     expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('"string"'));
   });
 
@@ -32,10 +32,10 @@ describe("ctyString", () => {
   expectTypeToBeTrue<Equals<Computed, string>>();
 });
 
-describe("ctyNumber", () => {
+describe('ctyNumber', () => {
   const type = ctyNumber;
 
-  it("ctyTypeToBuffer", () => {
+  it('ctyTypeToBuffer', () => {
     expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('"number"'));
   });
 
@@ -43,10 +43,10 @@ describe("ctyNumber", () => {
   expectTypeToBeTrue<Equals<Computed, number>>();
 });
 
-describe("ctyBoolean", () => {
+describe('ctyBoolean', () => {
   const type = ctyBoolean;
 
-  it("ctyTypeToBuffer", () => {
+  it('ctyTypeToBuffer', () => {
     expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('"bool"'));
   });
 
@@ -54,10 +54,10 @@ describe("ctyBoolean", () => {
   expectTypeToBeTrue<Equals<Computed, boolean>>();
 });
 
-describe("ctyAny", () => {
+describe('ctyAny', () => {
   const type = ctyAny;
 
-  it("ctyTypeToBuffer", () => {
+  it('ctyTypeToBuffer', () => {
     expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('"dynamic"'));
   });
 
@@ -65,10 +65,10 @@ describe("ctyAny", () => {
   expectTypeToBeTrue<Equals<Computed, any>>();
 });
 
-describe("ctyList(ctyNumber)", () => {
+describe('ctyList(ctyNumber)', () => {
   const type = ctyList(ctyNumber);
 
-  it("ctyTypeToBuffer", () => {
+  it('ctyTypeToBuffer', () => {
     expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('["list","number"]'));
   });
 
@@ -76,10 +76,10 @@ describe("ctyList(ctyNumber)", () => {
   expectTypeToBeTrue<Equals<Computed, Array<number>>>();
 });
 
-describe("ctySet(ctyNumber)", () => {
+describe('ctySet(ctyNumber)', () => {
   const type = ctySet(ctyNumber);
 
-  it("ctyTypeToBuffer", () => {
+  it('ctyTypeToBuffer', () => {
     expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('["set","number"]'));
   });
 
@@ -87,10 +87,10 @@ describe("ctySet(ctyNumber)", () => {
   expectTypeToBeTrue<Equals<Computed, Set<number>>>();
 });
 
-describe("ctyMap(ctyNumber)", () => {
+describe('ctyMap(ctyNumber)', () => {
   const type = ctyMap(ctyNumber);
 
-  it("ctyTypeToBuffer", () => {
+  it('ctyTypeToBuffer', () => {
     expect(ctyTypeToBuffer(type)).toEqual(Buffer.from('["map","number"]'));
   });
 
@@ -98,12 +98,12 @@ describe("ctyMap(ctyNumber)", () => {
   expectTypeToBeTrue<Equals<Computed, Record<string, number>>>();
 });
 
-describe("ctyTuple(ctyNumber, ctyString)", () => {
+describe('ctyTuple(ctyNumber, ctyString)', () => {
   const type = ctyTuple(ctyNumber, ctyString);
 
-  it("ctyTypeToBuffer", () => {
+  it('ctyTypeToBuffer', () => {
     expect(ctyTypeToBuffer(type)).toEqual(
-      Buffer.from('["tuple",["number","string"]]')
+      Buffer.from('["tuple",["number","string"]]'),
     );
   });
 
@@ -111,12 +111,12 @@ describe("ctyTuple(ctyNumber, ctyString)", () => {
   expectTypeToBeTrue<Equals<Computed, [number, string]>>();
 });
 
-describe("ctyObject({ name: ctyString, age: ctyNumber })", () => {
+describe('ctyObject({ name: ctyString, age: ctyNumber })', () => {
   const type = ctyObject({ name: ctyString, age: ctyNumber });
 
-  it("ctyTypeToBuffer", () => {
+  it('ctyTypeToBuffer', () => {
     expect(ctyTypeToBuffer(type)).toEqual(
-      Buffer.from('["object",{"name":"string","age":"number"}]')
+      Buffer.from('["object",{"name":"string","age":"number"}]'),
     );
   });
 

@@ -10,56 +10,56 @@ import {
   SchemaState,
   Severity,
   SyncResponse,
-} from "@terraform-typescript/terraform-provider";
-import { HashicupsApiClient } from "./apiClient";
+} from '@terraform-typescript/terraform-provider';
+import { HashicupsApiClient } from './apiClient';
 
 export const dataSourceOrderSchemaDescriptor = createSchemaDescriptor({
-  description: "Order data source",
+  description: 'Order data source',
   properties: {
     id: {
-      type: "raw",
+      type: 'raw',
       ctyType: ctyNumber,
-      source: "required-in-config",
+      source: 'required-in-config',
     },
     items: {
-      type: "list",
+      type: 'list',
       itemType: {
-        description: "items",
+        description: 'items',
         properties: {
           coffee_id: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyNumber,
-            source: "computed",
+            source: 'computed',
           },
           coffee_name: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyString,
-            source: "computed",
+            source: 'computed',
           },
           coffee_teaser: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyString,
-            source: "computed",
+            source: 'computed',
           },
           coffee_description: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyString,
-            source: "computed",
+            source: 'computed',
           },
           coffee_price: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyNumber,
-            source: "computed",
+            source: 'computed',
           },
           coffee_image: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyString,
-            source: "computed",
+            source: 'computed',
           },
           quantity: {
-            type: "raw",
+            type: 'raw',
             ctyType: ctyNumber,
-            source: "computed",
+            source: 'computed',
           },
         },
       },
@@ -69,7 +69,7 @@ export const dataSourceOrderSchemaDescriptor = createSchemaDescriptor({
 
 type Item = SchemaState<
   typeof dataSourceOrderSchemaDescriptor
->["items"][number];
+>['items'][number];
 
 const ctor = createDataSource(dataSourceOrderSchemaDescriptor);
 export const dataSourceOrder = ctor<HashicupsApiClient>({
@@ -89,7 +89,7 @@ export const dataSourceOrder = ctor<HashicupsApiClient>({
                 coffee_price: order.coffee.price,
                 coffee_teaser: order.coffee.teaser,
                 quantity: order.quantity,
-              })
+              }),
             ),
           },
         });
@@ -97,7 +97,7 @@ export const dataSourceOrder = ctor<HashicupsApiClient>({
         return SyncResponse.left([
           {
             severity: Severity.ERROR,
-            summary: "Failure to fetch",
+            summary: 'Failure to fetch',
             detail: error.toString(),
           },
         ]);

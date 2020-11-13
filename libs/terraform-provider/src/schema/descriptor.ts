@@ -1,34 +1,34 @@
-import { CtyType } from "./ctyType";
+import { CtyType } from './ctyType';
 
 export type SchemaPropertyDescriptor =
   | {
-      type: "raw";
+      type: 'raw';
       ctyType: CtyType;
       source:
-        | "required-in-config"
-        | "optional-in-config"
-        | "computed-but-overridable"
-        | "computed";
+        | 'required-in-config'
+        | 'optional-in-config'
+        | 'computed-but-overridable'
+        | 'computed';
     }
   | {
-      type: "list" | "set";
+      type: 'list' | 'set';
       minItems?: number;
       maxItems?: number;
       itemType: SchemaBlockDescriptor;
     }
   | {
-      type: "single";
+      type: 'single';
       required: boolean; // "single" or "group"
       itemType: SchemaBlockDescriptor;
     }
   | {
-      type: "map";
+      type: 'map';
       itemType: SchemaBlockDescriptor;
     };
 
-export type RawPropertyDescriptor = SchemaPropertyDescriptor & { type: "raw" };
+export type RawPropertyDescriptor = SchemaPropertyDescriptor & { type: 'raw' };
 export type ListPropertyDescriptor = SchemaPropertyDescriptor & {
-  type: "list";
+  type: 'list';
 };
 
 export type SchemaBlockDescriptor = {
