@@ -68,8 +68,8 @@ const asGrpcResponse = <T = never>(
   const t: T = response.right;
 
   return Either.right({
-    diagnostics,
     ...t,
+    diagnostics,
   });
 };
 

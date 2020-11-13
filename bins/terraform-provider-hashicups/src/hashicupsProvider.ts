@@ -16,6 +16,10 @@ import {
   dataSourceCoffeesSchemaDescriptor,
 } from "./dataSourceCoffees";
 import { createApiClient, HashicupsApiClient } from "./apiClient";
+import {
+  dataSourceOrder,
+  dataSourceOrderSchemaDescriptor,
+} from "./dataSourceOrder";
 
 const schemaDescriptor = createSchemaDescriptor({
   description: "hashicups",
@@ -41,6 +45,7 @@ export const hashicupsProvider: Provider<
   {},
   {
     hashicups_coffees: typeof dataSourceCoffeesSchemaDescriptor;
+    hashicups_order: typeof dataSourceOrderSchemaDescriptor;
   }
 > = {
   getSchema() {
@@ -48,12 +53,22 @@ export const hashicupsProvider: Provider<
   },
   configure({ preparedConfig }) {
     return async () => {
-      return SyncResponse.right({
-        client: await createApiClient({
-          username: preparedConfig.username!,
-          password: preparedConfig.password!,
-        }),
-      });
+      try {
+        return SyncResponse.right({
+          client: await createApiClient({
+            username: preparedConfig.username!,
+            password: preparedConfig.password!,
+          }),
+        });
+      } catch (error) {
+        return SyncResponse.left([
+          {
+            severity: Severity.ERROR,
+            detail: error.message,
+            summary: "Wrong credentials (?)",
+          },
+        ]);
+      }
     };
   },
   getResources() {
@@ -62,6 +77,7 @@ export const hashicupsProvider: Provider<
   getDataSources() {
     return {
       hashicups_coffees: dataSourceCoffees,
+      hashicups_order: dataSourceOrder,
     };
   },
   prepareProviderConfig({ config }) {
