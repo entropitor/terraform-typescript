@@ -1,5 +1,6 @@
 import { valueMap } from '../mapOverObject';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const unreachable = (_: never): void => {};
 
 // This const is exported in this file but not in the global package to ensure typescript
@@ -16,25 +17,25 @@ export const brand = Symbol('ctyTypeBrand');
  */
 export type CtyType =
   | {
+      brand: typeof brand;
       type: 'string' | 'number' | 'boolean' | 'any';
-      brand: typeof brand;
     }
   | {
-      type: 'list' | 'set' | 'map';
+      brand: typeof brand;
       itemType: CtyType;
-      brand: typeof brand;
+      type: 'list' | 'set' | 'map';
     }
   | {
-      type: 'tuple';
+      brand: typeof brand;
       itemTypes: CtyType[];
-      brand: typeof brand;
+      type: 'tuple';
     }
   | {
-      type: 'object';
+      brand: typeof brand;
       itemType: {
         [key: string]: CtyType;
       };
-      brand: typeof brand;
+      type: 'object';
     };
 
 const ctyTypeToJson = (typ: CtyType): any => {
@@ -71,50 +72,50 @@ export const ctyTypeToBuffer = (typ: CtyType): Buffer => {
 };
 
 export const ctyString = {
-  type: 'string',
   brand,
+  type: 'string',
 } as const;
 export const ctyNumber = {
-  type: 'number',
   brand,
+  type: 'number',
 } as const;
 export const ctyBoolean = {
-  type: 'boolean',
   brand,
+  type: 'boolean',
 } as const;
 export const ctyAny = {
-  type: 'any',
   brand,
+  type: 'any',
 } as const;
 export const ctyList = <C extends CtyType>(of: C) =>
   ({
-    type: 'list',
-    itemType: of,
     brand,
+    itemType: of,
+    type: 'list',
   } as const);
 export const ctySet = <C extends CtyType>(of: C) =>
   ({
-    type: 'set',
-    itemType: of,
     brand,
+    itemType: of,
+    type: 'set',
   } as const);
 export const ctyMap = <C extends CtyType>(of: C) =>
   ({
-    type: 'map',
-    itemType: of,
     brand,
+    itemType: of,
+    type: 'map',
   } as const);
 export const ctyTuple = <T extends CtyType[]>(...of: T) =>
   ({
-    type: 'tuple',
-    itemTypes: of,
     brand,
+    itemTypes: of,
+    type: 'tuple',
   } as const);
 export const ctyObject = <R extends { [key: string]: CtyType }>(of: R) =>
   ({
-    type: 'object',
-    itemType: of,
     brand,
+    itemType: of,
+    type: 'object',
   } as const);
 
 type CtyString = typeof ctyString;

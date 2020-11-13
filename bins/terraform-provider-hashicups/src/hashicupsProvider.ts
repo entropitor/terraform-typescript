@@ -2,20 +2,21 @@
  * Implementing https://learn.hashicorp.com/tutorials/terraform/provider-setup
  */
 import {
-  createSchemaDescriptor,
   createSchema,
+  createSchemaDescriptor,
   ctyString,
   Provider,
+  responseDo,
   SchemaConfig,
   Severity,
-  responseDo,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
+
+import { createApiClient, HashicupsApiClient } from './apiClient';
 import {
   dataSourceCoffees,
   dataSourceCoffeesSchemaDescriptor,
 } from './dataSourceCoffees';
-import { createApiClient, HashicupsApiClient } from './apiClient';
 import {
   dataSourceOrder,
   dataSourceOrderSchemaDescriptor,
@@ -24,15 +25,15 @@ import {
 const schemaDescriptor = createSchemaDescriptor({
   description: 'hashicups',
   properties: {
-    username: {
-      type: 'raw',
-      ctyType: ctyString,
-      source: 'computed-but-overridable',
-    },
     password: {
-      type: 'raw',
       ctyType: ctyString,
       source: 'optional-in-config',
+      type: 'raw',
+    },
+    username: {
+      ctyType: ctyString,
+      source: 'computed-but-overridable',
+      type: 'raw',
     },
   },
 });
@@ -48,31 +49,25 @@ export const hashicupsProvider: Provider<
     hashicups_order: typeof dataSourceOrderSchemaDescriptor;
   }
 > = {
-  getSchema() {
-    return createSchema(schemaDescriptor);
-  },
   configure({ preparedConfig }) {
     return async () => {
       try {
         return SyncResponse.right({
           client: await createApiClient({
-            username: preparedConfig.username!,
             password: preparedConfig.password!,
+            username: preparedConfig.username!,
           }),
         });
       } catch (error) {
         return SyncResponse.left([
           {
-            severity: Severity.ERROR,
             detail: error.message,
+            severity: Severity.ERROR,
             summary: 'Wrong credentials (?)',
           },
         ]);
       }
     };
-  },
-  getResources() {
-    return {};
   },
   getDataSources() {
     return {
@@ -80,13 +75,18 @@ export const hashicupsProvider: Provider<
       hashicups_order: dataSourceOrder,
     };
   },
+  getResources() {
+    return {};
+  },
+  getSchema() {
+    return createSchema(schemaDescriptor);
+  },
   prepareProviderConfig({ config }) {
     const usernameTask = async () => {
       const username = config.username || process.env.HASHICUPS_USERNAME;
       if (username == null) {
         return SyncResponse.left([
           {
-            severity: Severity.ERROR,
             attribute: {
               steps: [
                 {
@@ -96,6 +96,7 @@ export const hashicupsProvider: Provider<
             },
             detail:
               'You did not set an username nor an env variable HASHICUPS_USERNAME',
+            severity: Severity.ERROR,
             summary: 'Username missing',
           },
         ]);
@@ -108,7 +109,6 @@ export const hashicupsProvider: Provider<
       if (password == null) {
         return SyncResponse.left([
           {
-            severity: Severity.ERROR,
             attribute: {
               steps: [
                 {
@@ -118,6 +118,7 @@ export const hashicupsProvider: Provider<
             },
             detail:
               'You did not set a password nor an env variable HASHICUPS_PASSWORD',
+            severity: Severity.ERROR,
             summary: 'Password missing',
           },
         ]);
@@ -128,14 +129,14 @@ export const hashicupsProvider: Provider<
     return responseDo
       .sequenceSL(() => {
         return {
-          username: usernameTask,
           password: passwordTask,
+          username: usernameTask,
         };
       })
-      .return(({ username, password }) => ({
+      .return(({ password, username }) => ({
         preparedConfig: {
-          username,
           password,
+          username,
         },
       }));
   },

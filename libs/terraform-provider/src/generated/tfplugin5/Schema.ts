@@ -1,66 +1,67 @@
 // Original file: src/proto/tfplugin5.proto
 
-import type { StringKind as _tfplugin5_StringKind } from '../tfplugin5/StringKind';
 import type { Long } from '@grpc/proto-loader';
 
+import type { StringKind as _tfplugin5_StringKind } from './StringKind';
+
 export interface _tfplugin5_Schema_Attribute {
-  name?: string;
-  type?: Buffer | Uint8Array | string;
-  description?: string;
-  required?: boolean;
-  optional?: boolean;
   computed?: boolean;
-  sensitive?: boolean;
-  description_kind?: _tfplugin5_StringKind | keyof typeof _tfplugin5_StringKind;
   deprecated?: boolean;
+  description?: string;
+  description_kind?: _tfplugin5_StringKind | keyof typeof _tfplugin5_StringKind;
+  name?: string;
+  optional?: boolean;
+  required?: boolean;
+  sensitive?: boolean;
+  type?: Buffer | Uint8Array | string;
 }
 
 export interface _tfplugin5_Schema_Attribute__Output {
-  name?: string;
-  type?: Buffer;
-  description?: string;
-  required?: boolean;
-  optional?: boolean;
   computed?: boolean;
-  sensitive?: boolean;
-  description_kind?: _tfplugin5_StringKind;
   deprecated?: boolean;
+  description?: string;
+  description_kind?: _tfplugin5_StringKind;
+  name?: string;
+  optional?: boolean;
+  required?: boolean;
+  sensitive?: boolean;
+  type?: Buffer;
 }
 
 export interface _tfplugin5_Schema_Block {
-  version?: number | string | Long;
   attributes?: _tfplugin5_Schema_Attribute[];
   block_types?: _tfplugin5_Schema_NestedBlock[];
+  deprecated?: boolean;
   description?: string;
   description_kind?: _tfplugin5_StringKind | keyof typeof _tfplugin5_StringKind;
-  deprecated?: boolean;
+  version?: number | string | Long;
 }
 
 export interface _tfplugin5_Schema_Block__Output {
-  version?: number;
   attributes?: _tfplugin5_Schema_Attribute__Output[];
   block_types?: _tfplugin5_Schema_NestedBlock__Output[];
+  deprecated?: boolean;
   description?: string;
   description_kind?: _tfplugin5_StringKind;
-  deprecated?: boolean;
+  version?: number;
 }
 
 export interface _tfplugin5_Schema_NestedBlock {
-  type_name?: string;
   block?: _tfplugin5_Schema_Block;
+  max_items?: number | string | Long;
+  min_items?: number | string | Long;
   nesting?:
     | _tfplugin5_Schema_NestedBlock_NestingMode
     | keyof typeof _tfplugin5_Schema_NestedBlock_NestingMode;
-  min_items?: number | string | Long;
-  max_items?: number | string | Long;
+  type_name?: string;
 }
 
 export interface _tfplugin5_Schema_NestedBlock__Output {
-  type_name?: string;
   block?: _tfplugin5_Schema_Block__Output;
-  nesting?: _tfplugin5_Schema_NestedBlock_NestingMode;
-  min_items?: number;
   max_items?: number;
+  min_items?: number;
+  nesting?: _tfplugin5_Schema_NestedBlock_NestingMode;
+  type_name?: string;
 }
 
 // Original file: src/proto/tfplugin5.proto
@@ -75,11 +76,11 @@ export enum _tfplugin5_Schema_NestedBlock_NestingMode {
 }
 
 export interface Schema {
-  version?: number | string | Long;
   block?: _tfplugin5_Schema_Block;
+  version?: number | string | Long;
 }
 
 export interface Schema__Output {
-  version?: number;
   block?: _tfplugin5_Schema_Block__Output;
+  version?: number;
 }

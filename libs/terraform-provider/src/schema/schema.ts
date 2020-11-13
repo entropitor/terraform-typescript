@@ -1,9 +1,10 @@
-import { ctyTypeToBuffer } from './ctyType';
 import {
-  Schema,
   _tfplugin5_Schema_Block as SchemaBlock,
+  Schema,
 } from '../generated/tfplugin5/Schema';
 import { StringKind } from '../generated/tfplugin5/StringKind';
+
+import { ctyTypeToBuffer } from './ctyType';
 import {
   RawPropertyDescriptor,
   SchemaBlockDescriptor,
@@ -29,12 +30,12 @@ export const createBlock = (descriptor: SchemaBlockDescriptor): SchemaBlock => {
           attributeDescriptor.source === 'computed-but-overridable';
 
         return {
+          computed: isComputed || undefined,
           name: attributeName,
-          type: ctyTypeToBuffer(attributeDescriptor.ctyType),
           optional: isOptional || undefined,
           required:
             attributeDescriptor.source === 'required-in-config' || undefined,
-          computed: isComputed || undefined,
+          type: ctyTypeToBuffer(attributeDescriptor.ctyType),
         };
       }),
     block_types: Object.entries(descriptor.properties)
@@ -50,25 +51,25 @@ export const createBlock = (descriptor: SchemaBlockDescriptor): SchemaBlock => {
 
         if (blockDescriptor.type === 'list') {
           return {
-            type_name: propertyName,
             block: createBlock(blockDescriptor.itemType),
-            nesting: 'LIST',
-            min_items: blockDescriptor.minItems || undefined,
             max_items: blockDescriptor.maxItems || undefined,
+            min_items: blockDescriptor.minItems || undefined,
+            nesting: 'LIST',
+            type_name: propertyName,
           };
         }
 
         throw new Error('unsupported');
       }),
     deprecated: false,
-    version: 1,
     description: descriptor.description,
     description_kind: StringKind.PLAIN,
+    version: 1,
   };
 };
 export const createSchema = (descriptor: SchemaDescriptor): Schema => {
   return {
-    version: 1,
     block: createBlock(descriptor),
+    version: 1,
   };
 };

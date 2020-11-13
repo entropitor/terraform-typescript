@@ -8,15 +8,6 @@ type FilteredKeysReverse<T, U> = {
 type OmitNever<T> = Omit<T, FilteredKeys<T, never>>;
 
 type OmitEmptyObjects<T> = Omit<T, FilteredKeysReverse<T, {}>>;
-type OmitEmptyArrays<T> = Omit<T, FilteredKeysReverse<T, {}[]>>;
+type OmitEmptyArrays<T> = Omit<T, FilteredKeysReverse<T, Array<{}>>>;
 
 export type SmartOmit<T> = OmitEmptyArrays<OmitEmptyObjects<OmitNever<T>>>;
-
-type User = {
-  foo: {};
-  foos: {}[];
-  bar: {
-    x: number;
-  };
-};
-type Foo = SmartOmit<User>;

@@ -1,4 +1,5 @@
 import * as msgpack from '@msgpack/msgpack';
+
 import { DynamicValue } from './generated/tfplugin5/DynamicValue';
 
 export const parseDynamicValue = <T>(value: DynamicValue): T => {
@@ -20,7 +21,7 @@ export const serializeDynamicValue = (value: any): DynamicValue => {
   );
 
   return {
-    msgpack: buffer,
     json: Buffer.from(JSON.stringify(value)),
+    msgpack: buffer,
   };
 };

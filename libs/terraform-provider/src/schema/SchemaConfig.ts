@@ -1,8 +1,8 @@
 import { CtyToTypescript } from './ctyType';
 import {
-  SchemaBlockDescriptor,
   ListPropertyDescriptor,
   RawPropertyDescriptor,
+  SchemaBlockDescriptor,
   SchemaDescriptor,
   SchemaPropertyDescriptor,
 } from './descriptor';

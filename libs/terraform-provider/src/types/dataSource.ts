@@ -1,6 +1,7 @@
-import { SchemaDescriptor } from 'src/schema/descriptor';
-import { SchemaConfig } from 'src/schema/SchemaConfig';
-import { SchemaState } from 'src/schema/SchemaState';
+import { SchemaDescriptor } from '../schema/descriptor';
+import { SchemaConfig } from '../schema/SchemaConfig';
+import { SchemaState } from '../schema/SchemaState';
+
 import { AsyncResponse } from './response';
 
 type ValidateDataSourceResult = {};
@@ -12,14 +13,14 @@ type ReadDataSourceResult<State> = {
 export interface DataSource<S extends SchemaDescriptor, Client> {
   getSchemaDescriptor(): S;
 
+  read(args: {
+    client: Client;
+    config: SchemaConfig<S>;
+  }): AsyncResponse<ReadDataSourceResult<SchemaState<S>>>;
+
   validate(args: {
     config: SchemaConfig<S>;
   }): AsyncResponse<ValidateDataSourceResult>;
-
-  read(args: {
-    config: SchemaConfig<S>;
-    client: Client;
-  }): AsyncResponse<ReadDataSourceResult<SchemaState<S>>>;
 }
 
 export const createDataSource = <S extends SchemaDescriptor>(descriptor: S) => <

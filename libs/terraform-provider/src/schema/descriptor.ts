@@ -2,28 +2,29 @@ import { CtyType } from './ctyType';
 
 export type SchemaPropertyDescriptor =
   | {
-      type: 'raw';
       ctyType: CtyType;
       source:
         | 'required-in-config'
         | 'optional-in-config'
         | 'computed-but-overridable'
         | 'computed';
+      type: 'raw';
     }
   | {
-      type: 'list' | 'set';
-      minItems?: number;
+      itemType: SchemaBlockDescriptor;
       maxItems?: number;
-      itemType: SchemaBlockDescriptor;
+      minItems?: number;
+      type: 'list' | 'set';
     }
   | {
+      // "single" or "group"
+      itemType: SchemaBlockDescriptor;
+      required: boolean;
       type: 'single';
-      required: boolean; // "single" or "group"
-      itemType: SchemaBlockDescriptor;
     }
   | {
-      type: 'map';
       itemType: SchemaBlockDescriptor;
+      type: 'map';
     };
 
 export type RawPropertyDescriptor = SchemaPropertyDescriptor & { type: 'raw' };

@@ -1,38 +1,31 @@
 // Original file: src/proto/tfplugin5.proto
 
 import type * as grpc from '@grpc/grpc-js';
+
 import type {
   _tfplugin5_GetProvisionerSchema_Request,
   _tfplugin5_GetProvisionerSchema_Request__Output,
-} from '../tfplugin5/GetProvisionerSchema';
-import type {
-  _tfplugin5_ValidateProvisionerConfig_Request,
-  _tfplugin5_ValidateProvisionerConfig_Request__Output,
-} from '../tfplugin5/ValidateProvisionerConfig';
+  _tfplugin5_GetProvisionerSchema_Response,
+  _tfplugin5_GetProvisionerSchema_Response__Output,
+} from './GetProvisionerSchema';
 import type {
   _tfplugin5_ProvisionResource_Request,
   _tfplugin5_ProvisionResource_Request__Output,
-} from '../tfplugin5/ProvisionResource';
+  _tfplugin5_ProvisionResource_Response,
+  _tfplugin5_ProvisionResource_Response__Output,
+} from './ProvisionResource';
 import type {
   _tfplugin5_Stop_Request,
   _tfplugin5_Stop_Request__Output,
-} from '../tfplugin5/Stop';
-import type {
-  _tfplugin5_GetProvisionerSchema_Response,
-  _tfplugin5_GetProvisionerSchema_Response__Output,
-} from '../tfplugin5/GetProvisionerSchema';
-import type {
-  _tfplugin5_ValidateProvisionerConfig_Response,
-  _tfplugin5_ValidateProvisionerConfig_Response__Output,
-} from '../tfplugin5/ValidateProvisionerConfig';
-import type {
-  _tfplugin5_ProvisionResource_Response,
-  _tfplugin5_ProvisionResource_Response__Output,
-} from '../tfplugin5/ProvisionResource';
-import type {
   _tfplugin5_Stop_Response,
   _tfplugin5_Stop_Response__Output,
-} from '../tfplugin5/Stop';
+} from './Stop';
+import type {
+  _tfplugin5_ValidateProvisionerConfig_Request,
+  _tfplugin5_ValidateProvisionerConfig_Request__Output,
+  _tfplugin5_ValidateProvisionerConfig_Response,
+  _tfplugin5_ValidateProvisionerConfig_Response__Output,
+} from './ValidateProvisionerConfig';
 
 export interface ProvisionerClient extends grpc.Client {
   GetSchema(

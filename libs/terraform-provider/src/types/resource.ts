@@ -1,12 +1,13 @@
 import { AttributePath } from '../generated/tfplugin5/AttributePath';
 import { Schema } from '../generated/tfplugin5/Schema';
+
 import { AsyncResponse } from './response';
 
 type ValidateResult = {};
 
 type ApplyChangeResult<S> = {
-  privateData: Buffer;
   newState: S | null;
+  privateData: Buffer;
 };
 
 type PlanChangeResult<S> = {
@@ -20,14 +21,19 @@ type UpgradeResult<S> = {
 };
 
 type ReadResourceResult<S> = {
-  privateData: Buffer;
   newState: S;
+  privateData: Buffer;
 };
 
 export interface Resource<S> {
-  getSchema(): Schema;
+  applyChange(args: {
+    config: S;
+    plannedPrivateData: Buffer;
+    plannedState: S | null;
+    priorState: S | null;
+  }): AsyncResponse<ApplyChangeResult<S>>;
 
-  validate(args: { config: S }): AsyncResponse<ValidateResult>;
+  getSchema(): Schema;
 
   planChange(args: {
     config: S | null;
@@ -36,20 +42,15 @@ export interface Resource<S> {
     proposedNewState: S | null;
   }): AsyncResponse<PlanChangeResult<S>>;
 
-  applyChange(args: {
-    config: S;
-    plannedPrivateData: Buffer;
-    priorState: S | null;
-    plannedState: S | null;
-  }): AsyncResponse<ApplyChangeResult<S>>;
-
-  upgrade(args: {
-    version: number;
-    rawState: any;
-  }): AsyncResponse<UpgradeResult<S>>;
-
   read(args: {
     currentState: S;
     privateData: Buffer;
   }): AsyncResponse<ReadResourceResult<S>>;
+
+  upgrade(args: {
+    rawState: any;
+    version: number;
+  }): AsyncResponse<UpgradeResult<S>>;
+
+  validate(args: { config: S }): AsyncResponse<ValidateResult>;
 }

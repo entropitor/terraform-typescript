@@ -1,8 +1,9 @@
-import { ctyString, ctyTypeToBuffer, ctyNumber } from './ctyType';
 import { StringKind } from '../generated/tfplugin5/StringKind';
-import { createSchema } from './schema';
 import { Equals, expectTypeToBeTrue } from '../testUtils';
+
+import { ctyNumber, ctyString, ctyTypeToBuffer } from './ctyType';
 import { createSchemaDescriptor } from './descriptor';
+import { createSchema } from './schema';
 import { SchemaConfig } from './SchemaConfig';
 import { SchemaState } from './SchemaState';
 
@@ -14,15 +15,15 @@ describe('createSchema', () => {
         properties: {},
       }),
     ).toEqual({
-      version: 1,
       block: {
-        version: 1,
         attributes: [],
         block_types: [],
         deprecated: false,
         description: 'Empty schema',
         description_kind: StringKind.PLAIN,
+        version: 1,
       },
+      version: 1,
     });
   });
 
@@ -30,51 +31,51 @@ describe('createSchema', () => {
     const descriptor = createSchemaDescriptor({
       description: 'Test schema',
       properties: {
-        username: {
-          type: 'raw',
-          ctyType: ctyString,
-          source: 'computed-but-overridable',
-        },
         password: {
-          type: 'raw',
           ctyType: ctyString,
           source: 'required-in-config',
+          type: 'raw',
         },
         url: {
-          type: 'raw',
           ctyType: ctyString,
           source: 'computed',
+          type: 'raw',
+        },
+        username: {
+          ctyType: ctyString,
+          source: 'computed-but-overridable',
+          type: 'raw',
         },
       },
     });
 
     expect(createSchema(descriptor)).toEqual({
-      version: 1,
       block: {
-        version: 1,
         attributes: [
           {
-            name: 'username',
-            type: ctyTypeToBuffer(ctyString),
-            optional: true,
-            computed: true,
-          },
-          {
             name: 'password',
-            type: ctyTypeToBuffer(ctyString),
             required: true,
+            type: ctyTypeToBuffer(ctyString),
           },
           {
+            computed: true,
             name: 'url',
             type: ctyTypeToBuffer(ctyString),
+          },
+          {
             computed: true,
+            name: 'username',
+            optional: true,
+            type: ctyTypeToBuffer(ctyString),
           },
         ],
         block_types: [],
         deprecated: false,
         description: 'Test schema',
         description_kind: StringKind.PLAIN,
+        version: 1,
       },
+      version: 1,
     });
 
     type ComputedConfig = SchemaConfig<typeof descriptor>;
@@ -82,8 +83,8 @@ describe('createSchema', () => {
       Equals<
         ComputedConfig,
         {
-          username: string | null;
           password: string;
+          username: string | null;
         }
       >
     >();
@@ -93,9 +94,9 @@ describe('createSchema', () => {
       Equals<
         ComputedState,
         {
-          username: string;
           password: string;
           url: string;
+          username: string;
         }
       >
     >();
@@ -106,116 +107,104 @@ describe('createSchema', () => {
       description: 'Test schema',
       properties: {
         coffees: {
-          type: 'list',
           itemType: {
             description: 'Test description',
             properties: {
-              id: {
-                type: 'raw',
-                ctyType: ctyNumber,
-                source: 'computed',
-              },
-              name: {
-                type: 'raw',
-                ctyType: ctyString,
-                source: 'computed',
-              },
-              teaser: {
-                type: 'raw',
-                ctyType: ctyString,
-                source: 'computed',
-              },
               description: {
-                type: 'raw',
                 ctyType: ctyString,
                 source: 'computed',
-              },
-              price: {
                 type: 'raw',
+              },
+              id: {
                 ctyType: ctyNumber,
                 source: 'computed',
+                type: 'raw',
               },
               image: {
-                type: 'raw',
                 ctyType: ctyString,
                 source: 'computed',
+                type: 'raw',
               },
               ingredients: {
-                type: 'list',
                 itemType: {
                   description: 'ingredients description',
                   properties: {
                     ingredient_id: {
-                      type: 'raw',
                       ctyType: ctyNumber,
                       source: 'computed',
+                      type: 'raw',
                     },
                   },
                 },
+                type: 'list',
+              },
+              name: {
+                ctyType: ctyString,
+                source: 'computed',
+                type: 'raw',
+              },
+              price: {
+                ctyType: ctyNumber,
+                source: 'computed',
+                type: 'raw',
+              },
+              teaser: {
+                ctyType: ctyString,
+                source: 'computed',
+                type: 'raw',
               },
             },
           },
+          type: 'list',
         },
       },
     });
     expect(createSchema(descriptor)).toEqual({
-      version: 1,
       block: {
-        deprecated: false,
-        description: 'Test schema',
-        description_kind: StringKind.PLAIN,
         attributes: [],
         block_types: [
           {
-            type_name: 'coffees',
-            nesting: 'LIST',
             block: {
-              version: 1,
-              deprecated: false,
-              description: 'Test description',
-              description_kind: StringKind.PLAIN,
               attributes: [
                 {
-                  name: 'id',
-                  type: ctyTypeToBuffer(ctyNumber),
                   computed: true,
-                },
-                {
-                  name: 'name',
-                  type: ctyTypeToBuffer(ctyString),
-                  computed: true,
-                },
-                {
-                  name: 'teaser',
-                  type: ctyTypeToBuffer(ctyString),
-                  computed: true,
-                },
-                {
                   name: 'description',
                   type: ctyTypeToBuffer(ctyString),
-                  computed: true,
                 },
                 {
-                  name: 'price',
+                  computed: true,
+                  name: 'id',
                   type: ctyTypeToBuffer(ctyNumber),
-                  computed: true,
                 },
                 {
+                  computed: true,
                   name: 'image',
                   type: ctyTypeToBuffer(ctyString),
+                },
+                {
                   computed: true,
+                  name: 'name',
+                  type: ctyTypeToBuffer(ctyString),
+                },
+                {
+                  computed: true,
+                  name: 'price',
+                  type: ctyTypeToBuffer(ctyNumber),
+                },
+                {
+                  computed: true,
+                  name: 'teaser',
+                  type: ctyTypeToBuffer(ctyString),
                 },
               ],
               block_types: [
                 {
-                  type_name: 'ingredients',
-                  nesting: 'LIST',
                   block: {
                     attributes: [
                       {
+                        computed: true,
                         name: 'ingredient_id',
                         type: ctyTypeToBuffer(ctyNumber),
-                        computed: true,
                       },
                     ],
                     block_types: [],
@@ -224,13 +213,25 @@ describe('createSchema', () => {
                     description_kind: StringKind.PLAIN,
                     version: 1,
                   },
+                  nesting: 'LIST',
+                  type_name: 'ingredients',
                 },
               ],
+              deprecated: false,
+              description: 'Test description',
+              description_kind: StringKind.PLAIN,
+              version: 1,
             },
+            nesting: 'LIST',
+            type_name: 'coffees',
           },
         ],
+        deprecated: false,
+        description: 'Test schema',
+        description_kind: StringKind.PLAIN,
         version: 1,
       },
+      version: 1,
     });
 
     type ComputedConfig = SchemaConfig<typeof descriptor>;
@@ -242,15 +243,15 @@ describe('createSchema', () => {
         ComputedState,
         {
           coffees: Array<{
-            id: number;
-            name: string;
-            teaser: string;
             description: string;
-            price: number;
+            id: number;
             image: string;
             ingredients: Array<{
               ingredient_id: number;
             }>;
+            name: string;
+            price: number;
+            teaser: string;
           }>;
         }
       >

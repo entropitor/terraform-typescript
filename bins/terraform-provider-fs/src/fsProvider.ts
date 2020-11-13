@@ -1,44 +1,46 @@
+import { promises as fs } from 'fs';
+import * as path from 'path';
+
 import {
   AsyncResponse,
+  createSchema,
+  createSchemaDescriptor,
   ctyNumber,
   ctyObject,
   ctyString,
-  Diagnostic,
   Provider,
   Resource,
-  Severity,
-  StringKind,
   responseDo,
-  SyncResponse,
-  createSchemaDescriptor,
   SchemaConfig,
-  createSchema,
+  Severity,
+  SyncResponse,
 } from '@terraform-typescript/terraform-provider';
-
-import * as path from 'path';
-import { promises as fs } from 'fs';
 
 /**
  * The type of a dynamic/any value. The first part is a Buffer with the cty encoding of the actual type
  */
 // type Dynamic<T> = [Buffer, T];
 
+let configuredConfig: FsProviderConfig | null = null;
+
 const fsFileSchemaDescriptor = createSchemaDescriptor({
   description: 'a file resource',
   properties: {
-    file_name: {
-      type: 'raw',
-      ctyType: ctyString,
-      // description: "The name of the file to manage",
-      source: 'required-in-config',
-    },
     body: {
-      type: 'raw',
       ctyType: ctyObject({
         nb_foos: ctyNumber,
       }),
       // description: "The body of the file",
       source: 'required-in-config',
+
+      type: 'raw',
+    },
+    file_name: {
+      ctyType: ctyString,
+      // description: "The name of the file to manage",
+      source: 'required-in-config',
+
+      type: 'raw',
     },
     // extra: {
     //   type: "raw",
@@ -51,52 +53,6 @@ const fsFileSchemaDescriptor = createSchemaDescriptor({
 type FsFileConfig = SchemaConfig<typeof fsFileSchemaDescriptor>;
 
 const fsFile: Resource<FsFileConfig> = {
-  validate({ config }) {
-    return async () => {
-      if (config.body.nb_foos < 5) {
-        return SyncResponse.left([
-          {
-            severity: Severity.ERROR,
-            attribute: {
-              steps: [
-                {
-                  attribute_name: 'body',
-                },
-                {
-                  element_key_string: 'nb_foos',
-                },
-              ],
-            },
-            detail: 'Do you not give a foo?',
-            summary: "You need more foo's",
-          },
-        ]);
-      }
-
-      return SyncResponse.right({});
-    };
-  },
-  getSchema() {
-    return createSchema(fsFileSchemaDescriptor);
-  },
-  planChange({ proposedNewState }) {
-    return async () => {
-      return SyncResponse.right({
-        diagnostics: [],
-        plannedPrivateData: Buffer.from('test'),
-        plannedState: proposedNewState,
-        requiresReplace: [
-          {
-            steps: [
-              {
-                attribute_name: 'file_name',
-              },
-            ],
-          },
-        ],
-      });
-    };
-  },
   applyChange({ plannedPrivateData, plannedState, priorState }) {
     return async () => {
       if (plannedState == null) {
@@ -127,20 +83,30 @@ const fsFile: Resource<FsFileConfig> = {
         ),
       );
 
-      console.error(plannedState);
-      console.error(plannedPrivateData);
-
       return SyncResponse.right({
         newState: plannedState,
         privateData: plannedPrivateData,
       });
     };
   },
-  upgrade(args) {
+  getSchema() {
+    return createSchema(fsFileSchemaDescriptor);
+  },
+  planChange({ proposedNewState }) {
     return async () => {
       return SyncResponse.right({
         diagnostics: [],
-        upgradedState: args.rawState,
+        plannedPrivateData: Buffer.from('test'),
+        plannedState: proposedNewState,
+        requiresReplace: [
+          {
+            steps: [
+              {
+                attribute_name: 'file_name',
+              },
+            ],
+          },
+        ],
       });
     };
   },
@@ -162,22 +128,55 @@ const fsFile: Resource<FsFileConfig> = {
       });
     };
   },
+  upgrade(args) {
+    return async () => {
+      return SyncResponse.right({
+        diagnostics: [],
+        upgradedState: args.rawState,
+      });
+    };
+  },
+  validate({ config }) {
+    return async () => {
+      if (config.body.nb_foos < 5) {
+        return SyncResponse.left([
+          {
+            attribute: {
+              steps: [
+                {
+                  attribute_name: 'body',
+                },
+                {
+                  element_key_string: 'nb_foos',
+                },
+              ],
+            },
+            detail: 'Do you not give a foo?',
+            severity: Severity.ERROR,
+            summary: "You need more foo's",
+          },
+        ]);
+      }
+
+      return SyncResponse.right({});
+    };
+  },
 };
 
 const schemaDescriptor = createSchemaDescriptor({
   description: 'test schema',
   properties: {
     root_dir: {
-      type: 'raw',
       ctyType: ctyString,
       // description: "The root dir where all files will be stored",
       source: 'required-in-config',
+
+      type: 'raw',
     },
   },
 });
 
 type FsProviderConfig = SchemaConfig<typeof schemaDescriptor>;
-let configuredConfig: FsProviderConfig | null = null;
 
 export const fsProvider: Provider<
   FsProviderConfig,
@@ -187,9 +186,6 @@ export const fsProvider: Provider<
   },
   {}
 > = {
-  getSchema() {
-    return createSchema(schemaDescriptor);
-  },
   configure({ config }) {
     configuredConfig = config;
 
@@ -203,24 +199,24 @@ export const fsProvider: Provider<
       });
     };
   },
+  getDataSources() {
+    return {};
+  },
   getResources() {
     return {
       fs_file: fsFile,
     };
   },
-  getDataSources() {
-    return {};
+  getSchema() {
+    return createSchema(schemaDescriptor);
   },
   prepareProviderConfig({ config }) {
-    const diagnostics: Diagnostic[] = [];
-
     return responseDo
       .bind('preparedConfig', AsyncResponse.right(config))
       .doL(() => {
         if (!path.isAbsolute(config.root_dir)) {
           return AsyncResponse.left([
             {
-              severity: Severity.ERROR,
               attribute: {
                 steps: [
                   {
@@ -229,6 +225,7 @@ export const fsProvider: Provider<
                 ],
               },
               detail: 'You need to provide an absolute path as root_dir',
+              severity: Severity.ERROR,
               summary: 'Relative root_dir',
             },
           ]);

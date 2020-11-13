@@ -1,14 +1,16 @@
 // Original file: src/proto/grpc_stdio.proto
 
 import type * as grpc from '@grpc/grpc-js';
+
 import type {
   Empty as _google_protobuf_Empty,
   Empty__Output as _google_protobuf_Empty__Output,
 } from '../google/protobuf/Empty';
+
 import type {
   StdioData as _plugin_StdioData,
   StdioData__Output as _plugin_StdioData__Output,
-} from '../plugin/StdioData';
+} from './StdioData';
 
 export interface GRPCStdioClient extends grpc.Client {
   StreamStdio(

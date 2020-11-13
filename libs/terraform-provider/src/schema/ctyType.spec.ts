@@ -1,3 +1,5 @@
+import { Equals, expectTypeToBeFalse, expectTypeToBeTrue } from '../testUtils';
+
 import {
   ctyAny,
   ctyBoolean,
@@ -11,10 +13,12 @@ import {
   ctyTuple,
   ctyTypeToBuffer,
 } from './ctyType';
-import { Equals, expectTypeToBeFalse, expectTypeToBeTrue } from '../testUtils';
 
 describe('private constructors', () => {
-  const fakeCtyString = { type: 'string', brand: Symbol() } as const;
+  const fakeCtyString = {
+    brand: Symbol('fakeSymbol'),
+    type: 'string',
+  } as const;
   expectTypeToBeFalse<Equals<typeof ctyString, typeof fakeCtyString>>();
 
   // @ts-expect-error fakeCtyString is not a CtyType
@@ -73,7 +77,7 @@ describe('ctyList(ctyNumber)', () => {
   });
 
   type Computed = CtyToTypescript<typeof type>;
-  expectTypeToBeTrue<Equals<Computed, Array<number>>>();
+  expectTypeToBeTrue<Equals<Computed, number[]>>();
 });
 
 describe('ctySet(ctyNumber)', () => {
@@ -112,11 +116,11 @@ describe('ctyTuple(ctyNumber, ctyString)', () => {
 });
 
 describe('ctyObject({ name: ctyString, age: ctyNumber })', () => {
-  const type = ctyObject({ name: ctyString, age: ctyNumber });
+  const type = ctyObject({ age: ctyNumber, name: ctyString });
 
   it('ctyTypeToBuffer', () => {
     expect(ctyTypeToBuffer(type)).toEqual(
-      Buffer.from('["object",{"name":"string","age":"number"}]'),
+      Buffer.from('["object",{"age":"number","name":"string"}]'),
     );
   });
 
@@ -125,8 +129,8 @@ describe('ctyObject({ name: ctyString, age: ctyNumber })', () => {
     Equals<
       Computed,
       {
-        name: string;
         age: number;
+        name: string;
       }
     >
   >();

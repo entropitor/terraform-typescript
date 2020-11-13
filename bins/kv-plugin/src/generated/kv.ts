@@ -1,8 +1,8 @@
 import type * as grpc from '@grpc/grpc-js';
 import type {
-  ServiceDefinition,
   EnumTypeDefinition,
   MessageTypeDefinition,
+  ServiceDefinition,
 } from '@grpc/proto-loader';
 
 import type { KVClient as _proto_KVClient } from './proto/KV';

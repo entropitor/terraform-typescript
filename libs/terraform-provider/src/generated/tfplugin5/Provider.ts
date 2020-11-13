@@ -1,102 +1,79 @@
 // Original file: src/proto/tfplugin5.proto
 
 import type * as grpc from '@grpc/grpc-js';
-import type {
-  _tfplugin5_GetProviderSchema_Request,
-  _tfplugin5_GetProviderSchema_Request__Output,
-} from '../tfplugin5/GetProviderSchema';
-import type {
-  _tfplugin5_PrepareProviderConfig_Request,
-  _tfplugin5_PrepareProviderConfig_Request__Output,
-} from '../tfplugin5/PrepareProviderConfig';
-import type {
-  _tfplugin5_ValidateResourceTypeConfig_Request,
-  _tfplugin5_ValidateResourceTypeConfig_Request__Output,
-} from '../tfplugin5/ValidateResourceTypeConfig';
-import type {
-  _tfplugin5_ValidateDataSourceConfig_Request,
-  _tfplugin5_ValidateDataSourceConfig_Request__Output,
-} from '../tfplugin5/ValidateDataSourceConfig';
-import type {
-  _tfplugin5_UpgradeResourceState_Request,
-  _tfplugin5_UpgradeResourceState_Request__Output,
-} from '../tfplugin5/UpgradeResourceState';
-import type {
-  _tfplugin5_Configure_Request,
-  _tfplugin5_Configure_Request__Output,
-} from '../tfplugin5/Configure';
-import type {
-  _tfplugin5_ReadResource_Request,
-  _tfplugin5_ReadResource_Request__Output,
-} from '../tfplugin5/ReadResource';
-import type {
-  _tfplugin5_PlanResourceChange_Request,
-  _tfplugin5_PlanResourceChange_Request__Output,
-} from '../tfplugin5/PlanResourceChange';
+
 import type {
   _tfplugin5_ApplyResourceChange_Request,
   _tfplugin5_ApplyResourceChange_Request__Output,
-} from '../tfplugin5/ApplyResourceChange';
+  _tfplugin5_ApplyResourceChange_Response,
+  _tfplugin5_ApplyResourceChange_Response__Output,
+} from './ApplyResourceChange';
+import type {
+  _tfplugin5_Configure_Request,
+  _tfplugin5_Configure_Request__Output,
+  _tfplugin5_Configure_Response,
+  _tfplugin5_Configure_Response__Output,
+} from './Configure';
+import type {
+  _tfplugin5_GetProviderSchema_Request,
+  _tfplugin5_GetProviderSchema_Request__Output,
+  _tfplugin5_GetProviderSchema_Response,
+  _tfplugin5_GetProviderSchema_Response__Output,
+} from './GetProviderSchema';
 import type {
   _tfplugin5_ImportResourceState_Request,
   _tfplugin5_ImportResourceState_Request__Output,
-} from '../tfplugin5/ImportResourceState';
+  _tfplugin5_ImportResourceState_Response,
+  _tfplugin5_ImportResourceState_Response__Output,
+} from './ImportResourceState';
+import type {
+  _tfplugin5_PlanResourceChange_Request,
+  _tfplugin5_PlanResourceChange_Request__Output,
+  _tfplugin5_PlanResourceChange_Response,
+  _tfplugin5_PlanResourceChange_Response__Output,
+} from './PlanResourceChange';
+import type {
+  _tfplugin5_PrepareProviderConfig_Request,
+  _tfplugin5_PrepareProviderConfig_Request__Output,
+  _tfplugin5_PrepareProviderConfig_Response,
+  _tfplugin5_PrepareProviderConfig_Response__Output,
+} from './PrepareProviderConfig';
 import type {
   _tfplugin5_ReadDataSource_Request,
   _tfplugin5_ReadDataSource_Request__Output,
-} from '../tfplugin5/ReadDataSource';
+  _tfplugin5_ReadDataSource_Response,
+  _tfplugin5_ReadDataSource_Response__Output,
+} from './ReadDataSource';
+import type {
+  _tfplugin5_ReadResource_Request,
+  _tfplugin5_ReadResource_Request__Output,
+  _tfplugin5_ReadResource_Response,
+  _tfplugin5_ReadResource_Response__Output,
+} from './ReadResource';
 import type {
   _tfplugin5_Stop_Request,
   _tfplugin5_Stop_Request__Output,
-} from '../tfplugin5/Stop';
-import type {
-  _tfplugin5_GetProviderSchema_Response,
-  _tfplugin5_GetProviderSchema_Response__Output,
-} from '../tfplugin5/GetProviderSchema';
-import type {
-  _tfplugin5_PrepareProviderConfig_Response,
-  _tfplugin5_PrepareProviderConfig_Response__Output,
-} from '../tfplugin5/PrepareProviderConfig';
-import type {
-  _tfplugin5_ValidateResourceTypeConfig_Response,
-  _tfplugin5_ValidateResourceTypeConfig_Response__Output,
-} from '../tfplugin5/ValidateResourceTypeConfig';
-import type {
-  _tfplugin5_ValidateDataSourceConfig_Response,
-  _tfplugin5_ValidateDataSourceConfig_Response__Output,
-} from '../tfplugin5/ValidateDataSourceConfig';
-import type {
-  _tfplugin5_UpgradeResourceState_Response,
-  _tfplugin5_UpgradeResourceState_Response__Output,
-} from '../tfplugin5/UpgradeResourceState';
-import type {
-  _tfplugin5_Configure_Response,
-  _tfplugin5_Configure_Response__Output,
-} from '../tfplugin5/Configure';
-import type {
-  _tfplugin5_ReadResource_Response,
-  _tfplugin5_ReadResource_Response__Output,
-} from '../tfplugin5/ReadResource';
-import type {
-  _tfplugin5_PlanResourceChange_Response,
-  _tfplugin5_PlanResourceChange_Response__Output,
-} from '../tfplugin5/PlanResourceChange';
-import type {
-  _tfplugin5_ApplyResourceChange_Response,
-  _tfplugin5_ApplyResourceChange_Response__Output,
-} from '../tfplugin5/ApplyResourceChange';
-import type {
-  _tfplugin5_ImportResourceState_Response,
-  _tfplugin5_ImportResourceState_Response__Output,
-} from '../tfplugin5/ImportResourceState';
-import type {
-  _tfplugin5_ReadDataSource_Response,
-  _tfplugin5_ReadDataSource_Response__Output,
-} from '../tfplugin5/ReadDataSource';
-import type {
   _tfplugin5_Stop_Response,
   _tfplugin5_Stop_Response__Output,
-} from '../tfplugin5/Stop';
+} from './Stop';
+import type {
+  _tfplugin5_UpgradeResourceState_Request,
+  _tfplugin5_UpgradeResourceState_Request__Output,
+  _tfplugin5_UpgradeResourceState_Response,
+  _tfplugin5_UpgradeResourceState_Response__Output,
+} from './UpgradeResourceState';
+import type {
+  _tfplugin5_ValidateDataSourceConfig_Request,
+  _tfplugin5_ValidateDataSourceConfig_Request__Output,
+  _tfplugin5_ValidateDataSourceConfig_Response,
+  _tfplugin5_ValidateDataSourceConfig_Response__Output,
+} from './ValidateDataSourceConfig';
+import type {
+  _tfplugin5_ValidateResourceTypeConfig_Request,
+  _tfplugin5_ValidateResourceTypeConfig_Request__Output,
+  _tfplugin5_ValidateResourceTypeConfig_Response,
+  _tfplugin5_ValidateResourceTypeConfig_Response__Output,
+} from './ValidateResourceTypeConfig';
 
 export interface ProviderClient extends grpc.Client {
   ApplyResourceChange(

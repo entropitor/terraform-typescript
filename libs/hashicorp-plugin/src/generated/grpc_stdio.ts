@@ -1,8 +1,8 @@
 import type * as grpc from '@grpc/grpc-js';
 import type {
-  ServiceDefinition,
   EnumTypeDefinition,
   MessageTypeDefinition,
+  ServiceDefinition,
 } from '@grpc/proto-loader';
 
 import type { GRPCStdioClient as _plugin_GRPCStdioClient } from './plugin/GRPCStdio';

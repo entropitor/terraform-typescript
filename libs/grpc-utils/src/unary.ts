@@ -1,5 +1,5 @@
-import * as Either from 'fp-ts/Either';
 import * as grpc from '@grpc/grpc-js';
+import * as Either from 'fp-ts/Either';
 
 export const cbReturn = <E, V>(
   callback: (error: E | null, value: V | null) => void,

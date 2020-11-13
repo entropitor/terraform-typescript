@@ -1,4 +1,4 @@
-import { pki, md, random } from 'node-forge';
+import { md, pki } from 'node-forge';
 
 const ONE_SECOND = 1000;
 const ONE_MINUTE = 60 * ONE_SECOND;
@@ -31,29 +31,29 @@ export const generateIdentity = () => {
   ]);
   cert.setExtensions([
     {
-      name: 'basicConstraints',
       cA: true,
+      name: 'basicConstraints',
     },
     {
-      name: 'keyUsage',
-      keyCertSign: true,
       digitalSignature: true,
-      keyEncipherment: true,
       keyAgreement: true,
+      keyCertSign: true,
+      keyEncipherment: true,
+      name: 'keyUsage',
     },
     {
-      name: 'extKeyUsage',
       clientAuth: true,
+      name: 'extKeyUsage',
       serverAuth: true,
     },
     {
-      name: 'subjectAltName',
       altNames: [
         {
           type: 2, // DNS
           value: host,
         },
       ],
+      name: 'subjectAltName',
     },
   ]);
 

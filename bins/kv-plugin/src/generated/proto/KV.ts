@@ -1,22 +1,23 @@
 // Original file: src/proto/kv.proto
 
 import type * as grpc from '@grpc/grpc-js';
+
 import type {
   Empty as _proto_Empty,
   Empty__Output as _proto_Empty__Output,
-} from '../proto/Empty';
+} from './Empty';
 import type {
   GetRequest as _proto_GetRequest,
   GetRequest__Output as _proto_GetRequest__Output,
-} from '../proto/GetRequest';
+} from './GetRequest';
 import type {
   GetResponse as _proto_GetResponse,
   GetResponse__Output as _proto_GetResponse__Output,
-} from '../proto/GetResponse';
+} from './GetResponse';
 import type {
   PutRequest as _proto_PutRequest,
   PutRequest__Output as _proto_PutRequest__Output,
-} from '../proto/PutRequest';
+} from './PutRequest';
 
 export interface KVClient extends grpc.Client {
   Get(

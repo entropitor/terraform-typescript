@@ -1,22 +1,22 @@
 // Original file: src/proto/tfplugin5.proto
 
 import type {
-  DynamicValue as _tfplugin5_DynamicValue,
-  DynamicValue__Output as _tfplugin5_DynamicValue__Output,
-} from '../tfplugin5/DynamicValue';
-import type {
   Diagnostic as _tfplugin5_Diagnostic,
   Diagnostic__Output as _tfplugin5_Diagnostic__Output,
-} from '../tfplugin5/Diagnostic';
+} from './Diagnostic';
+import type {
+  DynamicValue as _tfplugin5_DynamicValue,
+  DynamicValue__Output as _tfplugin5_DynamicValue__Output,
+} from './DynamicValue';
 
 export interface _tfplugin5_ValidateDataSourceConfig_Request {
-  type_name?: string;
   config?: _tfplugin5_DynamicValue;
+  type_name?: string;
 }
 
 export interface _tfplugin5_ValidateDataSourceConfig_Request__Output {
-  type_name?: string;
   config?: _tfplugin5_DynamicValue__Output;
+  type_name?: string;
 }
 
 export interface _tfplugin5_ValidateDataSourceConfig_Response {

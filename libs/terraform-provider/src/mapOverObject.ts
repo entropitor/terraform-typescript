@@ -2,7 +2,7 @@ export const objectMap = <A, B>(
   mapFn: (
     keyValue: [string, A],
     index: number,
-    array: [string, A][],
+    array: Array<[string, A]>,
   ) => [string, B],
   obj: Record<string, A>,
 ): Record<string, B> => Object.fromEntries(Object.entries(obj).map(mapFn));

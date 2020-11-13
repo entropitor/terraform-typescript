@@ -1,8 +1,8 @@
 import type * as grpc from '@grpc/grpc-js';
 import type {
-  ServiceDefinition,
   EnumTypeDefinition,
   MessageTypeDefinition,
+  ServiceDefinition,
 } from '@grpc/proto-loader';
 
 import type { ProviderClient as _tfplugin5_ProviderClient } from './tfplugin5/Provider';
@@ -31,11 +31,11 @@ export interface ProtoGrpcType {
       typeof grpc.Client,
       _tfplugin5_ProviderClient
     > & { service: ServiceDefinition };
-    ProvisionResource: MessageTypeDefinition;
     Provisioner: SubtypeConstructor<
       typeof grpc.Client,
       _tfplugin5_ProvisionerClient
     > & { service: ServiceDefinition };
+    ProvisionResource: MessageTypeDefinition;
     RawState: MessageTypeDefinition;
     ReadDataSource: MessageTypeDefinition;
     ReadResource: MessageTypeDefinition;

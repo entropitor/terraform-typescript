@@ -1,6 +1,7 @@
+import path from 'path';
+
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
 
 type Proto<PackageName extends string, ServiceName extends string> = {
   [packageName in PackageName]: {
@@ -24,9 +25,9 @@ type LoadProtoArgs<
 > = {
   dirname: string;
   fileName: string;
+  implementation: ServiceHandlers;
   packageName: PN;
   serviceName: ServiceName<ProtoGrpcType, PN>;
-  implementation: ServiceHandlers;
 };
 
 export const loadProto = <
@@ -36,27 +37,26 @@ export const loadProto = <
 >({
   dirname,
   fileName,
+  implementation,
   packageName,
   serviceName,
-  implementation,
 }: LoadProtoArgs<ProtoGrpcType, ServiceHandlers, PN>) => {
   const fullPath = path.resolve(dirname, 'proto', fileName);
   const packageDefinition = protoLoader.loadSync(fullPath, {
+    defaults: true,
+    enums: String,
     keepCase: true,
     longs: Number,
-    enums: String,
-    defaults: true,
     oneofs: true,
   });
   const proto = grpc.loadPackageDefinition(packageDefinition) as any;
 
-  const service: grpc.ServiceDefinition<ServiceHandlers> =
-    proto[packageName][serviceName].service;
+  const { service } = proto[packageName][serviceName];
   return {
-    proto,
     addToServer(server: grpc.Server) {
       // @ts-expect-error implementation wrongly typed
       server.addService(service, implementation);
     },
+    proto,
   };
 };

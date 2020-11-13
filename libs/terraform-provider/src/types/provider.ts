@@ -1,5 +1,6 @@
-import { SchemaDescriptor } from 'src/schema/descriptor';
 import { Schema } from '../generated/tfplugin5/Schema';
+import { SchemaDescriptor } from '../schema/descriptor';
+
 import { DataSource } from './dataSource';
 import { Resource } from './resource';
 import { AsyncResponse } from './response';
@@ -25,20 +26,20 @@ export interface Provider<
   R extends { [key: string]: any },
   D extends { [key: string]: SchemaDescriptor }
 > {
-  getSchema(): Schema;
-
-  getResources(): Resources<R>;
-
-  getDataSources(): DataSources<D, Client>;
-
-  prepareProviderConfig(args: {
-    config: ProviderSchemaConfig;
-  }): AsyncResponse<PrepareConfigureResult<ProviderSchemaConfig>>;
-
   configure(arsg: {
     config: ProviderSchemaConfig;
     preparedConfig: ProviderSchemaConfig;
   }): AsyncResponse<ConfigureResult<Client>>;
+
+  getDataSources(): DataSources<D, Client>;
+
+  getResources(): Resources<R>;
+
+  getSchema(): Schema;
+
+  prepareProviderConfig(args: {
+    config: ProviderSchemaConfig;
+  }): AsyncResponse<PrepareConfigureResult<ProviderSchemaConfig>>;
 }
 
 export type ProviderSchema<P> = P extends Provider<infer S, any, any, any>

@@ -1,13 +1,13 @@
 // Original file: src/proto/tfplugin5.proto
 
 import type {
-  DynamicValue as _tfplugin5_DynamicValue,
-  DynamicValue__Output as _tfplugin5_DynamicValue__Output,
-} from '../tfplugin5/DynamicValue';
-import type {
   Diagnostic as _tfplugin5_Diagnostic,
   Diagnostic__Output as _tfplugin5_Diagnostic__Output,
-} from '../tfplugin5/Diagnostic';
+} from './Diagnostic';
+import type {
+  DynamicValue as _tfplugin5_DynamicValue,
+  DynamicValue__Output as _tfplugin5_DynamicValue__Output,
+} from './DynamicValue';
 
 export interface _tfplugin5_ProvisionResource_Request {
   config?: _tfplugin5_DynamicValue;
@@ -20,13 +20,13 @@ export interface _tfplugin5_ProvisionResource_Request__Output {
 }
 
 export interface _tfplugin5_ProvisionResource_Response {
-  output?: string;
   diagnostics?: _tfplugin5_Diagnostic[];
+  output?: string;
 }
 
 export interface _tfplugin5_ProvisionResource_Response__Output {
-  output?: string;
   diagnostics?: _tfplugin5_Diagnostic__Output[];
+  output?: string;
 }
 
 export interface ProvisionResource {}

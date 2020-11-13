@@ -1,11 +1,13 @@
+import { Http2Server } from 'http2';
+
 import * as grpc from '@grpc/grpc-js';
-import * as GrpcStdio from 'src/generated/grpc_stdio';
+import { loadProto } from '@terraform-typescript/grpc-utils';
 // @ts-expect-error no definition file
 import health from 'grpc-health-check';
 import * as forge from 'node-forge';
-import { loadProto } from '@terraform-typescript/grpc-utils';
-import { Http2Server } from 'http2';
+
 import { generateIdentity } from './certificate';
+import * as GrpcStdio from './generated/grpc_stdio';
 import { GRPCStdioHandlers } from './generated/plugin/GRPCStdio';
 
 const CORE_PROTOCOL_VERSION = 1;
@@ -31,8 +33,8 @@ const grpcStdioProto = loadProto<
 });
 
 const statusMap = {
-  plugin: health.messages.HealthCheckResponse.ServingStatus.SERVING,
   '': health.messages.HealthCheckResponse.ServingStatus.NOT_SERVING,
+  plugin: health.messages.HealthCheckResponse.ServingStatus.SERVING,
 };
 const healthImpl = new health.Implementation(statusMap);
 
@@ -86,10 +88,11 @@ export const hashicorpPlugin = async ({
     server.start();
     const networkType = 'tcp';
     const address = `127.0.0.1:${port}`;
+    // eslint-disable-next-line no-console
     console.log(
       `${CORE_PROTOCOL_VERSION}|${appVersion}|${networkType}|${address}|${PROTOCOL}|${serverCertificateString}`,
     );
-    // @ts-expect-error
+    // @ts-expect-error access internal variable to close connection when only client closes
     server.http2ServerList.forEach((http2Server: Http2Server) => {
       http2Server.on('connection', (socket) => {
         socket.on('close', () => {

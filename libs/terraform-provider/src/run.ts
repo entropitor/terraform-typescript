@@ -1,12 +1,17 @@
-import { hashicorpPlugin } from '@terraform-typescript/hashicorp-plugin';
+/* eslint-disable sort-keys-fix/sort-keys-fix */
 import { loadProto, unary } from '@terraform-typescript/grpc-utils';
+import { hashicorpPlugin } from '@terraform-typescript/hashicorp-plugin';
 import * as Either from 'fp-ts/Either';
-import * as grpc from '@grpc/grpc-js';
+import { pipe } from 'fp-ts/lib/function';
+import * as TaskThese from 'fp-ts/lib/TaskThese';
+
 import { parseDynamicValue, serializeDynamicValue } from './dynamicValue';
-import { valueMap } from './mapOverObject';
-import { Provider } from './types/provider';
 import { ProtoGrpcType } from './generated/tfplugin5';
 import { ProviderHandlers } from './generated/tfplugin5/Provider';
+import { valueMap } from './mapOverObject';
+import { SchemaDescriptor } from './schema/descriptor';
+import { createSchema } from './schema/schema';
+import { Provider } from './types/provider';
 import { Resource } from './types/resource';
 import {
   AsyncResponse,
@@ -15,10 +20,6 @@ import {
   runTask,
   runTaskTillGrpcResponse,
 } from './types/response';
-import { pipe } from 'fp-ts/lib/function';
-import * as TaskThese from 'fp-ts/lib/TaskThese';
-import { SchemaDescriptor } from './schema/descriptor';
-import { createSchema } from './schema/schema';
 
 export const run = <
   P,
@@ -170,14 +171,15 @@ export const run = <
           runTaskTillGrpcResponse,
         );
       }),
-      ImportResourceState: unary(async (call) => {
-        console.error(call.request!);
+      ImportResourceState: unary(async (_call) => {
         return Either.left({
-          code: grpc.status.UNIMPLEMENTED,
+          code: 12, // Unimplemented
         });
       }),
 
       Stop: unary(async (_call) => {
+        // TODO should this need better integration?
+        // eslint-disable-next-line no-console
         console.error('Hello from Stop');
         setTimeout(() => {
           process.exit(0);

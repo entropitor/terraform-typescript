@@ -1,19 +1,6 @@
 import fetch from 'node-fetch';
 
 export type HashicupsApiClient = {
-  listCoffees: () => Promise<
-    Array<{
-      id: number;
-      name: string;
-      teaser: string;
-      description: string;
-      price: number;
-      image: string;
-      ingredients: Array<{
-        ingredient_id: number;
-      }>;
-    }>
-  >;
   getOrder: (
     orderId: number,
   ) => Promise<{
@@ -31,11 +18,24 @@ export type HashicupsApiClient = {
       quantity: number;
     }>;
   }>;
+  listCoffees: () => Promise<
+    Array<{
+      description: string;
+      id: number;
+      image: string;
+      ingredients: Array<{
+        ingredient_id: number;
+      }>;
+      name: string;
+      price: number;
+      teaser: string;
+    }>
+  >;
 };
 
 export type CreateApiClientArgs = {
-  username: string;
   password: string;
+  username: string;
 };
 
 export const createApiClient = async (
@@ -44,17 +44,18 @@ export const createApiClient = async (
   const url = 'http://localhost:19090';
 
   const tokenResponse = await fetch(`${url}/signin`, {
-    method: 'POST',
     body: JSON.stringify({
-      username: config.username,
       password: config.password,
+      username: config.username,
     }),
+    method: 'POST',
   });
   const { token } = await tokenResponse.json();
 
   const get = async (path: string) => {
     const result = await fetch(`${url}${path}`);
-    return await result.json();
+    const json = await result.json();
+    return json;
   };
 
   const getAuthorized = async (path: string) => {
@@ -63,15 +64,16 @@ export const createApiClient = async (
         Authorization: token,
       },
     });
-    return await result.json();
+    const json = await result.json();
+    return json;
   };
 
   return {
-    async listCoffees() {
-      return get('/coffees');
-    },
     async getOrder(orderId: number) {
       return getAuthorized(`/orders/${orderId}`);
+    },
+    async listCoffees() {
+      return get('/coffees');
     },
   };
 };

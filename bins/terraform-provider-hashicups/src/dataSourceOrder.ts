@@ -1,68 +1,66 @@
 import {
   AsyncResponse,
   createDataSource,
-  createSchema,
   createSchemaDescriptor,
   ctyNumber,
   ctyString,
-  DataSource,
-  SchemaConfig,
   SchemaState,
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
+
 import { HashicupsApiClient } from './apiClient';
 
 export const dataSourceOrderSchemaDescriptor = createSchemaDescriptor({
   description: 'Order data source',
   properties: {
     id: {
-      type: 'raw',
       ctyType: ctyNumber,
       source: 'required-in-config',
+      type: 'raw',
     },
     items: {
-      type: 'list',
       itemType: {
         description: 'items',
         properties: {
-          coffee_id: {
-            type: 'raw',
-            ctyType: ctyNumber,
-            source: 'computed',
-          },
-          coffee_name: {
-            type: 'raw',
-            ctyType: ctyString,
-            source: 'computed',
-          },
-          coffee_teaser: {
-            type: 'raw',
-            ctyType: ctyString,
-            source: 'computed',
-          },
           coffee_description: {
-            type: 'raw',
             ctyType: ctyString,
             source: 'computed',
-          },
-          coffee_price: {
             type: 'raw',
+          },
+          coffee_id: {
             ctyType: ctyNumber,
             source: 'computed',
+            type: 'raw',
           },
           coffee_image: {
-            type: 'raw',
             ctyType: ctyString,
             source: 'computed',
-          },
-          quantity: {
             type: 'raw',
+          },
+          coffee_name: {
+            ctyType: ctyString,
+            source: 'computed',
+            type: 'raw',
+          },
+          coffee_price: {
             ctyType: ctyNumber,
             source: 'computed',
+            type: 'raw',
+          },
+          coffee_teaser: {
+            ctyType: ctyString,
+            source: 'computed',
+            type: 'raw',
+          },
+          quantity: {
+            ctyType: ctyNumber,
+            source: 'computed',
+            type: 'raw',
           },
         },
       },
+      type: 'list',
     },
   },
 });
@@ -81,14 +79,14 @@ export const dataSourceOrder = ctor<HashicupsApiClient>({
           state: {
             id: config.id,
             items: order.items.map(
-              (order): Item => ({
-                coffee_id: order.coffee.id,
-                coffee_image: order.coffee.image,
-                coffee_description: order.coffee.description,
-                coffee_name: order.coffee.name,
-                coffee_price: order.coffee.price,
-                coffee_teaser: order.coffee.teaser,
-                quantity: order.quantity,
+              (orderItem): Item => ({
+                coffee_description: orderItem.coffee.description,
+                coffee_id: orderItem.coffee.id,
+                coffee_image: orderItem.coffee.image,
+                coffee_name: orderItem.coffee.name,
+                coffee_price: orderItem.coffee.price,
+                coffee_teaser: orderItem.coffee.teaser,
+                quantity: orderItem.quantity,
               }),
             ),
           },
@@ -96,9 +94,9 @@ export const dataSourceOrder = ctor<HashicupsApiClient>({
       } catch (error) {
         return SyncResponse.left([
           {
+            detail: error.toString(),
             severity: Severity.ERROR,
             summary: 'Failure to fetch',
-            detail: error.toString(),
           },
         ]);
       }
