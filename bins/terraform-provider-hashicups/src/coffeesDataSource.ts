@@ -1,7 +1,6 @@
 import {
   AsyncResponse,
   createDataSource,
-  createSchemaDescriptor,
   ctyNumber,
   ctyString,
   Severity,
@@ -10,7 +9,7 @@ import {
 
 import { HashicupsApiClient } from './apiClient';
 
-export const coffeesDataSourceSchemaDescriptor = createSchemaDescriptor({
+const ctor = createDataSource({
   description: 'Coffees data source schema',
   properties: {
     coffees: {
@@ -67,7 +66,6 @@ export const coffeesDataSourceSchemaDescriptor = createSchemaDescriptor({
   },
 });
 
-const ctor = createDataSource(coffeesDataSourceSchemaDescriptor);
 export const coffeesDataSource = ctor<HashicupsApiClient>({
   read({ client }) {
     return async () => {

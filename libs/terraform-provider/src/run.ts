@@ -11,6 +11,7 @@ import { ProviderHandlers } from './generated/tfplugin5/Provider';
 import { valueMap } from './mapOverObject';
 import { SchemaDescriptor } from './schema/descriptor';
 import { createSchema } from './schema/schema';
+import { SchemaConfig } from './schema/SchemaConfig';
 import { DataSource } from './types/dataSource';
 import { Provider, StringKeys } from './types/provider';
 import { Resource } from './types/resource';
@@ -23,14 +24,14 @@ import {
 } from './types/response';
 
 export const run = <
-  P,
+  SD extends SchemaDescriptor,
   Client,
-  R extends { [key: string]: SchemaDescriptor },
-  D extends { [key: string]: SchemaDescriptor }
+  R extends Record<string, SchemaDescriptor> = Record<string, SchemaDescriptor>,
+  D extends Record<string, SchemaDescriptor> = Record<string, SchemaDescriptor>
 >(
-  provider: Provider<P, Client, R, D>,
+  provider: Provider<SD, Client, R, D>,
 ) => {
-  // type PSchema = ProviderSchema<typeof provider>;
+  type ProviderSchemaConfig = SchemaConfig<SD>;
 
   let client: Client | null = null;
 
@@ -68,7 +69,9 @@ export const run = <
         );
       }),
       Configure: unary(async (call) => {
-        const config = parseDynamicValue<P>(call.request!.config!);
+        const config = parseDynamicValue<ProviderSchemaConfig>(
+          call.request!.config!,
+        );
 
         const configuredAsyncResult = responseDo
           .bind('prepareResult', provider.prepareProviderConfig({ config }))

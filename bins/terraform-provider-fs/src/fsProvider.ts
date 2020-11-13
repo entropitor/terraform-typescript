@@ -8,16 +8,12 @@ import {
   ctyString,
   Provider,
   responseDo,
-  SchemaConfig,
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
 
 import { FsClient } from './fsClient';
-import {
-  fsFileResource,
-  fsFileResourceSchemaDescriptor,
-} from './fsFileResource';
+import { fsFileResource } from './fsFileResource';
 
 const schemaDescriptor = createSchemaDescriptor({
   description: 'test schema',
@@ -32,16 +28,7 @@ const schemaDescriptor = createSchemaDescriptor({
   },
 });
 
-type FsProviderConfig = SchemaConfig<typeof schemaDescriptor>;
-
-export const fsProvider: Provider<
-  FsProviderConfig,
-  FsClient,
-  {
-    fs_file: typeof fsFileResourceSchemaDescriptor;
-  },
-  {}
-> = {
+export const fsProvider: Provider<typeof schemaDescriptor, FsClient> = {
   configure({ config }) {
     return async () => {
       await fs.mkdir(config.root_dir, {

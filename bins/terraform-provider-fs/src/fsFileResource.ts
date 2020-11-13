@@ -3,7 +3,6 @@ import * as path from 'path';
 
 import {
   createResource,
-  createSchemaDescriptor,
   ctyNumber,
   ctyObject,
   ctyString,
@@ -18,7 +17,7 @@ import { FsClient } from './fsClient';
  */
 // type Dynamic<T> = [Buffer, T];
 
-export const fsFileResourceSchemaDescriptor = createSchemaDescriptor({
+const ctor = createResource({
   description: 'a file resource',
   properties: {
     body: {
@@ -45,8 +44,6 @@ export const fsFileResourceSchemaDescriptor = createSchemaDescriptor({
     // },
   },
 });
-
-const ctor = createResource(fsFileResourceSchemaDescriptor);
 
 export const fsFileResource = ctor<FsClient>({
   applyChange({ client, plannedPrivateData, plannedState, priorState }) {

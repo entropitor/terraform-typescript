@@ -1,5 +1,6 @@
 import { Schema } from '../generated/tfplugin5/Schema';
 import { SchemaDescriptor } from '../schema/descriptor';
+import { SchemaConfig } from '../schema/SchemaConfig';
 
 import { DataSource } from './dataSource';
 import { Resource } from './resource';
@@ -25,14 +26,14 @@ type ConfigureResult<Client> = {
 };
 
 export interface Provider<
-  ProviderSchemaConfig,
+  ProviderSchemaDescriptor extends SchemaDescriptor,
   Client,
-  R extends { [key: string]: SchemaDescriptor },
-  D extends { [key: string]: SchemaDescriptor }
+  R extends Record<string, SchemaDescriptor> = Record<string, SchemaDescriptor>,
+  D extends Record<string, SchemaDescriptor> = Record<string, SchemaDescriptor>
 > {
   configure(args: {
-    config: ProviderSchemaConfig;
-    preparedConfig: ProviderSchemaConfig;
+    config: SchemaConfig<ProviderSchemaDescriptor>;
+    preparedConfig: SchemaConfig<ProviderSchemaDescriptor>;
   }): AsyncResponse<ConfigureResult<Client>>;
 
   getDataSources(): DataSources<D, Client>;
@@ -42,10 +43,8 @@ export interface Provider<
   getSchema(): Schema;
 
   prepareProviderConfig(args: {
-    config: ProviderSchemaConfig;
-  }): AsyncResponse<PrepareConfigureResult<ProviderSchemaConfig>>;
+    config: SchemaConfig<ProviderSchemaDescriptor>;
+  }): AsyncResponse<
+    PrepareConfigureResult<SchemaConfig<ProviderSchemaDescriptor>>
+  >;
 }
-
-export type ProviderSchema<P> = P extends Provider<infer S, any, any, any>
-  ? S
-  : never;

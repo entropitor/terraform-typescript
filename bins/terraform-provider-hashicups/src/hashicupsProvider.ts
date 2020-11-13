@@ -7,20 +7,13 @@ import {
   ctyString,
   Provider,
   responseDo,
-  SchemaConfig,
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
 
 import { createApiClient, HashicupsApiClient } from './apiClient';
-import {
-  coffeesDataSource,
-  coffeesDataSourceSchemaDescriptor,
-} from './coffeesDataSource';
-import {
-  orderDataSource,
-  orderDataSourceSchemaDescriptor,
-} from './orderDataSource';
+import { coffeesDataSource } from './coffeesDataSource';
+import { orderDataSource } from './orderDataSource';
 
 const schemaDescriptor = createSchemaDescriptor({
   description: 'hashicups',
@@ -38,16 +31,9 @@ const schemaDescriptor = createSchemaDescriptor({
   },
 });
 
-type ProviderConfig = SchemaConfig<typeof schemaDescriptor>;
-
 export const hashicupsProvider: Provider<
-  ProviderConfig,
-  HashicupsApiClient,
-  {},
-  {
-    hashicups_coffees: typeof coffeesDataSourceSchemaDescriptor;
-    hashicups_order: typeof orderDataSourceSchemaDescriptor;
-  }
+  typeof schemaDescriptor,
+  HashicupsApiClient
 > = {
   configure({ preparedConfig }) {
     return async () => {
