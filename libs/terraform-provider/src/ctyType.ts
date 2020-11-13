@@ -58,22 +58,18 @@ export const ctyTypeToBuffer = (typ: CtyType): Buffer => {
   return Buffer.from(JSON.stringify(ctyTypeToJson(typ)));
 };
 
-export const ctyString = () =>
-  ({
-    type: "string",
-  } as const);
-export const ctyNumber = () =>
-  ({
-    type: "number",
-  } as const);
-export const ctyBoolean = () =>
-  ({
-    type: "boolean",
-  } as const);
-export const ctyAny = () =>
-  ({
-    type: "any",
-  } as const);
+export const ctyString = {
+  type: "string",
+} as const;
+export const ctyNumber = {
+  type: "number",
+} as const;
+export const ctyBoolean = {
+  type: "boolean",
+} as const;
+export const ctyAny = {
+  type: "any",
+} as const;
 export const ctyList = <C extends CtyType>(of: C) =>
   ({
     type: "list",
@@ -100,10 +96,10 @@ export const ctyObject = <R extends { [key: string]: CtyType }>(of: R) =>
     itemType: of,
   } as const);
 
-type CtyString = ReturnType<typeof ctyString>;
-type CtyNumber = ReturnType<typeof ctyNumber>;
-type CtyBoolean = ReturnType<typeof ctyBoolean>;
-type CtyAny = ReturnType<typeof ctyAny>;
+type CtyString = typeof ctyString;
+type CtyNumber = typeof ctyNumber;
+type CtyBoolean = typeof ctyBoolean;
+type CtyAny = typeof ctyAny;
 type CtyList = ReturnType<typeof ctyList>;
 type CtySet = ReturnType<typeof ctySet>;
 type CtyMap = ReturnType<typeof ctyMap>;

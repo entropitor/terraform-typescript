@@ -28,16 +28,16 @@ describe("createSchema", () => {
       description: "Test schema",
       properties: {
         username: {
-          type: ctyString(),
+          type: ctyString,
           inConfig: "optional",
           computed: true,
         },
         password: {
-          type: ctyString(),
+          type: ctyString,
           inConfig: "required",
         },
         url: {
-          type: ctyString(),
+          type: ctyString,
           inConfig: "absent",
         },
       },
@@ -50,18 +50,18 @@ describe("createSchema", () => {
         attributes: [
           {
             name: "username",
-            type: ctyTypeToBuffer(ctyString()),
+            type: ctyTypeToBuffer(ctyString),
             optional: true,
             computed: true,
           },
           {
             name: "password",
-            type: ctyTypeToBuffer(ctyString()),
+            type: ctyTypeToBuffer(ctyString),
             required: true,
           },
           {
             name: "url",
-            type: ctyTypeToBuffer(ctyString()),
+            type: ctyTypeToBuffer(ctyString),
             computed: true,
           },
         ],
@@ -72,13 +72,16 @@ describe("createSchema", () => {
       },
     });
 
-    type ExpectedConfig = {
-      readonly username: string | null;
-      readonly password: string;
-      readonly url: void;
-    };
+    type ComputedConfig = SchemaConfig<typeof descriptor>;
     expectTypeToBeTrue<
-      Equals<SchemaConfig<typeof descriptor>, ExpectedConfig>
+      Equals<
+        ComputedConfig,
+        {
+          readonly username: string | null;
+          readonly password: string;
+          readonly url: void;
+        }
+      >
     >();
   });
 });

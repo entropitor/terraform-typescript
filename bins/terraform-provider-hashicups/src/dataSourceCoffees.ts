@@ -30,32 +30,32 @@ export const dataSourceCoffees: DataSource<
               attributes: [
                 {
                   name: "id",
-                  type: ctyTypeToBuffer(ctyNumber()),
+                  type: ctyTypeToBuffer(ctyNumber),
                   computed: true,
                 },
                 {
                   name: "name",
-                  type: ctyTypeToBuffer(ctyString()),
+                  type: ctyTypeToBuffer(ctyString),
                   computed: true,
                 },
                 {
                   name: "teaser",
-                  type: ctyTypeToBuffer(ctyString()),
+                  type: ctyTypeToBuffer(ctyString),
                   compute: true,
                 },
                 {
                   name: "description",
-                  type: ctyTypeToBuffer(ctyString()),
+                  type: ctyTypeToBuffer(ctyString),
                   compute: true,
                 },
                 {
                   name: "price",
-                  type: ctyTypeToBuffer(ctyNumber()),
+                  type: ctyTypeToBuffer(ctyNumber),
                   computed: true,
                 },
                 {
                   name: "image",
-                  type: ctyTypeToBuffer(ctyString()),
+                  type: ctyTypeToBuffer(ctyString),
                   compute: true,
                 },
               ],
@@ -67,7 +67,7 @@ export const dataSourceCoffees: DataSource<
                     attributes: [
                       {
                         name: "ingredient_id",
-                        type: ctyTypeToBuffer(ctyNumber()),
+                        type: ctyTypeToBuffer(ctyNumber),
                         computed: true,
                       },
                     ],

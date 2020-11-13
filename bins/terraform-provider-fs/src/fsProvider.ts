@@ -65,7 +65,7 @@ const fsFile: Resource<FsFile> = {
         attributes: [
           {
             name: "file_name",
-            type: ctyTypeToBuffer(ctyString()),
+            type: ctyTypeToBuffer(ctyString),
             description: "The name of the file to manage",
             required: true,
             optional: false,
@@ -78,7 +78,7 @@ const fsFile: Resource<FsFile> = {
             name: "body",
             type: ctyTypeToBuffer(
               ctyObject({
-                nb_foos: ctyNumber(),
+                nb_foos: ctyNumber,
               })
             ),
             description: "The body of the file",
@@ -91,7 +91,7 @@ const fsFile: Resource<FsFile> = {
           },
           // {
           //   name: "extra",
-          //   type: ctyType(ctyAny()),
+          //   type: ctyType(ctyAny),
           //   description: "Som extra properties of the file",
           //   description_kind: StringKind.PLAIN,
           //   required: false,
@@ -214,7 +214,7 @@ export const fsProvider: Provider<
         attributes: [
           {
             name: "root_dir",
-            type: ctyTypeToBuffer(ctyString()),
+            type: ctyTypeToBuffer(ctyString),
             description: "The root dir where all files will be stored",
             description_kind: StringKind.PLAIN,
             required: true,

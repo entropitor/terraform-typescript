@@ -26,12 +26,12 @@ const schemaDescriptor = {
   description: "hashicups",
   properties: {
     username: {
-      type: ctyString(),
+      type: ctyString,
       inConfig: "optional",
       computed: true,
     },
     password: {
-      type: ctyString(),
+      type: ctyString,
       inConfig: "optional",
     },
   },
