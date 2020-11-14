@@ -11,8 +11,10 @@ describe('createSchema', () => {
   it('should create a simple schema', () => {
     expect(
       createSchema({
-        description: 'Empty schema',
-        properties: {},
+        block: {
+          description: 'Empty schema',
+          properties: {},
+        },
       }),
     ).toEqual({
       block: {
@@ -29,22 +31,24 @@ describe('createSchema', () => {
 
   it('should create a simple schema with attributes', () => {
     const descriptor = createSchemaDescriptor({
-      description: 'Test schema',
-      properties: {
-        password: {
-          ctyType: ctyString,
-          source: 'required-in-config',
-          type: 'raw',
-        },
-        url: {
-          ctyType: ctyString,
-          source: 'computed',
-          type: 'raw',
-        },
-        username: {
-          ctyType: ctyString,
-          source: 'computed-but-overridable',
-          type: 'raw',
+      block: {
+        description: 'Test schema',
+        properties: {
+          password: {
+            ctyType: ctyString,
+            source: 'required-in-config',
+            type: 'raw',
+          },
+          url: {
+            ctyType: ctyString,
+            source: 'computed',
+            type: 'raw',
+          },
+          username: {
+            ctyType: ctyString,
+            source: 'computed-but-overridable',
+            type: 'raw',
+          },
         },
       },
     });
@@ -104,58 +108,60 @@ describe('createSchema', () => {
 
   it('should create a more complex schema with attributes and list block_types', () => {
     const descriptor = createSchemaDescriptor({
-      description: 'Test schema',
-      properties: {
-        coffees: {
-          itemType: {
-            description: 'Test description',
-            properties: {
-              description: {
-                ctyType: ctyString,
-                source: 'computed',
-                type: 'raw',
-              },
-              id: {
-                ctyType: ctyNumber,
-                source: 'computed',
-                type: 'raw',
-              },
-              image: {
-                ctyType: ctyString,
-                source: 'computed',
-                type: 'raw',
-              },
-              ingredients: {
-                itemType: {
-                  description: 'ingredients description',
-                  properties: {
-                    ingredient_id: {
-                      ctyType: ctyNumber,
-                      source: 'computed',
-                      type: 'raw',
+      block: {
+        description: 'Test schema',
+        properties: {
+          coffees: {
+            itemType: {
+              description: 'Test description',
+              properties: {
+                description: {
+                  ctyType: ctyString,
+                  source: 'computed',
+                  type: 'raw',
+                },
+                id: {
+                  ctyType: ctyNumber,
+                  source: 'computed',
+                  type: 'raw',
+                },
+                image: {
+                  ctyType: ctyString,
+                  source: 'computed',
+                  type: 'raw',
+                },
+                ingredients: {
+                  itemType: {
+                    description: 'ingredients description',
+                    properties: {
+                      ingredient_id: {
+                        ctyType: ctyNumber,
+                        source: 'computed',
+                        type: 'raw',
+                      },
                     },
                   },
+                  type: 'list',
                 },
-                type: 'list',
-              },
-              name: {
-                ctyType: ctyString,
-                source: 'computed',
-                type: 'raw',
-              },
-              price: {
-                ctyType: ctyNumber,
-                source: 'computed',
-                type: 'raw',
-              },
-              teaser: {
-                ctyType: ctyString,
-                source: 'computed',
-                type: 'raw',
+                name: {
+                  ctyType: ctyString,
+                  source: 'computed',
+                  type: 'raw',
+                },
+                price: {
+                  ctyType: ctyNumber,
+                  source: 'computed',
+                  type: 'raw',
+                },
+                teaser: {
+                  ctyType: ctyString,
+                  source: 'computed',
+                  type: 'raw',
+                },
               },
             },
+            type: 'list',
           },
-          type: 'list',
         },
       },
     });

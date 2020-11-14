@@ -18,30 +18,32 @@ import { FsClient } from './fsClient';
 // type Dynamic<T> = [Buffer, T];
 
 const ctor = createResource({
-  description: 'a file resource',
-  properties: {
-    body: {
-      ctyType: ctyObject({
-        nb_foos: ctyNumber,
-      }),
-      // description: "The body of the file",
-      source: 'required-in-config',
+  block: {
+    description: 'a file resource',
+    properties: {
+      body: {
+        ctyType: ctyObject({
+          nb_foos: ctyNumber,
+        }),
+        // description: "The body of the file",
+        source: 'required-in-config',
 
-      type: 'raw',
-    },
-    file_name: {
-      ctyType: ctyString,
-      // description: "The name of the file to manage",
-      source: 'required-in-config',
+        type: 'raw',
+      },
+      file_name: {
+        ctyType: ctyString,
+        // description: "The name of the file to manage",
+        source: 'required-in-config',
 
-      type: 'raw',
+        type: 'raw',
+      },
+      // extra: {
+      //   type: "raw",
+      //   ctyType: ctyAny,
+      //   // description: "Som extra properties of the file",
+      //   source: "optional-in-config",
+      // },
     },
-    // extra: {
-    //   type: "raw",
-    //   ctyType: ctyAny,
-    //   // description: "Som extra properties of the file",
-    //   source: "optional-in-config",
-    // },
   },
 });
 

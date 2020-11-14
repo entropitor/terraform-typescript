@@ -13,65 +13,67 @@ import { SchemaBlockDescriptor } from '@terraform-typescript/terraform-provider/
 import { ApiOrder, HashicupsApiClient } from './apiClient';
 
 const schemaDescriptor = createSchemaDescriptor({
-  description: 'Order resource',
-  properties: {
-    // TODO move to resource itself
-    id: {
-      ctyType: ctyString,
-      source: 'computed',
-      type: 'raw',
-    },
-    items: {
-      itemType: {
-        description: 'the items in the order',
-        properties: {
-          coffee: {
-            itemType: {
-              description: 'the coffee you want to order',
-              properties: {
-                description: {
-                  ctyType: ctyString,
-                  source: 'computed',
-                  type: 'raw',
-                },
-                id: {
-                  ctyType: ctyNumber,
-                  source: 'required-in-config',
-                  type: 'raw',
-                },
-                image: {
-                  ctyType: ctyString,
-                  source: 'computed',
-                  type: 'raw',
-                },
-                name: {
-                  ctyType: ctyString,
-                  source: 'computed',
-                  type: 'raw',
-                },
-                price: {
-                  ctyType: ctyNumber,
-                  source: 'computed',
-                  type: 'raw',
-                },
-                teaser: {
-                  ctyType: ctyString,
-                  source: 'computed',
-                  type: 'raw',
+  block: {
+    description: 'Order resource',
+    properties: {
+      // TODO move to resource itself
+      id: {
+        ctyType: ctyString,
+        source: 'computed',
+        type: 'raw',
+      },
+      items: {
+        itemType: {
+          description: 'the items in the order',
+          properties: {
+            coffee: {
+              itemType: {
+                description: 'the coffee you want to order',
+                properties: {
+                  description: {
+                    ctyType: ctyString,
+                    source: 'computed',
+                    type: 'raw',
+                  },
+                  id: {
+                    ctyType: ctyNumber,
+                    source: 'required-in-config',
+                    type: 'raw',
+                  },
+                  image: {
+                    ctyType: ctyString,
+                    source: 'computed',
+                    type: 'raw',
+                  },
+                  name: {
+                    ctyType: ctyString,
+                    source: 'computed',
+                    type: 'raw',
+                  },
+                  price: {
+                    ctyType: ctyNumber,
+                    source: 'computed',
+                    type: 'raw',
+                  },
+                  teaser: {
+                    ctyType: ctyString,
+                    source: 'computed',
+                    type: 'raw',
+                  },
                 },
               },
+              maxItems: 1,
+              type: 'list',
             },
-            maxItems: 1,
-            type: 'list',
-          },
-          quantity: {
-            ctyType: ctyNumber,
-            source: 'required-in-config',
-            type: 'raw',
+            quantity: {
+              ctyType: ctyNumber,
+              source: 'required-in-config',
+              type: 'raw',
+            },
           },
         },
+        type: 'list',
       },
-      type: 'list',
     },
   },
 });
@@ -164,7 +166,7 @@ export const orderResource = ctor<HashicupsApiClient>({
   planChange({ priorPrivateData, proposedNewState }) {
     return AsyncResponse.right({
       plannedPrivateData: priorPrivateData,
-      plannedState: maskState(proposedNewState!, schemaDescriptor),
+      plannedState: maskState(proposedNewState!, schemaDescriptor.block),
       requiresReplace: [],
     });
   },

@@ -68,7 +68,7 @@ export const createBlock = (descriptor: SchemaBlockDescriptor): SchemaBlock => {
 };
 export const createSchema = (descriptor: SchemaDescriptor): Schema => {
   return {
-    block: createBlock(descriptor),
+    block: createBlock(descriptor.block),
     version: 1,
   };
 };

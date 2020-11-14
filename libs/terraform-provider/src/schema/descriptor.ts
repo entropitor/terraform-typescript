@@ -39,8 +39,9 @@ export type SchemaBlockDescriptor = {
   };
 };
 
-// TODO make subtype with block field to later support schema version
-export type SchemaDescriptor = SchemaBlockDescriptor;
+export type SchemaDescriptor = {
+  block: SchemaBlockDescriptor;
+};
 
 export const createSchemaDescriptor = <T extends SchemaDescriptor>(t: T): T => {
   return t;

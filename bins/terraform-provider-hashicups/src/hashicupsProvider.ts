@@ -17,17 +17,19 @@ import { orderDataSource } from './orderDataSource';
 import { orderResource } from './orderResource';
 
 const schemaDescriptor = createSchemaDescriptor({
-  description: 'hashicups',
-  properties: {
-    password: {
-      ctyType: ctyString,
-      source: 'optional-in-config',
-      type: 'raw',
-    },
-    username: {
-      ctyType: ctyString,
-      source: 'computed-but-overridable',
-      type: 'raw',
+  block: {
+    description: 'hashicups',
+    properties: {
+      password: {
+        ctyType: ctyString,
+        source: 'optional-in-config',
+        type: 'raw',
+      },
+      username: {
+        ctyType: ctyString,
+        source: 'computed-but-overridable',
+        type: 'raw',
+      },
     },
   },
 });

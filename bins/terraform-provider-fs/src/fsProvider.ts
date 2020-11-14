@@ -16,14 +16,16 @@ import { FsClient } from './fsClient';
 import { fsFileResource } from './fsFileResource';
 
 const schemaDescriptor = createSchemaDescriptor({
-  description: 'test schema',
-  properties: {
-    root_dir: {
-      ctyType: ctyString,
-      // description: "The root dir where all files will be stored",
-      source: 'required-in-config',
+  block: {
+    description: 'test schema',
+    properties: {
+      root_dir: {
+        ctyType: ctyString,
+        // description: "The root dir where all files will be stored",
+        source: 'required-in-config',
 
-      type: 'raw',
+        type: 'raw',
+      },
     },
   },
 });

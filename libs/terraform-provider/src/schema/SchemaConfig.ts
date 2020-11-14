@@ -38,5 +38,5 @@ export type BlockConfig<Descriptor extends SchemaBlockDescriptor> = SmartOmit<
 >;
 
 export type SchemaConfig<Descriptor extends SchemaDescriptor> = BlockConfig<
-  Descriptor
+  Descriptor['block']
 >;

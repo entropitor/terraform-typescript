@@ -12,55 +12,57 @@ import {
 import { HashicupsApiClient } from './apiClient';
 
 const schemaDescriptor = createSchemaDescriptor({
-  description: 'Order data source',
-  properties: {
-    id: {
-      ctyType: ctyNumber,
-      source: 'required-in-config',
-      type: 'raw',
-    },
-    items: {
-      itemType: {
-        description: 'items',
-        properties: {
-          coffee_description: {
-            ctyType: ctyString,
-            source: 'computed',
-            type: 'raw',
-          },
-          coffee_id: {
-            ctyType: ctyNumber,
-            source: 'computed',
-            type: 'raw',
-          },
-          coffee_image: {
-            ctyType: ctyString,
-            source: 'computed',
-            type: 'raw',
-          },
-          coffee_name: {
-            ctyType: ctyString,
-            source: 'computed',
-            type: 'raw',
-          },
-          coffee_price: {
-            ctyType: ctyNumber,
-            source: 'computed',
-            type: 'raw',
-          },
-          coffee_teaser: {
-            ctyType: ctyString,
-            source: 'computed',
-            type: 'raw',
-          },
-          quantity: {
-            ctyType: ctyNumber,
-            source: 'computed',
-            type: 'raw',
+  block: {
+    description: 'Order data source',
+    properties: {
+      id: {
+        ctyType: ctyNumber,
+        source: 'required-in-config',
+        type: 'raw',
+      },
+      items: {
+        itemType: {
+          description: 'items',
+          properties: {
+            coffee_description: {
+              ctyType: ctyString,
+              source: 'computed',
+              type: 'raw',
+            },
+            coffee_id: {
+              ctyType: ctyNumber,
+              source: 'computed',
+              type: 'raw',
+            },
+            coffee_image: {
+              ctyType: ctyString,
+              source: 'computed',
+              type: 'raw',
+            },
+            coffee_name: {
+              ctyType: ctyString,
+              source: 'computed',
+              type: 'raw',
+            },
+            coffee_price: {
+              ctyType: ctyNumber,
+              source: 'computed',
+              type: 'raw',
+            },
+            coffee_teaser: {
+              ctyType: ctyString,
+              source: 'computed',
+              type: 'raw',
+            },
+            quantity: {
+              ctyType: ctyNumber,
+              source: 'computed',
+              type: 'raw',
+            },
           },
         },
+        type: 'list',
       },
-      type: 'list',
     },
   },
 });
