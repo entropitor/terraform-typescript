@@ -23,6 +23,7 @@ export interface DataSource<SD extends SchemaDescriptor, Client> {
   }): AsyncResponse<ValidateDataSourceResult>;
 }
 
+// TODO add "id" field?
 export const createDataSource = <S extends SchemaDescriptor>(descriptor: S) => <
   Client = void
 >(

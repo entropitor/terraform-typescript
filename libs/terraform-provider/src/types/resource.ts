@@ -61,6 +61,7 @@ export interface Resource<SD extends SchemaDescriptor, Client> {
   validate(args: { config: SchemaConfig<SD> }): AsyncResponse<ValidateResult>;
 }
 
+// TODO add "id" field?
 export const createResource = <SD extends SchemaDescriptor>(descriptor: SD) => <
   Client = void
 >(
