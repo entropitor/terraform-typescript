@@ -6,6 +6,9 @@ import { StringKind } from '../generated/tfplugin5/StringKind';
 
 import { ctyTypeToBuffer } from './ctyType';
 import {
+  isComputed,
+  isOptional,
+  isRequired,
   RawPropertyDescriptor,
   SchemaBlockDescriptor,
   SchemaDescriptor,
@@ -22,19 +25,15 @@ export const createBlock = (descriptor: SchemaBlockDescriptor): SchemaBlock => {
       .map(([attributeName, propertyDescriptor]) => {
         const attributeDescriptor = propertyDescriptor as RawPropertyDescriptor;
 
-        const isOptional =
-          attributeDescriptor.source === 'optional-in-config' ||
-          attributeDescriptor.source === 'computed-but-overridable';
-        const isComputed =
-          attributeDescriptor.source === 'computed' ||
-          attributeDescriptor.source === 'computed-but-overridable';
-
         return {
-          computed: isComputed || undefined,
+          computed: isComputed(attributeDescriptor) || undefined,
+          deprecated: false,
+          description: '',
+          description_kind: StringKind.PLAIN,
           name: attributeName,
-          optional: isOptional || undefined,
-          required:
-            attributeDescriptor.source === 'required-in-config' || undefined,
+          optional: isOptional(attributeDescriptor) || undefined,
+          required: isRequired(attributeDescriptor) || undefined,
+          sensitive: false,
           type: ctyTypeToBuffer(attributeDescriptor.ctyType),
         };
       }),

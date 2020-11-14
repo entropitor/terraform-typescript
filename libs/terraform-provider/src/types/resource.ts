@@ -23,7 +23,7 @@ type UpgradeResult<S> = {
 };
 
 type ReadResourceResult<S> = {
-  newState: S;
+  newState: S | null;
   privateData: Buffer;
 };
 
@@ -48,7 +48,7 @@ export interface Resource<SD extends SchemaDescriptor, Client> {
 
   read(args: {
     client: Client;
-    currentState: SchemaState<SD>;
+    currentState: SchemaState<SD> | null;
     privateData: Buffer;
   }): AsyncResponse<ReadResourceResult<SchemaState<SD>>>;
 

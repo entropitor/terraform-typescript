@@ -7,7 +7,10 @@ import { Task } from 'fp-ts/lib/Task';
 import * as TaskThese from 'fp-ts/lib/TaskThese';
 import * as These from 'fp-ts/lib/These';
 
-import { Diagnostic } from '../generated/tfplugin5/Diagnostic';
+import {
+  _tfplugin5_Diagnostic_Severity as Severity,
+  Diagnostic,
+} from '../generated/tfplugin5/Diagnostic';
 
 export type AsyncResponse<T> = TaskThese.TaskThese<Diagnostic[], T>;
 export type SyncResponse<T> = These.These<Diagnostic[], T>;
@@ -30,9 +33,29 @@ export const getDiagnostics = <T = never>(response: SyncResponse<T>) => {
   );
 };
 
+export const SyncResponse = {
+  both: <T = never>(diagnostics: Diagnostic[], t: T) =>
+    These.both<Diagnostic[], T>(diagnostics, t),
+  catch: (summary: string) => (error: Error) =>
+    SyncResponse.fromError(summary, error),
+  fromError: (summary: string, error: Error) =>
+    These.left<Diagnostic[], never>([
+      {
+        detail: error.message,
+        severity: Severity.ERROR,
+        summary,
+      },
+    ]),
+  left: <T = never>(diagnostics: Diagnostic[]) =>
+    These.left<Diagnostic[], T>(diagnostics),
+  right: <T = never>(t: T) => These.right<Diagnostic[], T>(t),
+};
+
 export const AsyncResponse = {
   both: <T = never>(diagnostics: Diagnostic[], t: T) =>
     TaskThese.both<Diagnostic[], T>(diagnostics, t),
+  fromError: (summary: string, error: Error) =>
+    TaskThese.of(SyncResponse.fromError(summary, error)),
   left: <T = never>(diagnostics: Diagnostic[]) =>
     TaskThese.left<Diagnostic[], T>(diagnostics),
   leftAsync: <T = never>(diagnostics: Task<Diagnostic[]>) =>
@@ -40,14 +63,6 @@ export const AsyncResponse = {
   right: <T = never>(t: T) => TaskThese.right<Diagnostic[], T>(t),
   rightAsync: <T = never>(t: Task<T>) =>
     TaskThese.rightTask<Diagnostic[], T>(t),
-};
-
-export const SyncResponse = {
-  both: <T = never>(diagnostics: Diagnostic[], t: T) =>
-    These.both<Diagnostic[], T>(diagnostics, t),
-  left: <T = never>(diagnostics: Diagnostic[]) =>
-    These.left<Diagnostic[], T>(diagnostics),
-  right: <T = never>(t: T) => These.right<Diagnostic[], T>(t),
 };
 
 const asGrpcResponse = <T = never>(

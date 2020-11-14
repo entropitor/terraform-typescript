@@ -45,3 +45,12 @@ export type SchemaDescriptor = SchemaBlockDescriptor;
 export const createSchemaDescriptor = <T extends SchemaDescriptor>(t: T): T => {
   return t;
 };
+
+export const isOptional = (rawPropertyDescriptor: RawPropertyDescriptor) =>
+  rawPropertyDescriptor.source === 'optional-in-config' ||
+  rawPropertyDescriptor.source === 'computed-but-overridable';
+export const isComputed = (rawPropertyDescriptor: RawPropertyDescriptor) =>
+  rawPropertyDescriptor.source === 'computed' ||
+  rawPropertyDescriptor.source === 'computed-but-overridable';
+export const isRequired = (rawPropertyDescriptor: RawPropertyDescriptor) =>
+  rawPropertyDescriptor.source === 'required-in-config';

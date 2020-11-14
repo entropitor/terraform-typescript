@@ -14,6 +14,7 @@ import {
 import { createApiClient, HashicupsApiClient } from './apiClient';
 import { coffeesDataSource } from './coffeesDataSource';
 import { orderDataSource } from './orderDataSource';
+import { orderResource } from './orderResource';
 
 const schemaDescriptor = createSchemaDescriptor({
   description: 'hashicups',
@@ -62,7 +63,9 @@ export const hashicupsProvider: Provider<
     };
   },
   getResources() {
-    return {};
+    return {
+      hashicups_order: orderResource,
+    };
   },
   getSchema() {
     return createSchema(schemaDescriptor);

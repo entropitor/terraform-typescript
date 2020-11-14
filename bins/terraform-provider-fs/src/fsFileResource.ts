@@ -102,6 +102,13 @@ export const fsFileResource = ctor<FsClient>({
   },
   read({ client, currentState, privateData }) {
     return async () => {
+      if (currentState == null) {
+        return SyncResponse.right({
+          newState: null,
+          privateData,
+        });
+      }
+
       const fileName = path.resolve(
         client.config.root_dir,
         currentState.file_name,
