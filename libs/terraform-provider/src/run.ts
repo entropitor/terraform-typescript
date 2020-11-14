@@ -9,6 +9,7 @@ import { parseDynamicValue, serializeDynamicValue } from './dynamicValue';
 import { ProtoGrpcType } from './generated/tfplugin5';
 import { ProviderHandlers } from './generated/tfplugin5/Provider';
 import { valueMap } from './mapOverObject';
+import { maskComputedState } from './maskComputedState';
 import { SchemaDescriptor } from './schema/descriptor';
 import { createSchema } from './schema/schema';
 import { SchemaConfig } from './schema/SchemaConfig';
@@ -133,11 +134,17 @@ export const run = <
             ),
           }),
           TaskThese.map(
-            ({ plannedPrivateData, plannedState, requiresReplace }) => ({
-              planned_private: plannedPrivateData,
-              planned_state: serializeDynamicValue(plannedState),
-              requires_replace: requiresReplace,
-            }),
+            ({ plannedPrivateData, plannedState, requiresReplace }) => {
+              const cleanedState = maskComputedState(
+                plannedState,
+                resource.getSchemaDescriptor(),
+              );
+              return {
+                planned_private: plannedPrivateData,
+                planned_state: serializeDynamicValue(cleanedState),
+                requires_replace: requiresReplace,
+              };
+            },
           ),
           runTaskTillGrpcResponse,
         );

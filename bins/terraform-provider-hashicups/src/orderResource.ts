@@ -7,8 +7,6 @@ import {
   SchemaState,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
-import { unknownSymbol } from '@terraform-typescript/terraform-provider/dist/src/dynamicValue';
-import { SchemaBlockDescriptor } from '@terraform-typescript/terraform-provider/dist/src/schema/descriptor';
 
 import { ApiOrder, HashicupsApiClient } from './apiClient';
 
@@ -104,36 +102,6 @@ const transformOrder = (order: ApiOrder): StateOrder => {
   };
 };
 
-const maskState = <T>(obj: T, descriptor: SchemaBlockDescriptor): T => {
-  // @ts-expect-error badly typed fromEntries
-  return Object.fromEntries(
-    Object.entries(descriptor.properties).map(
-      ([propertyName, subDescriptor]) => {
-        const value = obj[propertyName];
-        if (subDescriptor.type === 'raw') {
-          const isComputed =
-            subDescriptor.source === 'computed' ||
-            subDescriptor.source === 'computed-but-overridable';
-          if (value == null && isComputed) {
-            return [propertyName, unknownSymbol];
-          }
-
-          return [propertyName, value];
-        }
-
-        if (subDescriptor.type === 'list') {
-          return [
-            propertyName,
-            value.map((item) => maskState(item, subDescriptor.itemType)),
-          ];
-        }
-
-        throw new Error('unimplemented');
-      },
-    ),
-  );
-};
-
 export const orderResource = ctor<HashicupsApiClient>({
   applyChange({ client, config, priorState }) {
     // priorState == null => create
@@ -166,13 +134,12 @@ export const orderResource = ctor<HashicupsApiClient>({
   planChange({ priorPrivateData, proposedNewState }) {
     return AsyncResponse.right({
       plannedPrivateData: priorPrivateData,
-      plannedState: maskState(proposedNewState!, schemaDescriptor.block),
+      plannedState: proposedNewState,
       requiresReplace: [],
     });
   },
   read({ client, currentState, privateData }) {
     return async () => {
-      console.error('fooobar', JSON.stringify(currentState));
       if (currentState == null) {
         return SyncResponse.right({
           newState: null,
