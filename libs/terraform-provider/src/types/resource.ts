@@ -4,6 +4,7 @@ import { SchemaConfig } from '../schema/SchemaConfig';
 import { SchemaState } from '../schema/SchemaState';
 
 import { AsyncResponse } from './response';
+import { PathOf } from './utils/hasChange';
 
 type ValidateResult = {};
 
@@ -31,7 +32,7 @@ export interface Resource<SD extends SchemaDescriptor, Client> {
   applyChange(args: {
     client: Client;
     config: SchemaConfig<SD>;
-    hasStateChange: (path: string[]) => boolean;
+    hasStateChange: (path: PathOf<SchemaState<SD>>) => boolean;
     plannedPrivateData: Buffer;
     plannedState: SchemaState<SD> | null;
     priorState: SchemaState<SD> | null;
