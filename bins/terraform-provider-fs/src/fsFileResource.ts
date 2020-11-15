@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 
 import {
+  attribute,
   createResource,
   ctyNumber,
   ctyObject,
@@ -21,28 +22,17 @@ const ctor = createResource({
   block: {
     description: 'a file resource',
     properties: {
-      body: {
-        ctyType: ctyObject({
+      // description: "The body of the file",
+      body: attribute(
+        'required-in-config',
+        ctyObject({
           nb_foos: ctyNumber,
         }),
-        // description: "The body of the file",
-        source: 'required-in-config',
-
-        type: 'attribute',
-      },
-      file_name: {
-        ctyType: ctyString,
-        // description: "The name of the file to manage",
-        source: 'required-in-config',
-
-        type: 'attribute',
-      },
-      // extra: {
-      //   type: 'attribute',
-      //   ctyType: ctyAny,
-      //   // description: "Som extra properties of the file",
-      //   source: "optional-in-config",
-      // },
+      ),
+      // description: "The name of the file to manage",
+      file_name: attribute('required-in-config', ctyString),
+      // description: "Som extra properties of the file",
+      // extra: attribute('optional-in-config', ctyAny)
     },
   },
 });

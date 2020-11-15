@@ -2,7 +2,7 @@ import { StringKind } from '../generated/tfplugin5/StringKind';
 import { Equals, expectTypeToBeTrue } from '../testUtils';
 
 import { ctyNumber, ctyString, ctyTypeToBuffer } from './ctyType';
-import { createSchemaDescriptor } from './descriptor';
+import { attribute, createSchemaDescriptor, listProperty } from './descriptor';
 import { createSchema } from './schema';
 import { SchemaConfig } from './SchemaConfig';
 import { SchemaState } from './SchemaState';
@@ -34,21 +34,9 @@ describe('createSchema', () => {
       block: {
         description: 'Test schema',
         properties: {
-          password: {
-            ctyType: ctyString,
-            source: 'required-in-config',
-            type: 'attribute',
-          },
-          url: {
-            ctyType: ctyString,
-            source: 'computed',
-            type: 'attribute',
-          },
-          username: {
-            ctyType: ctyString,
-            source: 'computed-but-overridable',
-            type: 'attribute',
-          },
+          password: attribute('required-in-config', ctyString),
+          url: attribute('computed', ctyString),
+          username: attribute('computed-but-overridable', ctyString),
         },
       },
     });
@@ -128,57 +116,23 @@ describe('createSchema', () => {
       block: {
         description: 'Test schema',
         properties: {
-          coffees: {
-            itemType: {
-              description: 'Test description',
-              properties: {
-                description: {
-                  ctyType: ctyString,
-                  source: 'computed',
-                  type: 'attribute',
+          coffees: listProperty({
+            description: 'Test description',
+            properties: {
+              description: attribute('computed', ctyString),
+              id: attribute('computed', ctyNumber),
+              image: attribute('computed', ctyString),
+              ingredients: listProperty({
+                description: 'ingredients description',
+                properties: {
+                  ingredient_id: attribute('computed', ctyNumber),
                 },
-                id: {
-                  ctyType: ctyNumber,
-                  source: 'computed',
-                  type: 'attribute',
-                },
-                image: {
-                  ctyType: ctyString,
-                  source: 'computed',
-                  type: 'attribute',
-                },
-                ingredients: {
-                  itemType: {
-                    description: 'ingredients description',
-                    properties: {
-                      ingredient_id: {
-                        ctyType: ctyNumber,
-                        source: 'computed',
-                        type: 'attribute',
-                      },
-                    },
-                  },
-                  type: 'list',
-                },
-                name: {
-                  ctyType: ctyString,
-                  source: 'computed',
-                  type: 'attribute',
-                },
-                price: {
-                  ctyType: ctyNumber,
-                  source: 'computed',
-                  type: 'attribute',
-                },
-                teaser: {
-                  ctyType: ctyString,
-                  source: 'computed',
-                  type: 'attribute',
-                },
-              },
+              }),
+              name: attribute('computed', ctyString),
+              price: attribute('computed', ctyNumber),
+              teaser: attribute('computed', ctyString),
             },
-            type: 'list',
-          },
+          }),
         },
       },
     });

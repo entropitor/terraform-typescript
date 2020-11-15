@@ -1,10 +1,12 @@
 import {
   AsyncResponse,
+  attribute,
   computedValue,
   createResource,
   createSchemaDescriptor,
   ctyNumber,
   ctyString,
+  listProperty,
   SchemaState,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
@@ -15,69 +17,31 @@ const schemaDescriptor = createSchemaDescriptor({
   block: {
     description: 'Order resource',
     properties: {
-      // TODO move to resource itself
-      id: {
-        ctyType: ctyString,
-        source: 'computed',
-        type: 'attribute',
-      },
-      items: {
-        itemType: {
-          description: 'the items in the order',
-          properties: {
-            coffee: {
-              itemType: {
-                description: 'the coffee you want to order',
-                properties: {
-                  description: {
-                    ctyType: ctyString,
-                    source: 'computed',
-                    type: 'attribute',
-                  },
-                  id: {
-                    ctyType: ctyNumber,
-                    source: 'required-in-config',
-                    type: 'attribute',
-                  },
-                  image: {
-                    ctyType: ctyString,
-                    source: 'computed',
-                    type: 'attribute',
-                  },
-                  name: {
-                    ctyType: ctyString,
-                    source: 'computed',
-                    type: 'attribute',
-                  },
-                  price: {
-                    ctyType: ctyNumber,
-                    source: 'computed',
-                    type: 'attribute',
-                  },
-                  teaser: {
-                    ctyType: ctyString,
-                    source: 'computed',
-                    type: 'attribute',
-                  },
-                },
+      // TODO move to resource itself (?)
+      id: attribute('computed', ctyString),
+      items: listProperty({
+        description: 'the items in the order',
+        properties: {
+          coffee: listProperty(
+            {
+              description: 'the coffee you want to order',
+              properties: {
+                description: attribute('computed', ctyString),
+                id: attribute('required-in-config', ctyNumber),
+                image: attribute('computed', ctyString),
+                name: attribute('computed', ctyString),
+                price: attribute('computed', ctyNumber),
+                teaser: attribute('computed', ctyString),
               },
+            },
+            {
               maxItems: 1,
-              type: 'list',
             },
-            quantity: {
-              ctyType: ctyNumber,
-              source: 'required-in-config',
-              type: 'attribute',
-            },
-          },
+          ),
+          quantity: attribute('required-in-config', ctyNumber),
         },
-        type: 'list',
-      },
-      last_updated: {
-        ctyType: ctyString,
-        source: 'computed-but-overridable',
-        type: 'attribute',
-      },
+      }),
+      last_updated: attribute('computed-but-overridable', ctyString),
     },
   },
 });

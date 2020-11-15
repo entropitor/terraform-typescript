@@ -2,6 +2,7 @@
  * Implementing https://learn.hashicorp.com/tutorials/terraform/provider-setup
  */
 import {
+  attribute,
   createSchema,
   createSchemaDescriptor,
   ctyString,
@@ -20,16 +21,8 @@ const schemaDescriptor = createSchemaDescriptor({
   block: {
     description: 'hashicups',
     properties: {
-      password: {
-        ctyType: ctyString,
-        source: 'optional-in-config',
-        type: 'attribute',
-      },
-      username: {
-        ctyType: ctyString,
-        source: 'computed-but-overridable',
-        type: 'attribute',
-      },
+      password: attribute('optional-in-config', ctyString),
+      username: attribute('optional-in-config', ctyString),
     },
   },
 });

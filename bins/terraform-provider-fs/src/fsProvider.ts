@@ -3,6 +3,7 @@ import * as path from 'path';
 
 import {
   AsyncResponse,
+  attribute,
   createSchema,
   createSchemaDescriptor,
   ctyString,
@@ -19,13 +20,8 @@ const schemaDescriptor = createSchemaDescriptor({
   block: {
     description: 'test schema',
     properties: {
-      root_dir: {
-        ctyType: ctyString,
-        // description: "The root dir where all files will be stored",
-        source: 'required-in-config',
-
-        type: 'attribute',
-      },
+      // description: "The root dir where all files will be stored",
+      root_dir: attribute('required-in-config', ctyString),
     },
   },
 });

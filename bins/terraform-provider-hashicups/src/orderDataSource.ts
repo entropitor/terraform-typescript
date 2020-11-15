@@ -1,9 +1,11 @@
 import {
   AsyncResponse,
+  attribute,
   createDataSource,
   createSchemaDescriptor,
   ctyNumber,
   ctyString,
+  listProperty,
   SchemaState,
   Severity,
   SyncResponse,
@@ -15,54 +17,19 @@ const schemaDescriptor = createSchemaDescriptor({
   block: {
     description: 'Order data source',
     properties: {
-      id: {
-        ctyType: ctyNumber,
-        source: 'required-in-config',
-        type: 'attribute',
-      },
-      items: {
-        itemType: {
-          description: 'items',
-          properties: {
-            coffee_description: {
-              ctyType: ctyString,
-              source: 'computed',
-              type: 'attribute',
-            },
-            coffee_id: {
-              ctyType: ctyNumber,
-              source: 'computed',
-              type: 'attribute',
-            },
-            coffee_image: {
-              ctyType: ctyString,
-              source: 'computed',
-              type: 'attribute',
-            },
-            coffee_name: {
-              ctyType: ctyString,
-              source: 'computed',
-              type: 'attribute',
-            },
-            coffee_price: {
-              ctyType: ctyNumber,
-              source: 'computed',
-              type: 'attribute',
-            },
-            coffee_teaser: {
-              ctyType: ctyString,
-              source: 'computed',
-              type: 'attribute',
-            },
-            quantity: {
-              ctyType: ctyNumber,
-              source: 'computed',
-              type: 'attribute',
-            },
-          },
+      id: attribute('required-in-config', ctyNumber),
+      items: listProperty({
+        description: 'items',
+        properties: {
+          coffee_description: attribute('computed', ctyString),
+          coffee_id: attribute('computed', ctyNumber),
+          coffee_image: attribute('computed', ctyString),
+          coffee_name: attribute('computed', ctyString),
+          coffee_price: attribute('computed', ctyNumber),
+          coffee_teaser: attribute('computed', ctyString),
+          quantity: attribute('computed', ctyNumber),
         },
-        type: 'list',
-      },
+      }),
     },
   },
 });

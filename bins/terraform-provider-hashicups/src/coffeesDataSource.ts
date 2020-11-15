@@ -1,8 +1,10 @@
 import {
   AsyncResponse,
+  attribute,
   createDataSource,
   ctyNumber,
   ctyString,
+  listProperty,
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
@@ -13,57 +15,23 @@ const ctor = createDataSource({
   block: {
     description: 'Coffees data source schema',
     properties: {
-      coffees: {
-        itemType: {
-          description: 'Test description',
-          properties: {
-            description: {
-              ctyType: ctyString,
-              source: 'computed',
-              type: 'attribute',
+      coffees: listProperty({
+        description: 'Test description',
+        properties: {
+          description: attribute('computed', ctyString),
+          id: attribute('computed', ctyNumber),
+          image: attribute('computed', ctyString),
+          ingredients: listProperty({
+            description: 'ingredients description',
+            properties: {
+              ingredient_id: attribute('computed', ctyNumber),
             },
-            id: {
-              ctyType: ctyNumber,
-              source: 'computed',
-              type: 'attribute',
-            },
-            image: {
-              ctyType: ctyString,
-              source: 'computed',
-              type: 'attribute',
-            },
-            ingredients: {
-              itemType: {
-                description: 'ingredients description',
-                properties: {
-                  ingredient_id: {
-                    ctyType: ctyNumber,
-                    source: 'computed',
-                    type: 'attribute',
-                  },
-                },
-              },
-              type: 'list',
-            },
-            name: {
-              ctyType: ctyString,
-              source: 'computed',
-              type: 'attribute',
-            },
-            price: {
-              ctyType: ctyNumber,
-              source: 'computed',
-              type: 'attribute',
-            },
-            teaser: {
-              ctyType: ctyString,
-              source: 'computed',
-              type: 'attribute',
-            },
-          },
+          }),
+          name: attribute('computed', ctyString),
+          price: attribute('computed', ctyNumber),
+          teaser: attribute('computed', ctyString),
         },
-        type: 'list',
-      },
+      }),
     },
   },
 });
