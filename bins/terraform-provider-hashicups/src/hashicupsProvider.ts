@@ -23,12 +23,12 @@ const schemaDescriptor = createSchemaDescriptor({
       password: {
         ctyType: ctyString,
         source: 'optional-in-config',
-        type: 'raw',
+        type: 'attribute',
       },
       username: {
         ctyType: ctyString,
         source: 'computed-but-overridable',
-        type: 'raw',
+        type: 'attribute',
       },
     },
   },

@@ -37,17 +37,17 @@ describe('createSchema', () => {
           password: {
             ctyType: ctyString,
             source: 'required-in-config',
-            type: 'raw',
+            type: 'attribute',
           },
           url: {
             ctyType: ctyString,
             source: 'computed',
-            type: 'raw',
+            type: 'attribute',
           },
           username: {
             ctyType: ctyString,
             source: 'computed-but-overridable',
-            type: 'raw',
+            type: 'attribute',
           },
         },
       },
@@ -135,17 +135,17 @@ describe('createSchema', () => {
                 description: {
                   ctyType: ctyString,
                   source: 'computed',
-                  type: 'raw',
+                  type: 'attribute',
                 },
                 id: {
                   ctyType: ctyNumber,
                   source: 'computed',
-                  type: 'raw',
+                  type: 'attribute',
                 },
                 image: {
                   ctyType: ctyString,
                   source: 'computed',
-                  type: 'raw',
+                  type: 'attribute',
                 },
                 ingredients: {
                   itemType: {
@@ -154,7 +154,7 @@ describe('createSchema', () => {
                       ingredient_id: {
                         ctyType: ctyNumber,
                         source: 'computed',
-                        type: 'raw',
+                        type: 'attribute',
                       },
                     },
                   },
@@ -163,17 +163,17 @@ describe('createSchema', () => {
                 name: {
                   ctyType: ctyString,
                   source: 'computed',
-                  type: 'raw',
+                  type: 'attribute',
                 },
                 price: {
                   ctyType: ctyNumber,
                   source: 'computed',
-                  type: 'raw',
+                  type: 'attribute',
                 },
                 teaser: {
                   ctyType: ctyString,
                   source: 'computed',
-                  type: 'raw',
+                  type: 'attribute',
                 },
               },
             },

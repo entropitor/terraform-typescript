@@ -6,10 +6,10 @@ import { StringKind } from '../generated/tfplugin5/StringKind';
 
 import { ctyTypeToBuffer } from './ctyType';
 import {
+  AttributePropertyDescriptor,
   isComputed,
   isOptional,
   isRequired,
-  RawPropertyDescriptor,
   SchemaBlockDescriptor,
   SchemaDescriptor,
   SchemaPropertyDescriptor,
@@ -20,10 +20,10 @@ export const createBlock = (descriptor: SchemaBlockDescriptor): SchemaBlock => {
     attributes: Object.entries(descriptor.properties)
       .filter(
         ([_propertyName, propertyDescriptor]) =>
-          propertyDescriptor.type === 'raw',
+          propertyDescriptor.type === 'attribute',
       )
       .map(([attributeName, propertyDescriptor]) => {
-        const attributeDescriptor = propertyDescriptor as RawPropertyDescriptor;
+        const attributeDescriptor = propertyDescriptor as AttributePropertyDescriptor;
 
         return {
           computed: isComputed(attributeDescriptor) || undefined,
@@ -40,12 +40,12 @@ export const createBlock = (descriptor: SchemaBlockDescriptor): SchemaBlock => {
     block_types: Object.entries(descriptor.properties)
       .filter(
         ([_propertyName, propertyDescriptor]) =>
-          propertyDescriptor.type !== 'raw',
+          propertyDescriptor.type !== 'attribute',
       )
       .map(([propertyName, propertyDescriptor]) => {
         const blockDescriptor = propertyDescriptor as Exclude<
           SchemaPropertyDescriptor,
-          RawPropertyDescriptor
+          AttributePropertyDescriptor
         >;
 
         if (blockDescriptor.type === 'list') {

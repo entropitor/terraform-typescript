@@ -1,15 +1,15 @@
 import { CtyToTypescript } from './ctyType';
 import {
+  AttributePropertyDescriptor,
   ListPropertyDescriptor,
-  RawPropertyDescriptor,
   SchemaBlockDescriptor,
   SchemaDescriptor,
   SchemaPropertyDescriptor,
 } from './descriptor';
 import { SmartOmit } from './SmartOmit';
 
-type RawPropertyConfig<
-  Descriptor extends RawPropertyDescriptor
+type AttributePropertyConfig<
+  Descriptor extends AttributePropertyDescriptor
 > = Descriptor['source'] extends 'required-in-config'
   ? CtyToTypescript<Descriptor['ctyType']>
   : Descriptor['source'] extends
@@ -23,8 +23,8 @@ type ListPropertyConfig<Descriptor extends ListPropertyDescriptor> = Array<
 
 type PropertyConfig<
   Descriptor extends SchemaPropertyDescriptor
-> = Descriptor extends RawPropertyDescriptor
-  ? RawPropertyConfig<Descriptor>
+> = Descriptor extends AttributePropertyDescriptor
+  ? AttributePropertyConfig<Descriptor>
   : Descriptor extends ListPropertyDescriptor
   ? ListPropertyConfig<Descriptor>
   : never;

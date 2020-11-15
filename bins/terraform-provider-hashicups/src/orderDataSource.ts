@@ -18,7 +18,7 @@ const schemaDescriptor = createSchemaDescriptor({
       id: {
         ctyType: ctyNumber,
         source: 'required-in-config',
-        type: 'raw',
+        type: 'attribute',
       },
       items: {
         itemType: {
@@ -27,37 +27,37 @@ const schemaDescriptor = createSchemaDescriptor({
             coffee_description: {
               ctyType: ctyString,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
             coffee_id: {
               ctyType: ctyNumber,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
             coffee_image: {
               ctyType: ctyString,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
             coffee_name: {
               ctyType: ctyString,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
             coffee_price: {
               ctyType: ctyNumber,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
             coffee_teaser: {
               ctyType: ctyString,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
             quantity: {
               ctyType: ctyNumber,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
           },
         },

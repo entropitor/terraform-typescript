@@ -17,7 +17,7 @@ const maskBlock = (block: any, descriptor: SchemaBlockDescriptor): any => {
     Object.entries(descriptor.properties).map(
       ([propertyName, subDescriptor]) => {
         const value = block[propertyName];
-        if (subDescriptor.type === 'raw') {
+        if (subDescriptor.type === 'attribute') {
           if (
             value == null &&
             isComputed(subDescriptor) &&

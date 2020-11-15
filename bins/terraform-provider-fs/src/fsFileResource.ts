@@ -28,17 +28,17 @@ const ctor = createResource({
         // description: "The body of the file",
         source: 'required-in-config',
 
-        type: 'raw',
+        type: 'attribute',
       },
       file_name: {
         ctyType: ctyString,
         // description: "The name of the file to manage",
         source: 'required-in-config',
 
-        type: 'raw',
+        type: 'attribute',
       },
       // extra: {
-      //   type: "raw",
+      //   type: 'attribute',
       //   ctyType: ctyAny,
       //   // description: "Som extra properties of the file",
       //   source: "optional-in-config",

@@ -24,7 +24,7 @@ const schemaDescriptor = createSchemaDescriptor({
         // description: "The root dir where all files will be stored",
         source: 'required-in-config',
 
-        type: 'raw',
+        type: 'attribute',
       },
     },
   },

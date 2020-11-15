@@ -20,17 +20,17 @@ const ctor = createDataSource({
             description: {
               ctyType: ctyString,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
             id: {
               ctyType: ctyNumber,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
             image: {
               ctyType: ctyString,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
             ingredients: {
               itemType: {
@@ -39,7 +39,7 @@ const ctor = createDataSource({
                   ingredient_id: {
                     ctyType: ctyNumber,
                     source: 'computed',
-                    type: 'raw',
+                    type: 'attribute',
                   },
                 },
               },
@@ -48,17 +48,17 @@ const ctor = createDataSource({
             name: {
               ctyType: ctyString,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
             price: {
               ctyType: ctyNumber,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
             teaser: {
               ctyType: ctyString,
               source: 'computed',
-              type: 'raw',
+              type: 'attribute',
             },
           },
         },

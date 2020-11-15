@@ -19,7 +19,7 @@ const schemaDescriptor = createSchemaDescriptor({
       id: {
         ctyType: ctyString,
         source: 'computed',
-        type: 'raw',
+        type: 'attribute',
       },
       items: {
         itemType: {
@@ -32,32 +32,32 @@ const schemaDescriptor = createSchemaDescriptor({
                   description: {
                     ctyType: ctyString,
                     source: 'computed',
-                    type: 'raw',
+                    type: 'attribute',
                   },
                   id: {
                     ctyType: ctyNumber,
                     source: 'required-in-config',
-                    type: 'raw',
+                    type: 'attribute',
                   },
                   image: {
                     ctyType: ctyString,
                     source: 'computed',
-                    type: 'raw',
+                    type: 'attribute',
                   },
                   name: {
                     ctyType: ctyString,
                     source: 'computed',
-                    type: 'raw',
+                    type: 'attribute',
                   },
                   price: {
                     ctyType: ctyNumber,
                     source: 'computed',
-                    type: 'raw',
+                    type: 'attribute',
                   },
                   teaser: {
                     ctyType: ctyString,
                     source: 'computed',
-                    type: 'raw',
+                    type: 'attribute',
                   },
                 },
               },
@@ -67,7 +67,7 @@ const schemaDescriptor = createSchemaDescriptor({
             quantity: {
               ctyType: ctyNumber,
               source: 'required-in-config',
-              type: 'raw',
+              type: 'attribute',
             },
           },
         },
@@ -76,7 +76,7 @@ const schemaDescriptor = createSchemaDescriptor({
       last_updated: {
         ctyType: ctyString,
         source: 'computed-but-overridable',
-        type: 'raw',
+        type: 'attribute',
       },
     },
   },
