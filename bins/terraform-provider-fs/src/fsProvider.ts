@@ -12,17 +12,17 @@ import {
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
+import { schemaBlock } from '@terraform-typescript/terraform-provider/dist/src/schema/descriptor';
 
 import { FsClient } from './fsClient';
 import { fsFileResource } from './fsFileResource';
 
-const schemaDescriptor = schema({
-  description: 'test schema',
-  properties: {
+const schemaDescriptor = schema(
+  schemaBlock('test schema', {
     // description: "The root dir where all files will be stored",
     root_dir: attribute('required-in-config', ctyString),
-  },
-});
+  }),
+);
 
 export const fsProvider: Provider<typeof schemaDescriptor, FsClient> = {
   configure({ config }) {

@@ -72,12 +72,22 @@ export const listProperty = <SBD extends SchemaBlockDescriptor>(
     type: 'list',
   } as const);
 
+export const schemaBlockDescriptorBrand = Symbol('SchemaBlockDescriptorBrand');
 export type SchemaBlockDescriptor = {
+  brand: typeof schemaBlockDescriptorBrand;
   description: string;
-  properties: {
-    [key: string]: SchemaPropertyDescriptor;
-  };
+  properties: Record<string, SchemaPropertyDescriptor>;
 };
+
+export const schemaBlock = <P extends Record<string, SchemaPropertyDescriptor>>(
+  description: string,
+  properties: P,
+) =>
+  ({
+    brand: schemaBlockDescriptorBrand,
+    description,
+    properties,
+  } as const);
 
 export const schemaDescriptorBrand = Symbol('SchemaDescriptorBrand');
 export type SchemaDescriptor = {

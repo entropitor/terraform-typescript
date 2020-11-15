@@ -11,19 +11,19 @@ import {
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
+import { schemaBlock } from '@terraform-typescript/terraform-provider/dist/src/schema/descriptor';
 
 import { createApiClient, HashicupsApiClient } from './apiClient';
 import { coffeesDataSource } from './coffeesDataSource';
 import { orderDataSource } from './orderDataSource';
 import { orderResource } from './orderResource';
 
-const schemaDescriptor = schema({
-  description: 'hashicups',
-  properties: {
+const schemaDescriptor = schema(
+  schemaBlock('hashicups', {
     password: attribute('optional-in-config', ctyString),
     username: attribute('optional-in-config', ctyString),
-  },
-});
+  }),
+);
 
 export const hashicupsProvider: Provider<
   typeof schemaDescriptor,

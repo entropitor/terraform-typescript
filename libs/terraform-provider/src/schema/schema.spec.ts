@@ -2,21 +2,14 @@ import { StringKind } from '../generated/tfplugin5/StringKind';
 import { Equals, expectTypeToBeTrue } from '../testUtils';
 
 import { ctyNumber, ctyString, ctyTypeToBuffer } from './ctyType';
-import { attribute, listProperty, schema } from './descriptor';
+import { attribute, listProperty, schema, schemaBlock } from './descriptor';
 import { createSchema } from './schema';
 import { SchemaConfig } from './SchemaConfig';
 import { SchemaState } from './SchemaState';
 
 describe('createSchema', () => {
   it('should create a simple schema', () => {
-    expect(
-      createSchema(
-        schema({
-          description: 'Empty schema',
-          properties: {},
-        }),
-      ),
-    ).toEqual({
+    expect(createSchema(schema(schemaBlock('Empty schema', {})))).toEqual({
       block: {
         attributes: [],
         block_types: [],
@@ -30,14 +23,13 @@ describe('createSchema', () => {
   });
 
   it('should create a simple schema with attributes', () => {
-    const descriptor = schema({
-      description: 'Test schema',
-      properties: {
+    const descriptor = schema(
+      schemaBlock('Test schema', {
         password: attribute('required-in-config', ctyString),
         url: attribute('computed', ctyString),
         username: attribute('computed-but-overridable', ctyString),
-      },
-    });
+      }),
+    );
 
     expect(createSchema(descriptor)).toEqual({
       block: {
@@ -110,28 +102,25 @@ describe('createSchema', () => {
   });
 
   it('should create a more complex schema with attributes and list block_types', () => {
-    const descriptor = schema({
-      description: 'Test schema',
-      properties: {
-        coffees: listProperty({
-          description: 'Test description',
-          properties: {
+    const descriptor = schema(
+      schemaBlock('Test schema', {
+        coffees: listProperty(
+          schemaBlock('Test description', {
             description: attribute('computed', ctyString),
             id: attribute('computed', ctyNumber),
             image: attribute('computed', ctyString),
-            ingredients: listProperty({
-              description: 'ingredients description',
-              properties: {
+            ingredients: listProperty(
+              schemaBlock('ingredients description', {
                 ingredient_id: attribute('computed', ctyNumber),
-              },
-            }),
+              }),
+            ),
             name: attribute('computed', ctyString),
             price: attribute('computed', ctyNumber),
             teaser: attribute('computed', ctyString),
-          },
-        }),
-      },
-    });
+          }),
+        ),
+      }),
+    );
     expect(createSchema(descriptor)).toEqual({
       block: {
         attributes: [],

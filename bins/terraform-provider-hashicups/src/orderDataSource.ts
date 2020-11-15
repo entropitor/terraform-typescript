@@ -10,16 +10,15 @@ import {
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
+import { schemaBlock } from '@terraform-typescript/terraform-provider/dist/src/schema/descriptor';
 
 import { HashicupsApiClient } from './apiClient';
 
-const schemaDescriptor = schema({
-  description: 'Order data source',
-  properties: {
+const schemaDescriptor = schema(
+  schemaBlock('Order data source', {
     id: attribute('required-in-config', ctyNumber),
-    items: listProperty({
-      description: 'items',
-      properties: {
+    items: listProperty(
+      schemaBlock('items', {
         coffee_description: attribute('computed', ctyString),
         coffee_id: attribute('computed', ctyNumber),
         coffee_image: attribute('computed', ctyString),
@@ -27,10 +26,10 @@ const schemaDescriptor = schema({
         coffee_price: attribute('computed', ctyNumber),
         coffee_teaser: attribute('computed', ctyString),
         quantity: attribute('computed', ctyNumber),
-      },
-    }),
-  },
-});
+      }),
+    ),
+  }),
+);
 
 type Item = SchemaState<typeof schemaDescriptor>['items'][number];
 

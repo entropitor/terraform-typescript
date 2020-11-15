@@ -10,39 +10,35 @@ import {
   SchemaState,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
+import { schemaBlock } from '@terraform-typescript/terraform-provider/dist/src/schema/descriptor';
 
 import { ApiOrder, HashicupsApiClient } from './apiClient';
 
-const schemaDescriptor = schema({
-  description: 'Order resource',
-  properties: {
+const schemaDescriptor = schema(
+  schemaBlock('Order resource', {
     // TODO move to resource itself (?)
     id: attribute('computed', ctyString),
-    items: listProperty({
-      description: 'the items in the order',
-      properties: {
+    items: listProperty(
+      schemaBlock('the items in the order', {
         coffee: listProperty(
-          {
-            description: 'the coffee you want to order',
-            properties: {
-              description: attribute('computed', ctyString),
-              id: attribute('required-in-config', ctyNumber),
-              image: attribute('computed', ctyString),
-              name: attribute('computed', ctyString),
-              price: attribute('computed', ctyNumber),
-              teaser: attribute('computed', ctyString),
-            },
-          },
+          schemaBlock('the coffee you want to order', {
+            description: attribute('computed', ctyString),
+            id: attribute('required-in-config', ctyNumber),
+            image: attribute('computed', ctyString),
+            name: attribute('computed', ctyString),
+            price: attribute('computed', ctyNumber),
+            teaser: attribute('computed', ctyString),
+          }),
           {
             maxItems: 1,
           },
         ),
         quantity: attribute('required-in-config', ctyNumber),
-      },
-    }),
+      }),
+    ),
     last_updated: attribute('computed-but-overridable', ctyString),
-  },
-});
+  }),
+);
 
 const ctor = createResource(schemaDescriptor);
 

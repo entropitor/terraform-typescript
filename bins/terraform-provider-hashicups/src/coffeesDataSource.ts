@@ -9,32 +9,30 @@ import {
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
+import { schemaBlock } from '@terraform-typescript/terraform-provider/dist/src/schema/descriptor';
 
 import { HashicupsApiClient } from './apiClient';
 
 const ctor = createDataSource(
-  schema({
-    description: 'Coffees data source schema',
-    properties: {
-      coffees: listProperty({
-        description: 'Test description',
-        properties: {
+  schema(
+    schemaBlock('Coffees data source schema', {
+      coffees: listProperty(
+        schemaBlock('Test description', {
           description: attribute('computed', ctyString),
           id: attribute('computed', ctyNumber),
           image: attribute('computed', ctyString),
-          ingredients: listProperty({
-            description: 'ingredients description',
-            properties: {
+          ingredients: listProperty(
+            schemaBlock('ingredients description', {
               ingredient_id: attribute('computed', ctyNumber),
-            },
-          }),
+            }),
+          ),
           name: attribute('computed', ctyString),
           price: attribute('computed', ctyNumber),
           teaser: attribute('computed', ctyString),
-        },
-      }),
-    },
-  }),
+        }),
+      ),
+    }),
+  ),
 );
 
 export const coffeesDataSource = ctor<HashicupsApiClient>({

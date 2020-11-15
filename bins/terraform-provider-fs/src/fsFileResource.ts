@@ -11,6 +11,7 @@ import {
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
+import { schemaBlock } from '@terraform-typescript/terraform-provider/dist/src/schema/descriptor';
 
 import { FsClient } from './fsClient';
 
@@ -20,9 +21,8 @@ import { FsClient } from './fsClient';
 // type Dynamic<T> = [Buffer, T];
 
 const ctor = createResource(
-  schema({
-    description: 'a file resource',
-    properties: {
+  schema(
+    schemaBlock('a file resource', {
       // description: "The body of the file",
       body: attribute(
         'required-in-config',
@@ -34,8 +34,8 @@ const ctor = createResource(
       file_name: attribute('required-in-config', ctyString),
       // description: "Som extra properties of the file",
       // extra: attribute('optional-in-config', ctyAny)
-    },
-  }),
+    }),
+  ),
 );
 
 export const fsFileResource = ctor<FsClient>({
