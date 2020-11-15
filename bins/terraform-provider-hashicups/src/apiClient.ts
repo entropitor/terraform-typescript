@@ -39,6 +39,7 @@ export type HashicupsApiClient = {
   };
   order: {
     create: (orderItems: OrderItem[]) => Promise<ApiOrder>;
+    delete: (orderId: number) => Promise<void>;
     get: (orderId: number) => Promise<ApiOrder>;
     update: (
       orderId: number,
@@ -102,6 +103,15 @@ export const createApiClient = async (
   const postAuthorized = withAuth(post);
   const putAuthorized = withAuth(put);
 
+  const deleteAuthorized = withAuth(
+    async (path: string, _body: any, extraOpts = {}) => {
+      await fetch(`${url}${path}`, {
+        method: 'DELETE',
+        ...extraOpts,
+      });
+    },
+  );
+
   return {
     coffee: {
       async list() {
@@ -111,6 +121,9 @@ export const createApiClient = async (
     order: {
       async create(orderItems) {
         return postAuthorized(`/orders`, orderItems);
+      },
+      async delete(orderId) {
+        return deleteAuthorized(`/orders/${orderId}`);
       },
       async get(orderId) {
         return getAuthorized(`/orders/${orderId}`);

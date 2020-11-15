@@ -147,10 +147,16 @@ export const orderResource = ctor<HashicupsApiClient>({
 
       // plannedState == null => delete
       if (plannedState == null) {
-        return SyncResponse.right({
-          newState: null,
-          privateData: plannedPrivateData,
-        });
+        const orderId = parseInt(priorState.id, 10);
+        try {
+          await client.order.delete(orderId);
+          return SyncResponse.right({
+            newState: null,
+            privateData: plannedPrivateData,
+          });
+        } catch (error) {
+          return SyncResponse.fromError('Failure to delete order', error);
+        }
       }
 
       // else: update

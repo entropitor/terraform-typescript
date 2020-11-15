@@ -26,7 +26,7 @@ resource "hashicups_order" "edu" {
     coffee {
       id = 3
     }
-    quantity = 4
+    quantity = 7
   }
   items {
     coffee {
