@@ -72,6 +72,11 @@ const schemaDescriptor = createSchemaDescriptor({
         },
         type: 'list',
       },
+      last_updated: {
+        ctyType: ctyString,
+        source: 'computed-but-overridable',
+        type: 'raw',
+      },
     },
   },
 });
@@ -81,7 +86,10 @@ const ctor = createResource(schemaDescriptor);
 type StateOrder = SchemaState<typeof schemaDescriptor>;
 type StateItem = StateOrder['items'][0];
 
-const transformOrder = (order: ApiOrder): StateOrder => {
+const transformOrder = (
+  order: ApiOrder,
+  lastUpdatedAt: Date | null,
+): StateOrder => {
   return {
     id: `${order.id}`,
     items: order.items.map(
@@ -99,13 +107,21 @@ const transformOrder = (order: ApiOrder): StateOrder => {
         quantity: item.quantity,
       }),
     ),
+    last_updated: lastUpdatedAt?.toISOString() ?? null,
   };
 };
 
 export const orderResource = ctor<HashicupsApiClient>({
-  applyChange({ client, config, priorState }) {
-    // priorState == null => create
+  applyChange({
+    client,
+    config,
+    hasStateChange,
+    plannedPrivateData,
+    plannedState,
+    priorState,
+  }) {
     return async () => {
+      // priorState == null => create
       if (priorState == null) {
         const orderItems = config.items.map((item) => {
           // We have a list with maxItem=1 so there is only one coffee
@@ -118,17 +134,55 @@ export const orderResource = ctor<HashicupsApiClient>({
         });
 
         try {
-          const order = await client.createOrder(orderItems);
+          const order = await client.order.create(orderItems);
           return SyncResponse.right({
-            newState: transformOrder(order),
-            privateData: Buffer.from([]),
+            newState: transformOrder(order, null),
+            privateData: plannedPrivateData,
           });
         } catch (error) {
           return SyncResponse.fromError('Failure to create order', error);
         }
       }
 
-      return SyncResponse.left([]);
+      // plannedState == null => delete
+      if (plannedState == null) {
+        return SyncResponse.right({
+          newState: null,
+          privateData: plannedPrivateData,
+        });
+      }
+
+      // else: update
+      const orderId = parseInt(plannedState.id, 10);
+      if (hasStateChange(['items'])) {
+        const orderItems = plannedState.items.map((item) => {
+          // We have a list with maxItem=1 so there is only one coffee
+          const coffee = item.coffee[0];
+
+          return {
+            coffee: {
+              id: coffee.id,
+            },
+            quantity: item.quantity,
+          };
+        });
+
+        try {
+          await client.order.update(orderId, orderItems);
+          const order = await client.order.get(orderId);
+          return SyncResponse.right({
+            newState: transformOrder(order, new Date()),
+            privateData: plannedPrivateData,
+          });
+        } catch (error) {
+          return SyncResponse.fromError('Failure to update order', error);
+        }
+      }
+
+      return SyncResponse.right({
+        newState: plannedState,
+        privateData: plannedPrivateData,
+      });
     };
   },
   planChange({ priorPrivateData, proposedNewState }) {
@@ -148,10 +202,10 @@ export const orderResource = ctor<HashicupsApiClient>({
       }
 
       const id = parseInt(currentState.id, 10);
-      const order = await client.getOrder(id);
+      const order = await client.order.get(id);
 
       return SyncResponse.right({
-        newState: transformOrder(order),
+        newState: transformOrder(order, null),
         privateData,
       });
     };

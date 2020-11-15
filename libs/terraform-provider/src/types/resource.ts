@@ -31,6 +31,7 @@ export interface Resource<SD extends SchemaDescriptor, Client> {
   applyChange(args: {
     client: Client;
     config: SchemaConfig<SD>;
+    hasStateChange: (path: string[]) => boolean;
     plannedPrivateData: Buffer;
     plannedState: SchemaState<SD> | null;
     priorState: SchemaState<SD> | null;

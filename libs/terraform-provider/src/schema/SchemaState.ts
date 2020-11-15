@@ -12,9 +12,11 @@ type RawPropertyState<
   Descriptor extends RawPropertyDescriptor
 > = Descriptor['source'] extends 'required-in-config'
   ? CtyToTypescript<Descriptor['ctyType']>
-  : Descriptor['source'] extends 'optional-in-config'
+  : Descriptor['source'] extends
+      | 'optional-in-config'
+      | 'computed-but-overridable'
   ? CtyToTypescript<Descriptor['ctyType']> | null
-  : Descriptor['source'] extends 'computed' | 'computed-but-overridable'
+  : Descriptor['source'] extends 'computed'
   ? CtyToTypescript<Descriptor['ctyType']>
   : never;
 

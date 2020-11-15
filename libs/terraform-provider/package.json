@@ -8,10 +8,12 @@
     "@terraform-typescript/grpc-utils": "1.0.0",
     "@terraform-typescript/hashicorp-plugin": "1.0.0",
     "fp-ts": "^2.8.6",
-    "fp-ts-contrib": "^0.1.21"
+    "fp-ts-contrib": "^0.1.21",
+    "ramda": "^0.27.1"
   },
   "devDependencies": {
-    "@grpc/proto-loader": "0.6.0-pre17"
+    "@grpc/proto-loader": "0.6.0-pre17",
+    "@types/ramda": "^0.27.32"
   },
   "scripts": {
     "build": "yarn build:proto && yarn build:copy-proto && yarn build:ts",

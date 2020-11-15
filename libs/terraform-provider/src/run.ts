@@ -13,6 +13,7 @@ import { maskComputedState } from './maskComputedState';
 import { SchemaDescriptor } from './schema/descriptor';
 import { createSchema } from './schema/schema';
 import { SchemaConfig } from './schema/SchemaConfig';
+import { SchemaState } from './schema/SchemaState';
 import { DataSource } from './types/dataSource';
 import { Provider, StringKeys } from './types/provider';
 import { Resource } from './types/resource';
@@ -23,6 +24,7 @@ import {
   runTask,
   runTaskTillGrpcResponse,
 } from './types/response';
+import { hasChange } from './types/utils/hasChange';
 
 export const run = <
   SD extends SchemaDescriptor,
@@ -123,15 +125,21 @@ export const run = <
         const resourceName = call.request!.type_name! as StringKeys<R>;
         const resource = provider.getResources()[resourceName];
 
+        type ResourceSchemaState = SchemaState<R[typeof resourceName]>;
+        const priorState = parseDynamicValue<ResourceSchemaState>(
+          call.request!.prior_state!,
+        );
+        const proposedNewState = parseDynamicValue<ResourceSchemaState>(
+          call.request!.proposed_new_state!,
+        );
+
         return pipe(
           resource.planChange({
             client: client!,
             config: parseDynamicValue(call.request!.config!),
             priorPrivateData: call.request!.prior_private!,
-            priorState: parseDynamicValue(call.request!.prior_state!),
-            proposedNewState: parseDynamicValue(
-              call.request!.proposed_new_state!,
-            ),
+            priorState,
+            proposedNewState,
           }),
           TaskThese.map(
             ({ plannedPrivateData, plannedState, requiresReplace }) => {
@@ -153,13 +161,22 @@ export const run = <
         const resourceName = call.request!.type_name! as StringKeys<R>;
         const resource = provider.getResources()[resourceName];
 
+        type ResourceSchemaState = SchemaState<R[typeof resourceName]>;
+        const priorState = parseDynamicValue<ResourceSchemaState>(
+          call.request!.prior_state!,
+        );
+        const plannedState = parseDynamicValue<ResourceSchemaState>(
+          call.request!.planned_state!,
+        );
+
         return pipe(
           resource.applyChange({
             config: parseDynamicValue(call.request!.config!),
             client: client!,
+            hasStateChange: hasChange(priorState, plannedState),
             plannedPrivateData: call.request!.planned_private!,
-            priorState: parseDynamicValue(call.request!.prior_state!),
-            plannedState: parseDynamicValue(call.request!.planned_state!),
+            priorState,
+            plannedState,
           }),
           TaskThese.map(({ newState, privateData }) => ({
             private: privateData,

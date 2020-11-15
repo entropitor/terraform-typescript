@@ -75,7 +75,7 @@ export const orderDataSource = ctor<HashicupsApiClient>({
   read({ client, config }) {
     return async () => {
       try {
-        const order = await client.getOrder(config.id);
+        const order = await client.order.get(config.id);
         return SyncResponse.right({
           state: {
             id: config.id,

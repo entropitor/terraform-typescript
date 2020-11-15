@@ -100,7 +100,7 @@ describe('createSchema', () => {
         {
           password: string;
           url: string;
-          username: string;
+          username: string | null;
         }
       >
     >();

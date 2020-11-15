@@ -3,8 +3,8 @@ terraform {
 }
 
 provider "hashicups" {
-  # username = "test"
-  # password = "secret"
+  username = "test"
+  password = "secret"
 }
 
 
@@ -26,7 +26,7 @@ resource "hashicups_order" "edu" {
     coffee {
       id = 3
     }
-    quantity = 2
+    quantity = 4
   }
   items {
     coffee {
