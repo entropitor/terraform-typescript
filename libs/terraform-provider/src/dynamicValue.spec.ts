@@ -1,7 +1,7 @@
 import {
   parseDynamicValue,
   serializeDynamicValue,
-  unknownSymbol,
+  unknownValue,
 } from './dynamicValue';
 
 describe('parseDynamicValue', () => {
@@ -20,10 +20,10 @@ describe('parseDynamicValue', () => {
   });
 
   it('works from msgpack with unknownSymbol', () => {
-    const serialized = serializeDynamicValue({ foo: 3, symbol: unknownSymbol });
+    const serialized = serializeDynamicValue({ foo: 3, symbol: unknownValue });
     expect(parseDynamicValue(serialized)).toEqual({
       foo: 3,
-      symbol: unknownSymbol,
+      symbol: unknownValue,
     });
   });
 });
@@ -37,7 +37,7 @@ describe('serializeDynamicValue', () => {
   });
 
   it('works with the unknownSymbol', () => {
-    expect(serializeDynamicValue({ foo: 3, symbol: unknownSymbol })).toEqual({
+    expect(serializeDynamicValue({ foo: 3, symbol: unknownValue })).toEqual({
       json: Buffer.from('{"foo":3}'),
       msgpack: Buffer.from([
         130,

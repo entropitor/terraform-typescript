@@ -5,13 +5,13 @@ import { DynamicValue } from './generated/tfplugin5/DynamicValue';
 const extensionCodec = new msgpack.ExtensionCodec();
 
 const UNKNOWN_VALUE_EXTENSION = 0;
-export const unknownSymbol = Symbol('unknownValue');
+export const unknownValue = Symbol('unknownValue');
 extensionCodec.register({
   decode: (_data) => {
-    return unknownSymbol;
+    return unknownValue;
   },
   encode: (object) => {
-    if (object === unknownSymbol) {
+    if (object === unknownValue) {
       return Buffer.from([]);
       // Seems empty buffer is okay but there is also
       // https://github.com/zclconf/go-cty/blob/e5225636c8c28add5fe543052061d90c63dada5e/cty/msgpack/unknown.go#L12

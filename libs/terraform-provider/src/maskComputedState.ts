@@ -1,4 +1,4 @@
-import { unknownSymbol } from './dynamicValue';
+import { unknownValue } from './dynamicValue';
 import {
   isComputed,
   isOptional,
@@ -23,7 +23,7 @@ const maskBlock = (block: any, descriptor: SchemaBlockDescriptor): any => {
             isComputed(subDescriptor) &&
             !isOptional(subDescriptor)
           ) {
-            return [propertyName, unknownSymbol];
+            return [propertyName, unknownValue];
           }
 
           return [propertyName, value];

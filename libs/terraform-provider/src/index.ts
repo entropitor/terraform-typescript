@@ -1,4 +1,5 @@
 export { run } from './run';
+export { unknownValue as computedValue } from './dynamicValue';
 
 export {
   CtyType,

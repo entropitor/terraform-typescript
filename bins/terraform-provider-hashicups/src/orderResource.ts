@@ -1,5 +1,6 @@
 import {
   AsyncResponse,
+  computedValue,
   createResource,
   createSchemaDescriptor,
   ctyNumber,
@@ -185,7 +186,12 @@ export const orderResource = ctor<HashicupsApiClient>({
       });
     };
   },
-  planChange({ priorPrivateData, proposedNewState }) {
+  planChange({ hasProposedStateChange, priorPrivateData, proposedNewState }) {
+    if (proposedNewState != null && hasProposedStateChange(['items'])) {
+      // @ts-expect-error SchemaState doesn't take computedValue symbol into account
+      proposedNewState.last_updated = computedValue; // eslint-disable-line no-param-reassign
+    }
+
     return AsyncResponse.right({
       plannedPrivateData: priorPrivateData,
       plannedState: proposedNewState,
@@ -205,7 +211,12 @@ export const orderResource = ctor<HashicupsApiClient>({
       const order = await client.order.get(id);
 
       return SyncResponse.right({
-        newState: transformOrder(order, null),
+        newState: transformOrder(
+          order,
+          currentState.last_updated != null
+            ? new Date(currentState.last_updated)
+            : null,
+        ),
         privateData,
       });
     };

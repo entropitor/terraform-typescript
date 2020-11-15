@@ -137,6 +137,7 @@ export const run = <
           resource.planChange({
             client: client!,
             config: parseDynamicValue(call.request!.config!),
+            hasProposedStateChange: hasChange(priorState, proposedNewState),
             priorPrivateData: call.request!.prior_private!,
             priorState,
             proposedNewState,
