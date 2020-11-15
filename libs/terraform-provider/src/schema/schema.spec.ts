@@ -2,7 +2,7 @@ import { StringKind } from '../generated/tfplugin5/StringKind';
 import { Equals, expectTypeToBeTrue } from '../testUtils';
 
 import { ctyNumber, ctyString, ctyTypeToBuffer } from './ctyType';
-import { attribute, createSchemaDescriptor, listProperty } from './descriptor';
+import { attribute, listProperty, schema } from './descriptor';
 import { createSchema } from './schema';
 import { SchemaConfig } from './SchemaConfig';
 import { SchemaState } from './SchemaState';
@@ -10,12 +10,12 @@ import { SchemaState } from './SchemaState';
 describe('createSchema', () => {
   it('should create a simple schema', () => {
     expect(
-      createSchema({
-        block: {
+      createSchema(
+        schema({
           description: 'Empty schema',
           properties: {},
-        },
-      }),
+        }),
+      ),
     ).toEqual({
       block: {
         attributes: [],
@@ -30,14 +30,12 @@ describe('createSchema', () => {
   });
 
   it('should create a simple schema with attributes', () => {
-    const descriptor = createSchemaDescriptor({
-      block: {
-        description: 'Test schema',
-        properties: {
-          password: attribute('required-in-config', ctyString),
-          url: attribute('computed', ctyString),
-          username: attribute('computed-but-overridable', ctyString),
-        },
+    const descriptor = schema({
+      description: 'Test schema',
+      properties: {
+        password: attribute('required-in-config', ctyString),
+        url: attribute('computed', ctyString),
+        username: attribute('computed-but-overridable', ctyString),
       },
     });
 
@@ -112,28 +110,26 @@ describe('createSchema', () => {
   });
 
   it('should create a more complex schema with attributes and list block_types', () => {
-    const descriptor = createSchemaDescriptor({
-      block: {
-        description: 'Test schema',
-        properties: {
-          coffees: listProperty({
-            description: 'Test description',
-            properties: {
-              description: attribute('computed', ctyString),
-              id: attribute('computed', ctyNumber),
-              image: attribute('computed', ctyString),
-              ingredients: listProperty({
-                description: 'ingredients description',
-                properties: {
-                  ingredient_id: attribute('computed', ctyNumber),
-                },
-              }),
-              name: attribute('computed', ctyString),
-              price: attribute('computed', ctyNumber),
-              teaser: attribute('computed', ctyString),
-            },
-          }),
-        },
+    const descriptor = schema({
+      description: 'Test schema',
+      properties: {
+        coffees: listProperty({
+          description: 'Test description',
+          properties: {
+            description: attribute('computed', ctyString),
+            id: attribute('computed', ctyNumber),
+            image: attribute('computed', ctyString),
+            ingredients: listProperty({
+              description: 'ingredients description',
+              properties: {
+                ingredient_id: attribute('computed', ctyNumber),
+              },
+            }),
+            name: attribute('computed', ctyString),
+            price: attribute('computed', ctyNumber),
+            teaser: attribute('computed', ctyString),
+          },
+        }),
       },
     });
     expect(createSchema(descriptor)).toEqual({

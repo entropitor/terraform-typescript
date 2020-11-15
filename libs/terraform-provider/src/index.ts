@@ -14,11 +14,7 @@ export {
   ctyTuple,
 } from './schema/ctyType';
 export { createSchema } from './schema/schema';
-export {
-  createSchemaDescriptor,
-  attribute,
-  listProperty,
-} from './schema/descriptor';
+export { schema, attribute, listProperty } from './schema/descriptor';
 export { SchemaState } from './schema/SchemaState';
 export { SchemaConfig } from './schema/SchemaConfig';
 

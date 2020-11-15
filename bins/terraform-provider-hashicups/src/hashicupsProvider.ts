@@ -4,10 +4,10 @@
 import {
   attribute,
   createSchema,
-  createSchemaDescriptor,
   ctyString,
   Provider,
   responseDo,
+  schema,
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
@@ -17,13 +17,11 @@ import { coffeesDataSource } from './coffeesDataSource';
 import { orderDataSource } from './orderDataSource';
 import { orderResource } from './orderResource';
 
-const schemaDescriptor = createSchemaDescriptor({
-  block: {
-    description: 'hashicups',
-    properties: {
-      password: attribute('optional-in-config', ctyString),
-      username: attribute('optional-in-config', ctyString),
-    },
+const schemaDescriptor = schema({
+  description: 'hashicups',
+  properties: {
+    password: attribute('optional-in-config', ctyString),
+    username: attribute('optional-in-config', ctyString),
   },
 });
 

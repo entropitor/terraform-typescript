@@ -5,11 +5,11 @@ import { CtyType } from './ctyType';
 /**
  * Ensure that users should use the constructors defined below instead of type literals
  */
-export const brand = Symbol('descriptorBrand');
+export const propertyDescriptorBrand = Symbol('PropertyDescriptorBrand');
 
 export type SchemaPropertyDescriptor =
   | {
-      brand: typeof brand;
+      brand: typeof propertyDescriptorBrand;
       ctyType: CtyType;
       source:
         | 'required-in-config'
@@ -19,21 +19,21 @@ export type SchemaPropertyDescriptor =
       type: 'attribute';
     }
   | {
-      brand: typeof brand;
+      brand: typeof propertyDescriptorBrand;
       itemType: SchemaBlockDescriptor;
       maxItems?: number;
       minItems?: number;
       type: 'list' | 'set';
     }
   | {
-      brand: typeof brand;
+      brand: typeof propertyDescriptorBrand;
       // "single" or "group"
       itemType: SchemaBlockDescriptor;
       required: boolean;
       type: 'single';
     }
   | {
-      brand: typeof brand;
+      brand: typeof propertyDescriptorBrand;
       itemType: SchemaBlockDescriptor;
       type: 'map';
     };
@@ -49,7 +49,7 @@ export const attribute = <
   ctyType: CT,
 ) =>
   ({
-    brand,
+    brand: propertyDescriptorBrand,
     ctyType,
     source,
     type: 'attribute',
@@ -67,7 +67,7 @@ export const listProperty = <SBD extends SchemaBlockDescriptor>(
 ) =>
   ({
     ...minMax,
-    brand,
+    brand: propertyDescriptorBrand,
     itemType,
     type: 'list',
   } as const);
@@ -79,13 +79,17 @@ export type SchemaBlockDescriptor = {
   };
 };
 
+export const schemaDescriptorBrand = Symbol('SchemaDescriptorBrand');
 export type SchemaDescriptor = {
   block: SchemaBlockDescriptor;
+  brand: typeof schemaDescriptorBrand;
 };
 
-export const createSchemaDescriptor = <T extends SchemaDescriptor>(t: T): T => {
-  return t;
-};
+export const schema = <SBD extends SchemaBlockDescriptor>(block: SBD) =>
+  ({
+    block,
+    brand: schemaDescriptorBrand,
+  } as const);
 
 export const isOptional = (
   attributePropertyDescriptor: AttributePropertyDescriptor,

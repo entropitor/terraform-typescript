@@ -3,46 +3,44 @@ import {
   attribute,
   computedValue,
   createResource,
-  createSchemaDescriptor,
   ctyNumber,
   ctyString,
   listProperty,
+  schema,
   SchemaState,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
 
 import { ApiOrder, HashicupsApiClient } from './apiClient';
 
-const schemaDescriptor = createSchemaDescriptor({
-  block: {
-    description: 'Order resource',
-    properties: {
-      // TODO move to resource itself (?)
-      id: attribute('computed', ctyString),
-      items: listProperty({
-        description: 'the items in the order',
-        properties: {
-          coffee: listProperty(
-            {
-              description: 'the coffee you want to order',
-              properties: {
-                description: attribute('computed', ctyString),
-                id: attribute('required-in-config', ctyNumber),
-                image: attribute('computed', ctyString),
-                name: attribute('computed', ctyString),
-                price: attribute('computed', ctyNumber),
-                teaser: attribute('computed', ctyString),
-              },
+const schemaDescriptor = schema({
+  description: 'Order resource',
+  properties: {
+    // TODO move to resource itself (?)
+    id: attribute('computed', ctyString),
+    items: listProperty({
+      description: 'the items in the order',
+      properties: {
+        coffee: listProperty(
+          {
+            description: 'the coffee you want to order',
+            properties: {
+              description: attribute('computed', ctyString),
+              id: attribute('required-in-config', ctyNumber),
+              image: attribute('computed', ctyString),
+              name: attribute('computed', ctyString),
+              price: attribute('computed', ctyNumber),
+              teaser: attribute('computed', ctyString),
             },
-            {
-              maxItems: 1,
-            },
-          ),
-          quantity: attribute('required-in-config', ctyNumber),
-        },
-      }),
-      last_updated: attribute('computed-but-overridable', ctyString),
-    },
+          },
+          {
+            maxItems: 1,
+          },
+        ),
+        quantity: attribute('required-in-config', ctyNumber),
+      },
+    }),
+    last_updated: attribute('computed-but-overridable', ctyString),
   },
 });
 

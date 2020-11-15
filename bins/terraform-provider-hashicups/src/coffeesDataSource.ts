@@ -5,14 +5,15 @@ import {
   ctyNumber,
   ctyString,
   listProperty,
+  schema,
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
 
 import { HashicupsApiClient } from './apiClient';
 
-const ctor = createDataSource({
-  block: {
+const ctor = createDataSource(
+  schema({
     description: 'Coffees data source schema',
     properties: {
       coffees: listProperty({
@@ -33,8 +34,8 @@ const ctor = createDataSource({
         },
       }),
     },
-  },
-});
+  }),
+);
 
 export const coffeesDataSource = ctor<HashicupsApiClient>({
   read({ client }) {

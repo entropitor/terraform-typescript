@@ -2,10 +2,10 @@ import {
   AsyncResponse,
   attribute,
   createDataSource,
-  createSchemaDescriptor,
   ctyNumber,
   ctyString,
   listProperty,
+  schema,
   SchemaState,
   Severity,
   SyncResponse,
@@ -13,24 +13,22 @@ import {
 
 import { HashicupsApiClient } from './apiClient';
 
-const schemaDescriptor = createSchemaDescriptor({
-  block: {
-    description: 'Order data source',
-    properties: {
-      id: attribute('required-in-config', ctyNumber),
-      items: listProperty({
-        description: 'items',
-        properties: {
-          coffee_description: attribute('computed', ctyString),
-          coffee_id: attribute('computed', ctyNumber),
-          coffee_image: attribute('computed', ctyString),
-          coffee_name: attribute('computed', ctyString),
-          coffee_price: attribute('computed', ctyNumber),
-          coffee_teaser: attribute('computed', ctyString),
-          quantity: attribute('computed', ctyNumber),
-        },
-      }),
-    },
+const schemaDescriptor = schema({
+  description: 'Order data source',
+  properties: {
+    id: attribute('required-in-config', ctyNumber),
+    items: listProperty({
+      description: 'items',
+      properties: {
+        coffee_description: attribute('computed', ctyString),
+        coffee_id: attribute('computed', ctyNumber),
+        coffee_image: attribute('computed', ctyString),
+        coffee_name: attribute('computed', ctyString),
+        coffee_price: attribute('computed', ctyNumber),
+        coffee_teaser: attribute('computed', ctyString),
+        quantity: attribute('computed', ctyNumber),
+      },
+    }),
   },
 });
 

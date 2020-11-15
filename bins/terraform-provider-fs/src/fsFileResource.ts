@@ -7,6 +7,7 @@ import {
   ctyNumber,
   ctyObject,
   ctyString,
+  schema,
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
@@ -18,8 +19,8 @@ import { FsClient } from './fsClient';
  */
 // type Dynamic<T> = [Buffer, T];
 
-const ctor = createResource({
-  block: {
+const ctor = createResource(
+  schema({
     description: 'a file resource',
     properties: {
       // description: "The body of the file",
@@ -34,8 +35,8 @@ const ctor = createResource({
       // description: "Som extra properties of the file",
       // extra: attribute('optional-in-config', ctyAny)
     },
-  },
-});
+  }),
+);
 
 export const fsFileResource = ctor<FsClient>({
   applyChange({ client, plannedPrivateData, plannedState, priorState }) {

@@ -5,10 +5,10 @@ import {
   AsyncResponse,
   attribute,
   createSchema,
-  createSchemaDescriptor,
   ctyString,
   Provider,
   responseDo,
+  schema,
   Severity,
   SyncResponse,
 } from '@terraform-typescript/terraform-provider';
@@ -16,13 +16,11 @@ import {
 import { FsClient } from './fsClient';
 import { fsFileResource } from './fsFileResource';
 
-const schemaDescriptor = createSchemaDescriptor({
-  block: {
-    description: 'test schema',
-    properties: {
-      // description: "The root dir where all files will be stored",
-      root_dir: attribute('required-in-config', ctyString),
-    },
+const schemaDescriptor = schema({
+  description: 'test schema',
+  properties: {
+    // description: "The root dir where all files will be stored",
+    root_dir: attribute('required-in-config', ctyString),
   },
 });
 
