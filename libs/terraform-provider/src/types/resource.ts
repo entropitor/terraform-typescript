@@ -1,5 +1,3 @@
-import * as Either from 'fp-ts/lib/Either';
-
 import { AttributePath } from '../generated/tfplugin5/AttributePath';
 import { SchemaDescriptor } from '../schema/descriptor';
 import { SchemaConfig } from '../schema/SchemaConfig';

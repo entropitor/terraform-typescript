@@ -8,20 +8,26 @@ import {
 } from './descriptor';
 import { SmartOmit } from './SmartOmit';
 
+export type AttributePropertyConfigBySource<
+  AttributeSource extends AttributePropertyDescriptor['source'],
+  CT extends AttributePropertyDescriptor['ctyType']
+> = AttributeSource extends 'required-in-config'
+  ? CtyToTypescript<CT>
+  : AttributeSource extends 'optional-in-config' | 'computed-but-overridable'
+  ? CtyToTypescript<CT> | null
+  : never;
+
 type AttributePropertyConfig<
   Descriptor extends AttributePropertyDescriptor
-> = Descriptor['source'] extends 'required-in-config'
-  ? CtyToTypescript<Descriptor['ctyType']>
-  : Descriptor['source'] extends
-      | 'optional-in-config'
-      | 'computed-but-overridable'
-  ? CtyToTypescript<Descriptor['ctyType']> | null
-  : never;
+> = AttributePropertyConfigBySource<
+  Descriptor['source'],
+  Descriptor['ctyType']
+>;
 type ListPropertyConfig<Descriptor extends ListPropertyDescriptor> = Array<
-  BlockConfig<Descriptor['itemType']>
+  SchemaBlockConfig<Descriptor['itemType']>
 >;
 
-type PropertyConfig<
+export type SchemaPropertyConfig<
   Descriptor extends SchemaPropertyDescriptor
 > = Descriptor extends AttributePropertyDescriptor
   ? AttributePropertyConfig<Descriptor>
@@ -29,14 +35,16 @@ type PropertyConfig<
   ? ListPropertyConfig<Descriptor>
   : never;
 
-export type BlockConfig<Descriptor extends SchemaBlockDescriptor> = SmartOmit<
+export type SchemaBlockConfig<
+  Descriptor extends SchemaBlockDescriptor
+> = SmartOmit<
   {
-    [propertyName in keyof Descriptor['properties']]: PropertyConfig<
+    [propertyName in keyof Descriptor['properties']]: SchemaPropertyConfig<
       Descriptor['properties'][propertyName]
     >;
   }
 >;
 
-export type SchemaConfig<Descriptor extends SchemaDescriptor> = BlockConfig<
-  Descriptor['block']
->;
+export type SchemaConfig<
+  Descriptor extends SchemaDescriptor
+> = SchemaBlockConfig<Descriptor['block']>;

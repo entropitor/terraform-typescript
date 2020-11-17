@@ -1,4 +1,8 @@
+import { Diagnostic } from '../generated/tfplugin5/Diagnostic';
+import { AsyncResponse } from '../types/response';
+
 import { CtyType } from './ctyType';
+import type { AttributePropertyConfigBySource } from './SchemaConfig';
 
 // This const is exported in this file but not in the global package to ensure typescript
 // can properly infer the 'unique symbol'
@@ -7,16 +11,22 @@ import { CtyType } from './ctyType';
  */
 export const propertyDescriptorBrand = Symbol('PropertyDescriptorBrand');
 
+type AttributeSource =
+  | 'required-in-config'
+  | 'optional-in-config'
+  | 'computed-but-overridable'
+  | 'computed';
 export type SchemaPropertyDescriptor =
   | {
       brand: typeof propertyDescriptorBrand;
       ctyType: CtyType;
-      source:
-        | 'required-in-config'
-        | 'optional-in-config'
-        | 'computed-but-overridable'
-        | 'computed';
+      source: AttributeSource;
       type: 'attribute';
+      // Using AttributePropertyConfigBySource for typing here resulted in infinte types
+      validate?: (
+        attribute: any | null,
+        attributePath: Diagnostic['attribute'],
+      ) => AsyncResponse<any>;
     }
   | {
       brand: typeof propertyDescriptorBrand;
@@ -53,6 +63,25 @@ export const attribute = <
     ctyType,
     source,
     type: 'attribute',
+  } as const);
+export const validatedAttribute = <
+  CT extends CtyType,
+  S extends AttributePropertyDescriptor['source']
+>(
+  source: S,
+  ctyType: CT,
+) => (
+  validate?: (
+    attribute: AttributePropertyConfigBySource<S, CT>,
+    attributePath: Diagnostic['attribute'],
+  ) => AsyncResponse<AttributePropertyConfigBySource<S, CT>>,
+) =>
+  ({
+    brand: propertyDescriptorBrand,
+    ctyType,
+    source,
+    type: 'attribute',
+    validate: validate as AttributePropertyDescriptor['validate'],
   } as const);
 
 export type ListPropertyDescriptor = SchemaPropertyDescriptor & {

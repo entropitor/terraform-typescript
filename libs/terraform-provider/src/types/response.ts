@@ -1,5 +1,6 @@
 import { GrpcResponse } from '@terraform-typescript/grpc-utils';
 import { Do } from 'fp-ts-contrib/lib/Do';
+import { sequenceS, sequenceT } from 'fp-ts/lib/Apply';
 import { getMonoid } from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/function';
@@ -20,6 +21,9 @@ export const runTask = <A = never>(task: Task<A>): Promise<A> => {
 };
 
 const responseMonad = TaskThese.getMonad(getMonoid<Diagnostic>());
+
+export const sequenceResponseS = sequenceS(responseMonad);
+export const sequenceResponseT = sequenceT(responseMonad);
 export const responseDo = Do(responseMonad);
 
 export const getDiagnostics = <T = never>(response: SyncResponse<T>) => {
