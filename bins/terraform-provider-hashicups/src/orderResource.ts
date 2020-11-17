@@ -2,7 +2,7 @@ import {
   AsyncResponse,
   attribute,
   computedValue,
-  createResource,
+  createCRUDResource,
   ctyNumber,
   ctyString,
   listProperty,
@@ -40,7 +40,7 @@ const schemaDescriptor = schema(
   }),
 );
 
-const ctor = createResource(schemaDescriptor);
+const ctor = createCRUDResource(schemaDescriptor);
 
 type StateOrder = SchemaState<typeof schemaDescriptor>;
 type StateItem = StateOrder['items'][0];
@@ -71,85 +71,45 @@ const transformOrder = (
 };
 
 export const orderResource = ctor<HashicupsApiClient>({
-  applyChange({
-    client,
-    config,
-    hasStateChange,
-    plannedPrivateData,
-    plannedState,
-    priorState,
-  }) {
+  create({ client, plannedPrivateData, plannedState }) {
     return async () => {
-      // priorState == null => create
-      if (priorState == null) {
-        const orderItems = config.items.map((item) => {
-          // We have a list with maxItem=1 so there is only one coffee
-          const coffee = item.coffee[0];
+      const orderItems = plannedState.items.map((item) => {
+        // We have a list with maxItem=1 so there is only one coffee
+        const coffee = item.coffee[0];
 
-          return {
-            coffee,
-            quantity: item.quantity,
-          };
-        });
-
-        try {
-          const order = await client.order.create(orderItems);
-          return SyncResponse.right({
-            newState: transformOrder(order, null),
-            privateData: plannedPrivateData,
-          });
-        } catch (error) {
-          return SyncResponse.fromError('Failure to create order', error);
-        }
-      }
-
-      // plannedState == null => delete
-      if (plannedState == null) {
-        const orderId = parseInt(priorState.id, 10);
-        try {
-          await client.order.delete(orderId);
-          return SyncResponse.right({
-            newState: null,
-            privateData: plannedPrivateData,
-          });
-        } catch (error) {
-          return SyncResponse.fromError('Failure to delete order', error);
-        }
-      }
-
-      // else: update
-      const orderId = parseInt(plannedState.id, 10);
-      if (hasStateChange(['items'])) {
-        const orderItems = plannedState.items.map((item) => {
-          // We have a list with maxItem=1 so there is only one coffee
-          const coffee = item.coffee[0];
-
-          return {
-            coffee: {
-              id: coffee.id,
-            },
-            quantity: item.quantity,
-          };
-        });
-
-        try {
-          await client.order.update(orderId, orderItems);
-          const order = await client.order.get(orderId);
-          return SyncResponse.right({
-            newState: transformOrder(order, new Date()),
-            privateData: plannedPrivateData,
-          });
-        } catch (error) {
-          return SyncResponse.fromError('Failure to update order', error);
-        }
-      }
-
-      return SyncResponse.right({
-        newState: plannedState,
-        privateData: plannedPrivateData,
+        return {
+          coffee,
+          quantity: item.quantity,
+        };
       });
+
+      try {
+        const order = await client.order.create(orderItems);
+        return SyncResponse.right({
+          newState: transformOrder(order, null),
+          privateData: plannedPrivateData,
+        });
+      } catch (error) {
+        return SyncResponse.fromError('Failure to create order', error);
+      }
     };
   },
+
+  delete({ client, plannedPrivateData, priorState }) {
+    return async () => {
+      const orderId = parseInt(priorState.id, 10);
+      try {
+        await client.order.delete(orderId);
+        return SyncResponse.right({
+          newState: null,
+          privateData: plannedPrivateData,
+        });
+      } catch (error) {
+        return SyncResponse.fromError('Failure to delete order', error);
+      }
+    };
+  },
+
   planChange({ hasProposedStateChange, priorPrivateData, proposedNewState }) {
     if (proposedNewState != null && hasProposedStateChange(['items'])) {
       // @ts-expect-error SchemaState doesn't take computedValue symbol into account
@@ -182,6 +142,41 @@ export const orderResource = ctor<HashicupsApiClient>({
             : null,
         ),
         privateData,
+      });
+    };
+  },
+
+  update({ client, hasStateChange, plannedPrivateData, plannedState }) {
+    return async () => {
+      const orderId = parseInt(plannedState.id, 10);
+      if (hasStateChange(['items'])) {
+        const orderItems = plannedState.items.map((item) => {
+          // We have a list with maxItem=1 so there is only one coffee
+          const coffee = item.coffee[0];
+
+          return {
+            coffee: {
+              id: coffee.id,
+            },
+            quantity: item.quantity,
+          };
+        });
+
+        try {
+          await client.order.update(orderId, orderItems);
+          const order = await client.order.get(orderId);
+          return SyncResponse.right({
+            newState: transformOrder(order, new Date()),
+            privateData: plannedPrivateData,
+          });
+        } catch (error) {
+          return SyncResponse.fromError('Failure to update order', error);
+        }
+      }
+
+      return SyncResponse.right({
+        newState: plannedState,
+        privateData: plannedPrivateData,
       });
     };
   },

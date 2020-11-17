@@ -1,3 +1,5 @@
+import * as Either from 'fp-ts/lib/Either';
+
 import { AttributePath } from '../generated/tfplugin5/AttributePath';
 import { SchemaDescriptor } from '../schema/descriptor';
 import { SchemaConfig } from '../schema/SchemaConfig';
@@ -68,10 +70,64 @@ export interface Resource<SD extends SchemaDescriptor, Client> {
 export const createResource = <SD extends SchemaDescriptor>(descriptor: SD) => <
   Client = void
 >(
-  dataSource: Omit<Resource<SD, Client>, 'getSchemaDescriptor'>,
+  resource: Omit<Resource<SD, Client>, 'getSchemaDescriptor'>,
 ): Resource<SD, Client> => {
   return {
-    ...dataSource,
+    ...resource,
+    getSchemaDescriptor() {
+      return descriptor;
+    },
+  };
+};
+
+type CRUDResource<SD extends SchemaDescriptor, Client> = Pick<
+  Resource<SD, Client>,
+  'validate' | 'upgrade' | 'read' | 'planChange'
+> & {
+  create(args: {
+    client: Client;
+    config: SchemaConfig<SD>;
+    plannedPrivateData: Buffer;
+    plannedState: SchemaState<SD>;
+  }): AsyncResponse<ApplyChangeResult<SchemaState<SD>>>;
+
+  delete(args: {
+    client: Client;
+    config: SchemaConfig<SD>;
+    plannedPrivateData: Buffer;
+    priorState: SchemaState<SD>;
+  }): AsyncResponse<ApplyChangeResult<SchemaState<SD>>>;
+
+  update(args: {
+    client: Client;
+    config: SchemaConfig<SD>;
+    hasStateChange: (path: PathOf<SchemaState<SD>>) => boolean;
+    plannedPrivateData: Buffer;
+    plannedState: SchemaState<SD>;
+    priorState: SchemaState<SD>;
+  }): AsyncResponse<ApplyChangeResult<SchemaState<SD>>>;
+};
+
+export const createCRUDResource = <SD extends SchemaDescriptor>(
+  descriptor: SD,
+) => <Client = void>(
+  crudResource: CRUDResource<SD, Client>,
+): Resource<SD, Client> => {
+  return {
+    ...crudResource,
+    applyChange({ plannedState, priorState, ...args }) {
+      if (priorState == null) {
+        if (plannedState == null) {
+          throw new Error('plannedState and priorState both null');
+        }
+        return crudResource.create({ ...args, plannedState });
+      }
+      if (plannedState == null) {
+        return crudResource.delete({ ...args, priorState });
+      }
+
+      return crudResource.update({ plannedState, priorState, ...args });
+    },
     getSchemaDescriptor() {
       return descriptor;
     },
