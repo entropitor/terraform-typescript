@@ -7,11 +7,10 @@ describe('validateSchemaConfig', () => {
   describe('should validate a simple schema config', () => {
     const schemaDescriptor = schema(
       schemaBlock('hashicups', {
-        password: Attribute.optional.string((password, attribute) => {
+        password: Attribute.optional.string((password) => {
           if (password === 'admin') {
             return AsyncResponse.left([
               {
-                attribute,
                 detail: 'Even I can guess this',
                 summary: 'Too weak',
               },
@@ -21,7 +20,6 @@ describe('validateSchemaConfig', () => {
             return AsyncResponse.both(
               [
                 {
-                  attribute,
                   detail: 'use a longer password',
                   summary: 'This is a very short password',
                 },
@@ -31,11 +29,10 @@ describe('validateSchemaConfig', () => {
           }
           return AsyncResponse.right(password || 'default-password');
         }),
-        username: Attribute.optional.string((username, attribute) => {
+        username: Attribute.optional.string((username) => {
           if (username === 'admin') {
             return AsyncResponse.left([
               {
-                attribute,
                 detail: 'You are not allowed to pass an admin user',
                 summary: 'Admin is too powerful',
               },

@@ -1,4 +1,3 @@
-import { Diagnostic } from '../generated/tfplugin5/Diagnostic';
 import { AsyncResponse } from '../types/response';
 
 import { ctyString, CtyType } from './ctyType';
@@ -23,10 +22,7 @@ export type SchemaPropertyDescriptor =
       source: AttributeSource;
       type: 'attribute';
       // Using AttributePropertyConfigBySource for typing here resulted in infinte types
-      validate?: (
-        attribute: any | null,
-        attributePath: Diagnostic['attribute'],
-      ) => AsyncResponse<any>;
+      validate?: (attribute: any | null) => AsyncResponse<any>;
     }
   | {
       brand: typeof propertyDescriptorBrand;
@@ -73,7 +69,6 @@ export const validatedAttribute = <
 ) => (
   validate?: (
     attribute: AttributePropertyConfigBySource<S, CT>,
-    attributePath: Diagnostic['attribute'],
   ) => AsyncResponse<AttributePropertyConfigBySource<S, CT>>,
 ) =>
   ({

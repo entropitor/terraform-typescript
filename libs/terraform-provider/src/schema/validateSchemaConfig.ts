@@ -1,3 +1,5 @@
+import { pipe } from 'fp-ts/lib/function';
+
 import { _tfplugin5_AttributePath_Step as Step } from '../generated/tfplugin5/AttributePath';
 import { AsyncResponse, sequenceResponseS } from '../types/response';
 
@@ -26,9 +28,17 @@ const validateSchemaBlockConfig = <SBD extends SchemaBlockDescriptor>(
           }
           return [
             propertyName,
-            propertyDescriptor.validate(configValue, {
-              steps: [...attributePath, { attribute_name: propertyName }],
-            }),
+            pipe(
+              propertyDescriptor.validate(configValue),
+              AsyncResponse.mapLeft((diagnostics) =>
+                diagnostics.map((diagnostic) => ({
+                  ...diagnostic,
+                  attribute: {
+                    steps: [...attributePath, { attribute_name: propertyName }],
+                  },
+                })),
+              ),
+            ),
           ];
         }
 
