@@ -1,17 +1,13 @@
 import { AsyncResponse, SyncResponse } from '../types/response';
 
-import { ctyString } from './ctyType';
-import { schema, schemaBlock, validatedAttribute } from './descriptor';
+import { Attribute, schema, schemaBlock } from './descriptor';
 import { validateSchemaConfig } from './validateSchemaConfig';
 
 describe('validateSchemaConfig', () => {
   describe('should validate a simple schema config', () => {
     const schemaDescriptor = schema(
       schemaBlock('hashicups', {
-        password: validatedAttribute(
-          'optional-in-config',
-          ctyString,
-        )((password, attribute) => {
+        password: Attribute.optional.string((password, attribute) => {
           if (password === 'admin') {
             return AsyncResponse.left([
               {
@@ -35,10 +31,7 @@ describe('validateSchemaConfig', () => {
           }
           return AsyncResponse.right(password || 'default-password');
         }),
-        username: validatedAttribute(
-          'optional-in-config',
-          ctyString,
-        )((username, attribute) => {
+        username: Attribute.optional.string((username, attribute) => {
           if (username === 'admin') {
             return AsyncResponse.left([
               {

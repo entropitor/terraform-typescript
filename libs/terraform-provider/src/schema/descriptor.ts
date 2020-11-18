@@ -1,7 +1,7 @@
 import { Diagnostic } from '../generated/tfplugin5/Diagnostic';
 import { AsyncResponse } from '../types/response';
 
-import { CtyType } from './ctyType';
+import { ctyString, CtyType } from './ctyType';
 import type { AttributePropertyConfigBySource } from './SchemaConfig';
 
 // This const is exported in this file but not in the global package to ensure typescript
@@ -83,6 +83,12 @@ export const validatedAttribute = <
     type: 'attribute',
     validate: validate as AttributePropertyDescriptor['validate'],
   } as const);
+
+export const Attribute = {
+  optional: {
+    string: validatedAttribute('optional-in-config', ctyString),
+  } as const,
+} as const;
 
 export type ListPropertyDescriptor = SchemaPropertyDescriptor & {
   type: 'list';
