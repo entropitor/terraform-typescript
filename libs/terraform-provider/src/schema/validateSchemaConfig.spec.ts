@@ -9,12 +9,10 @@ describe('validateSchemaConfig', () => {
       schemaBlock('hashicups', {
         password: Attribute.optional.string((password) => {
           if (password === 'admin') {
-            return AsyncResponse.left([
-              {
-                detail: 'Even I can guess this',
-                summary: 'Too weak',
-              },
-            ]);
+            return AsyncResponse.fromErrorString(
+              'Too weak',
+              'Even I can guess this',
+            );
           }
           if (password?.length === 5) {
             return AsyncResponse.both(
@@ -31,12 +29,10 @@ describe('validateSchemaConfig', () => {
         }),
         username: Attribute.optional.string((username) => {
           if (username === 'admin') {
-            return AsyncResponse.left([
-              {
-                detail: 'You are not allowed to pass an admin user',
-                summary: 'Admin is too powerful',
-              },
-            ]);
+            return AsyncResponse.fromErrorString(
+              'Admin is too powerful',
+              'You are not allowed to pass an admin user',
+            );
           }
           return AsyncResponse.right(username || 'default-username');
         }),
@@ -131,6 +127,7 @@ describe('validateSchemaConfig', () => {
               ],
             },
             detail: 'Even I can guess this',
+            severity: 1,
             summary: 'Too weak',
           },
           {
@@ -142,6 +139,7 @@ describe('validateSchemaConfig', () => {
               ],
             },
             detail: 'You are not allowed to pass an admin user',
+            severity: 1,
             summary: 'Admin is too powerful',
           },
         ]),
@@ -176,6 +174,7 @@ describe('validateSchemaConfig', () => {
               ],
             },
             detail: 'You are not allowed to pass an admin user',
+            severity: 1,
             summary: 'Admin is too powerful',
           },
         ]),

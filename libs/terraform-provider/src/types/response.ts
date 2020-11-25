@@ -4,7 +4,7 @@ import { sequenceS, sequenceT } from 'fp-ts/lib/Apply';
 import { getMonoid } from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/function';
-import { Task } from 'fp-ts/lib/Task';
+import * as Task from 'fp-ts/lib/Task';
 import * as TaskThese from 'fp-ts/lib/TaskThese';
 import * as These from 'fp-ts/lib/These';
 
@@ -16,7 +16,7 @@ import {
 export type AsyncResponse<T> = TaskThese.TaskThese<Diagnostic[], T>;
 export type SyncResponse<T> = These.These<Diagnostic[], T>;
 
-export const runTask = <A = never>(task: Task<A>): Promise<A> => {
+export const runTask = <A = never>(task: Task.Task<A>): Promise<A> => {
   return task();
 };
 
@@ -43,9 +43,11 @@ export const SyncResponse = {
   catch: (summary: string) => (error: Error) =>
     SyncResponse.fromError(summary, error),
   fromError: (summary: string, error: Error) =>
+    SyncResponse.fromErrorString(summary, error.message),
+  fromErrorString: (summary: string, detail?: string) =>
     These.left<Diagnostic[], never>([
       {
-        detail: error.message,
+        detail,
         severity: Severity.ERROR,
         summary,
       },
@@ -59,14 +61,16 @@ export const AsyncResponse = {
   both: <T = never>(diagnostics: Diagnostic[], t: T) =>
     TaskThese.both<Diagnostic[], T>(diagnostics, t),
   fromError: (summary: string, error: Error) =>
-    TaskThese.of(SyncResponse.fromError(summary, error)),
+    Task.of(SyncResponse.fromError(summary, error)),
+  fromErrorString: (summary: string, detail?: string) =>
+    Task.of(SyncResponse.fromErrorString(summary, detail)),
   left: <T = never>(diagnostics: Diagnostic[]) =>
     TaskThese.left<Diagnostic[], T>(diagnostics),
-  leftAsync: <T = never>(diagnostics: Task<Diagnostic[]>) =>
+  leftAsync: <T = never>(diagnostics: Task.Task<Diagnostic[]>) =>
     TaskThese.leftTask<Diagnostic[], T>(diagnostics),
   mapLeft: (f: (diag: Diagnostic[]) => Diagnostic[]) => TaskThese.mapLeft(f),
   right: <T = never>(t: T) => TaskThese.right<Diagnostic[], T>(t),
-  rightAsync: <T = never>(t: Task<T>) =>
+  rightAsync: <T = never>(t: Task.Task<T>) =>
     TaskThese.rightTask<Diagnostic[], T>(t),
 };
 
