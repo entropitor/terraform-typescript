@@ -10,7 +10,7 @@
     "build:copy-proto": "cp -r src/proto/ dist/src/proto/"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.1.8",
+    "@grpc/grpc-js": "^1.2.1",
     "@terraform-typescript/grpc-utils": "^1.0.0",
     "grpc-health-check": "^1.8.0",
     "node-forge": "^0.10.0"
