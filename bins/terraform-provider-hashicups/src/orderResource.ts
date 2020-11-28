@@ -122,6 +122,7 @@ export const orderResource = ctor<HashicupsApiClient>({
       requiresReplace: [],
     });
   },
+
   read({ client, currentState, privateData }) {
     return async () => {
       if (currentState == null) {
@@ -180,11 +181,13 @@ export const orderResource = ctor<HashicupsApiClient>({
       });
     };
   },
+
   upgrade({ rawState }) {
     return AsyncResponse.right({
       upgradedState: rawState,
     });
   },
+
   validate() {
     return AsyncResponse.right({});
   },
