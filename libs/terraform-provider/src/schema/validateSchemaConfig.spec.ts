@@ -1,6 +1,17 @@
-import { AsyncResponse, SyncResponse } from '../types/response';
+import {
+  AsyncResponse,
+  sequenceResponseT,
+  SyncResponse,
+} from '../types/response';
 
-import { Attribute, schema, schemaBlock } from './descriptor';
+import {
+  Attribute,
+  listProperty,
+  schema,
+  schemaBlock,
+  SchemaBlockDescriptor,
+} from './descriptor';
+import { SchemaBlockConfig } from './SchemaConfig';
 import { validateSchemaConfig } from './validateSchemaConfig';
 
 describe('validateSchemaConfig', () => {
@@ -176,6 +187,163 @@ describe('validateSchemaConfig', () => {
             detail: 'You are not allowed to pass an admin user',
             severity: 1,
             summary: 'Admin is too powerful',
+          },
+        ]),
+      );
+    });
+  });
+
+  describe('should validate a more complex schema with a list', () => {
+    const Property = {
+      list: <SBD extends SchemaBlockDescriptor>(
+        itemType: SBD,
+        minMax: {
+          maxItems?: number;
+          minItems?: number;
+        } = {},
+      ) => (
+        validate?: (
+          args: Array<SchemaBlockConfig<SBD>>,
+        ) => AsyncResponse<Array<SchemaBlockConfig<SBD>>>,
+      ) => {
+        return {
+          ...listProperty(itemType, minMax),
+          validate,
+        };
+      },
+    };
+
+    const schemaDescriptor = schema(
+      schemaBlock('complex', {
+        id: Attribute.optional.string(),
+        items: Property.list(
+          schemaBlock('the items in the order', {
+            quality: Attribute.optional.string((quality) => {
+              if (quality === 'bad') {
+                return AsyncResponse.fromErrorString(
+                  'Bad quality',
+                  'You need good quality',
+                );
+              }
+              return AsyncResponse.right(quality);
+            }),
+          }),
+          {},
+        )((list) => {
+          if (!list.some((item) => item.quality === 'very good')) {
+            return AsyncResponse.fromErrorString(
+              'No exceptional quality',
+              'You need at least something very good',
+            );
+          }
+          return AsyncResponse.right(list);
+        }),
+        last_updated: Attribute.optional.string(),
+      }),
+    );
+
+    it('should work with an empty list', async () => {
+      expect(
+        await validateSchemaConfig(schemaDescriptor)({
+          id: 'one',
+          items: [],
+          last_updated: 'yesterday',
+        })(),
+      ).toEqual(
+        SyncResponse.right({
+          id: 'one',
+          items: [],
+          last_updated: 'yesterday',
+        }),
+      );
+    });
+
+    it('should work with a correct value in the list', async () => {
+      expect(
+        await validateSchemaConfig(schemaDescriptor)({
+          id: 'one',
+          items: [
+            {
+              quality: 'very good',
+            },
+          ],
+          last_updated: 'yesterday',
+        })(),
+      ).toEqual(
+        SyncResponse.right({
+          id: 'one',
+          items: [
+            {
+              quality: 'very good',
+            },
+          ],
+          last_updated: 'yesterday',
+        }),
+      );
+    });
+
+    it('should validate the item in the list', async () => {
+      expect(
+        await validateSchemaConfig(schemaDescriptor)({
+          id: 'one',
+          items: [
+            {
+              quality: 'bad',
+            },
+          ],
+          last_updated: 'yesterday',
+        })(),
+      ).toEqual(
+        SyncResponse.left([
+          {
+            attribute: {
+              steps: [
+                {
+                  attribute_name: 'items',
+                },
+                {
+                  element_key_int: 0,
+                },
+                {
+                  attribute_name: 'quality',
+                },
+              ],
+            },
+            detail: 'You need good quality',
+            severity: 1,
+            summary: 'Bad quality',
+          },
+        ]),
+      );
+    });
+
+    it('should validate the list itself', async () => {
+      expect(
+        await validateSchemaConfig(schemaDescriptor)({
+          id: 'one',
+          items: [
+            {
+              quality: 'good',
+            },
+            {
+              quality: 'good',
+            },
+          ],
+          last_updated: 'yesterday',
+        })(),
+      ).toEqual(
+        SyncResponse.left([
+          {
+            attribute: {
+              steps: [
+                {
+                  attribute_name: 'items',
+                },
+              ],
+            },
+            detail: 'You need at least something very good',
+            severity: 1,
+            summary: 'No exceptional quality',
           },
         ]),
       );

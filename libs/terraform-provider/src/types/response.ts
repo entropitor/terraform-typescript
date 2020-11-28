@@ -60,6 +60,9 @@ export const SyncResponse = {
 export const AsyncResponse = {
   both: <T = never>(diagnostics: Diagnostic[], t: T) =>
     TaskThese.both<Diagnostic[], T>(diagnostics, t),
+  chain: <T = never, U = never>(f: (t: T) => AsyncResponse<U>) => (
+    x: AsyncResponse<T>,
+  ) => responseMonad.chain(x, f),
   fromError: (summary: string, error: Error) =>
     Task.of(SyncResponse.fromError(summary, error)),
   fromErrorString: (summary: string, detail?: string) =>

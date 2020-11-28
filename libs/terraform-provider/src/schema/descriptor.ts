@@ -30,6 +30,8 @@ export type SchemaPropertyDescriptor =
       maxItems?: number;
       minItems?: number;
       type: 'list' | 'set';
+      // Hard to type without infinite stuff
+      validate?: (list: any) => AsyncResponse<any>;
     }
   | {
       brand: typeof propertyDescriptorBrand;
