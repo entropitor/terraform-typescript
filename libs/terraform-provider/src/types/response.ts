@@ -22,10 +22,6 @@ export const runTask = <A = never>(task: Task.Task<A>): Promise<A> => {
 
 const responseMonad = TaskThese.getMonad(getMonoid<Diagnostic>());
 
-export const sequenceResponseS = sequenceS(responseMonad);
-export const sequenceResponseT = sequenceT(responseMonad);
-export const responseDo = Do(responseMonad);
-
 export const getDiagnostics = <T = never>(response: SyncResponse<T>) => {
   return pipe(
     response,
@@ -63,6 +59,7 @@ export const AsyncResponse = {
   chain: <T = never, U = never>(f: (t: T) => AsyncResponse<U>) => (
     x: AsyncResponse<T>,
   ) => responseMonad.chain(x, f),
+  Do: Do(responseMonad),
   fromError: (summary: string, error: Error) =>
     Task.of(SyncResponse.fromError(summary, error)),
   fromErrorString: (summary: string, detail?: string) =>
@@ -75,6 +72,8 @@ export const AsyncResponse = {
   right: <T = never>(t: T) => TaskThese.right<Diagnostic[], T>(t),
   rightAsync: <T = never>(t: Task.Task<T>) =>
     TaskThese.rightTask<Diagnostic[], T>(t),
+  sequenceS: sequenceS(responseMonad),
+  sequenceT: sequenceT(responseMonad),
 };
 
 const asGrpcResponse = <T = never>(

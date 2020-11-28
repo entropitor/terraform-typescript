@@ -7,7 +7,6 @@ import {
   createSchema,
   ctyString,
   Provider,
-  responseDo,
   schema,
   Severity,
   SyncResponse,
@@ -50,8 +49,7 @@ export const fsProvider: Provider<typeof schemaDescriptor, FsClient> = {
     return createSchema(schemaDescriptor);
   },
   prepareProviderConfig({ config }) {
-    return responseDo
-      .bind('preparedConfig', AsyncResponse.right(config))
+    return AsyncResponse.Do.bind('preparedConfig', AsyncResponse.right(config))
       .doL(() => {
         if (!path.isAbsolute(config.root_dir)) {
           return AsyncResponse.left([

@@ -20,7 +20,6 @@ import { Resource } from './types/resource';
 import {
   AsyncResponse,
   getDiagnostics,
-  responseDo,
   runTask,
   runTaskTillGrpcResponse,
 } from './types/response';
@@ -76,19 +75,19 @@ export const run = <
           call.request!.config!,
         );
 
-        const configuredAsyncResult = responseDo
-          .bind('prepareResult', provider.prepareProviderConfig({ config }))
-          .bindL('configuredResult', ({ prepareResult }) =>
+        const configuredAsyncResult = pipe(
+          provider.prepareProviderConfig({ config }),
+          AsyncResponse.chain((prepareResult) =>
             provider.configure({
               config,
               preparedConfig: prepareResult.preparedConfig,
             }),
-          )
-          .doL(({ configuredResult }) => {
+          ),
+          AsyncResponse.chain((configuredResult) => {
             client = configuredResult.client;
-            return AsyncResponse.right(null);
-          })
-          .return(() => ({}));
+            return AsyncResponse.right({});
+          }),
+        );
 
         return runTaskTillGrpcResponse(configuredAsyncResult);
       }),

@@ -1,8 +1,4 @@
-import {
-  AsyncResponse,
-  sequenceResponseT,
-  SyncResponse,
-} from '../types/response';
+import { AsyncResponse, SyncResponse } from '../types/response';
 
 import {
   Attribute,

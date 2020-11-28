@@ -1,11 +1,7 @@
 import { pipe } from 'fp-ts/lib/function';
 
 import { _tfplugin5_AttributePath_Step as Step } from '../generated/tfplugin5/AttributePath';
-import {
-  AsyncResponse,
-  sequenceResponseS,
-  sequenceResponseT,
-} from '../types/response';
+import { AsyncResponse } from '../types/response';
 
 import { SchemaBlockDescriptor, SchemaDescriptor } from './descriptor';
 import { SchemaBlockConfig, SchemaConfig } from './SchemaConfig';
@@ -32,7 +28,7 @@ const validateSchemaBlockConfig = <SBD extends SchemaBlockDescriptor>(
   attributePath: AttributePath,
 ): AsyncResponse<SchemaBlockConfig<SBD>> => {
   // @ts-expect-error fromEntries problem
-  return sequenceResponseS(
+  return AsyncResponse.sequenceS(
     Object.fromEntries(
       Object.entries(config).map(
         ([propertyName, configValue]: [
@@ -62,7 +58,7 @@ const validateSchemaBlockConfig = <SBD extends SchemaBlockDescriptor>(
             return [
               propertyName,
               pipe(
-                sequenceResponseT(
+                AsyncResponse.sequenceT(
                   ...configValue.map((itemConfig: any, index: number) =>
                     // @ts-expect-error infinite because any above
                     validateSchemaBlockConfig(

@@ -2,11 +2,11 @@
  * Implementing https://learn.hashicorp.com/tutorials/terraform/provider-setup
  */
 import {
+  AsyncResponse,
   attribute,
   createSchema,
   ctyString,
   Provider,
-  responseDo,
   schema,
   Severity,
   SyncResponse,
@@ -108,18 +108,16 @@ export const hashicupsProvider: Provider<
       return SyncResponse.right(password);
     };
 
-    return responseDo
-      .sequenceSL(() => {
-        return {
-          password: passwordTask,
-          username: usernameTask,
-        };
-      })
-      .return(({ password, username }) => ({
-        preparedConfig: {
-          password,
-          username,
-        },
-      }));
+    return AsyncResponse.Do.sequenceSL(() => {
+      return {
+        password: passwordTask,
+        username: usernameTask,
+      };
+    }).return(({ password, username }) => ({
+      preparedConfig: {
+        password,
+        username,
+      },
+    }));
   },
 };

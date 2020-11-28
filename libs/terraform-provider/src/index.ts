@@ -21,7 +21,7 @@ export { SchemaConfig } from './schema/SchemaConfig';
 export { DataSource, createDataSource } from './types/dataSource';
 export { Resource, createResource, createCRUDResource } from './types/resource';
 export { Provider } from './types/provider';
-export { AsyncResponse, SyncResponse, responseDo } from './types/response';
+export { AsyncResponse, SyncResponse } from './types/response';
 
 export { AttributePath } from './generated/tfplugin5/AttributePath';
 export { Diagnostic } from './generated/tfplugin5/Diagnostic';
