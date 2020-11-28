@@ -63,12 +63,12 @@ export const createBlock = (descriptor: SchemaBlockDescriptor): SchemaBlock => {
     deprecated: false,
     description: descriptor.description,
     description_kind: StringKind.PLAIN,
-    version: 1,
+    version: 0,
   };
 };
 export const createSchema = (descriptor: SchemaDescriptor): Schema => {
   return {
     block: createBlock(descriptor.block),
-    version: 1,
+    version: 0,
   };
 };

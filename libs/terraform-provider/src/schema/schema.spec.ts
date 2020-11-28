@@ -16,9 +16,9 @@ describe('createSchema', () => {
         deprecated: false,
         description: 'Empty schema',
         description_kind: StringKind.PLAIN,
-        version: 1,
+        version: 0,
       },
-      version: 1,
+      version: 0,
     });
   });
 
@@ -72,9 +72,9 @@ describe('createSchema', () => {
         deprecated: false,
         description: 'Test schema',
         description_kind: StringKind.PLAIN,
-        version: 1,
+        version: 0,
       },
-      version: 1,
+      version: 0,
     });
 
     type ComputedConfig = SchemaConfig<typeof descriptor>;
@@ -215,7 +215,7 @@ describe('createSchema', () => {
                     deprecated: false,
                     description: 'ingredients description',
                     description_kind: StringKind.PLAIN,
-                    version: 1,
+                    version: 0,
                   },
                   max_items: undefined,
                   min_items: undefined,
@@ -226,7 +226,7 @@ describe('createSchema', () => {
               deprecated: false,
               description: 'Test description',
               description_kind: StringKind.PLAIN,
-              version: 1,
+              version: 0,
             },
             max_items: undefined,
             min_items: undefined,
@@ -237,9 +237,9 @@ describe('createSchema', () => {
         deprecated: false,
         description: 'Test schema',
         description_kind: StringKind.PLAIN,
-        version: 1,
+        version: 0,
       },
-      version: 1,
+      version: 0,
     });
 
     type ComputedConfig = SchemaConfig<typeof descriptor>;
