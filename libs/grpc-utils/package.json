@@ -8,7 +8,7 @@
     "build:ts": "yarn tsc -b"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.2.1",
+    "@grpc/grpc-js": "^1.2.2",
     "@grpc/proto-loader": "0.6.0-pre17",
     "fp-ts": "^2.9.0"
   }
