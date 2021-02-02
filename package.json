@@ -1,5 +1,4 @@
 {
-  "name": "terraform-typescript",
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.12.9",

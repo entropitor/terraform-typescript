@@ -9,8 +9,8 @@ import {
   SchemaState,
   Severity,
   SyncResponse,
-} from '@terraform-typescript/terraform-provider';
-import { schemaBlock } from '@terraform-typescript/terraform-provider/dist/src/schema/descriptor';
+} from '@entropitor/terraform-provider-sdk';
+import { schemaBlock } from '@entropitor/terraform-provider-sdk/dist/src/schema/descriptor';
 
 import { HashicupsApiClient } from './apiClient';
 

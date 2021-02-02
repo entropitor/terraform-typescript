@@ -1,6 +1,6 @@
 /* eslint-disable sort-keys-fix/sort-keys-fix */
-import { loadProto, unary } from '@terraform-typescript/grpc-utils';
-import { hashicorpPlugin } from '@terraform-typescript/hashicorp-plugin';
+import { loadProto, unary } from '@entropitor/hashicorp-grpc-utils';
+import { hashicorpPlugin } from '@entropitor/hashicorp-plugin';
 import * as Either from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
 import * as TaskThese from 'fp-ts/lib/TaskThese';

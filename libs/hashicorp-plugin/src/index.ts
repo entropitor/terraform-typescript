@@ -1,7 +1,7 @@
 import { Http2Server } from 'http2';
 
+import { loadProto } from '@entropitor/hashicorp-grpc-utils';
 import * as grpc from '@grpc/grpc-js';
-import { loadProto } from '@terraform-typescript/grpc-utils';
 // @ts-expect-error no definition file
 import health from 'grpc-health-check';
 import * as forge from 'node-forge';

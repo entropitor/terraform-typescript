@@ -1,12 +1,12 @@
 {
-  "name": "@terraform-typescript/terraform-provider-fs",
-  "version": "1.0.0",
+  "name": "@entropitor/terraform-provider-fs",
+  "version": "0.1.0",
   "license": "UNLICENSED",
   "dependencies": {
     "@msgpack/msgpack": "^2.3.0",
-    "@terraform-typescript/grpc-utils": "1.0.0",
-    "@terraform-typescript/hashicorp-plugin": "1.0.0",
-    "@terraform-typescript/terraform-provider": "1.0.0",
+    "@entropitor/hashicorp-grpc-utils": "0.1.0",
+    "@entropitor/hashicorp-plugin": "0.1.0",
+    "@entropitor/terraform-provider-sdk": "0.1.0",
     "fp-ts": "^2.9.0"
   },
   "scripts": {

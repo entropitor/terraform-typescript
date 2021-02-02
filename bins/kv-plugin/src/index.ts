@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
-import { loadProto } from '@terraform-typescript/grpc-utils';
-import { hashicorpPlugin } from '@terraform-typescript/hashicorp-plugin';
+import { loadProto } from '@entropitor/hashicorp-grpc-utils';
+import { hashicorpPlugin } from '@entropitor/hashicorp-plugin';
 
 import * as KV from './generated/kv';
 import { KVHandlers } from './generated/proto/KV';

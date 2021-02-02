@@ -23,7 +23,7 @@
 
     "baseUrl": ".",
     "paths": {
-      "@terraform-typescript/*": ["../../libs/*/src"]
+      "@entropitor/*": ["../../libs/*/src"]
     }
   }
 }

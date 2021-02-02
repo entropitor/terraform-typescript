@@ -1,4 +1,4 @@
-import { run } from '@terraform-typescript/terraform-provider';
+import { run } from '@entropitor/terraform-provider-sdk';
 
 import { hashicupsProvider } from './hashicupsProvider';
 

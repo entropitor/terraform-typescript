@@ -1,6 +1,6 @@
 {
-  "name": "@terraform-typescript/grpc-utils",
-  "version": "1.0.0",
+  "name": "@entropitor/hashicorp-grpc-utils",
+  "version": "0.1.0",
   "license": "UNLICENSED",
   "main": "dist/src/index.js",
   "scripts": {

@@ -1,10 +1,10 @@
 {
-  "name": "@terraform-typescript/kv-plugin",
-  "version": "1.0.0",
+  "name": "@entropitor/hashicorp-kv-plugin",
+  "version": "0.1.0",
   "license": "UNLICENSED",
   "dependencies": {
-    "@terraform-typescript/hashicorp-plugin": "1.0.0",
-    "@terraform-typescript/grpc-utils": "1.0.0"
+    "@entropitor/hashicorp-plugin": "0.1.0",
+    "@entropitor/hashicorp-grpc-utils": "0.1.0"
   },
   "devDependencies": {
     "@grpc/proto-loader": "0.6.0-pre17"

@@ -1,4 +1,4 @@
-import { GrpcResponse } from '@terraform-typescript/grpc-utils';
+import { GrpcResponse } from '@entropitor/hashicorp-grpc-utils';
 import { Do } from 'fp-ts-contrib/lib/Do';
 import { sequenceS, sequenceT } from 'fp-ts/lib/Apply';
 import { getMonoid } from 'fp-ts/lib/Array';
