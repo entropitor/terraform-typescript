@@ -9,8 +9,6 @@
   },
   "include": ["src/**/*.ts"],
   "references": [
-    { "path": "../../libs/hashicorp-plugin" },
-    { "path": "../../libs/grpc-utils" },
     { "path": "../../libs/terraform-provider-sdk" }
   ]
 }

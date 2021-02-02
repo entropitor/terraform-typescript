@@ -4,8 +4,6 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@msgpack/msgpack": "^2.3.0",
-    "@entropitor/hashicorp-grpc-utils": "0.1.0",
-    "@entropitor/hashicorp-plugin": "0.1.0",
     "@entropitor/terraform-provider-sdk": "0.1.0",
     "fp-ts": "^2.9.0",
     "node-fetch": "^2.6.1"
