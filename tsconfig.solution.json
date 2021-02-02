@@ -4,7 +4,7 @@
   "references": [
     { "path": "./libs/hashicorp-plugin" },
     { "path": "./libs/grpc-utils" },
-    { "path": "./libs/terraform-provider" },
+    { "path": "./libs/terraform-provider-sdk" },
     { "path": "./bins/kv-plugin" },
     { "path": "./bins/terraform-provider-fs" },
     { "path": "./bins/terraform-provider-hashicups" }
