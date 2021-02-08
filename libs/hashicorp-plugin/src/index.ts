@@ -3,7 +3,7 @@ import { Http2Server } from 'http2';
 import { loadProto } from '@entropitor/hashicorp-grpc-utils';
 import * as grpc from '@grpc/grpc-js';
 // @ts-expect-error no definition file
-import health from 'grpc-health-check';
+import health from 'grpc-js-health-check';
 import * as forge from 'node-forge';
 
 import { generateIdentity } from './certificate';
@@ -33,8 +33,8 @@ const grpcStdioProto = loadProto<
 });
 
 const statusMap = {
-  '': health.messages.HealthCheckResponse.ServingStatus.NOT_SERVING,
-  plugin: health.messages.HealthCheckResponse.ServingStatus.SERVING,
+  '': health.servingStatus.NOT_SERVING,
+  plugin: health.servingStatus.SERVING,
 };
 const healthImpl = new health.Implementation(statusMap);
 

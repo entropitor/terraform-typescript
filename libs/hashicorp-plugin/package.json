@@ -13,7 +13,7 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.2.2",
     "@entropitor/hashicorp-grpc-utils": "^0.1.0",
-    "grpc-health-check": "^1.8.0",
+    "grpc-js-health-check": "^1.0.1",
     "node-forge": "^0.10.0"
   },
   "devDependencies": {
