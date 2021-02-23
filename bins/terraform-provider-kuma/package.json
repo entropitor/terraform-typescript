@@ -1,0 +1,19 @@
+{
+  "name": "@datacamps/terraform-provider-kuma",
+  "version": "0.1.0",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@entropitor/terraform-provider-sdk": "0.1.0",
+    "node-fetch": "^2.6.1"
+  },
+  "scripts": {
+    "build": "yarn build:ts",
+    "build:ts": "yarn tsc -b"
+  },
+  "bin": {
+    "terraform-provider-kuma": "./bin/terraform-provider-kuma"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.8"
+  }
+}
