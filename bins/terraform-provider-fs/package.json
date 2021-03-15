@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "license": "UNLICENSED",
   "dependencies": {
-    "@msgpack/msgpack": "^2.3.0",
     "@entropitor/terraform-provider-sdk": "0.1.0",
     "fp-ts": "^2.9.0"
   },
