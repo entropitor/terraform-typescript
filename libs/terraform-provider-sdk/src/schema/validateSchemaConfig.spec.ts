@@ -14,7 +14,7 @@ describe('validateSchemaConfig', () => {
   describe('should validate a simple schema config', () => {
     const schemaDescriptor = schema(
       schemaBlock('hashicups', {
-        password: Attribute.optional.string((password) => {
+        password: Attribute.optional.string.withValidation((password) => {
           if (password === 'admin') {
             return AsyncResponse.fromErrorString(
               'Too weak',
@@ -34,7 +34,7 @@ describe('validateSchemaConfig', () => {
           }
           return AsyncResponse.right(password || 'default-password');
         }),
-        username: Attribute.optional.string((username) => {
+        username: Attribute.optional.string.withValidation((username) => {
           if (username === 'admin') {
             return AsyncResponse.fromErrorString(
               'Admin is too powerful',
@@ -211,10 +211,10 @@ describe('validateSchemaConfig', () => {
 
     const schemaDescriptor = schema(
       schemaBlock('complex', {
-        id: Attribute.optional.string(),
+        id: Attribute.optional.string,
         items: Property.list(
           schemaBlock('the items in the order', {
-            quality: Attribute.optional.string((quality) => {
+            quality: Attribute.optional.string.withValidation((quality) => {
               if (quality === 'bad') {
                 return AsyncResponse.fromErrorString(
                   'Bad quality',
@@ -234,7 +234,7 @@ describe('validateSchemaConfig', () => {
           }
           return AsyncResponse.right(list);
         }),
-        last_updated: Attribute.optional.string(),
+        last_updated: Attribute.optional.string,
       }),
     );
 

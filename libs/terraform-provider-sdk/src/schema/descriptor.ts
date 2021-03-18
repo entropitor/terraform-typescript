@@ -68,19 +68,29 @@ export const validatedAttribute = <
 >(
   source: S,
   ctyType: CT,
-) => (
-  validate?: (
-    attribute: AttributePropertyConfigBySource<S, CT>,
-  ) => AsyncResponse<AttributePropertyConfigBySource<S, CT>>,
-) =>
-  ({
+) => {
+  const withoutValidation = {
     brand: propertyDescriptorBrand,
     ctyType,
     source,
     type: 'attribute',
-    validate: validate as AttributePropertyDescriptor['validate'],
-  } as const);
+  } as const;
 
+  const withValidation = (
+    validate: (
+      attribute: AttributePropertyConfigBySource<S, CT>,
+    ) => AsyncResponse<AttributePropertyConfigBySource<S, CT>>,
+  ) =>
+    ({
+      ...withoutValidation,
+      validate: validate as AttributePropertyDescriptor['validate'],
+    } as const);
+
+  return {
+    ...withoutValidation,
+    withValidation,
+  };
+};
 export const Attribute = {
   optional: {
     string: validatedAttribute('optional-in-config', ctyString),
