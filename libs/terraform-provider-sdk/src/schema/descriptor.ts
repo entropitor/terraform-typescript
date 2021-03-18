@@ -12,7 +12,10 @@ import {
   ctyTuple,
   CtyType,
 } from './ctyType';
-import type { AttributePropertyConfigBySource } from './SchemaConfig';
+import type {
+  AttributePropertyConfigBySource,
+  SchemaBlockConfig,
+} from './SchemaConfig';
 
 // This const is exported in this file but not in the global package to ensure typescript
 // can properly infer the 'unique symbol'
@@ -185,6 +188,34 @@ export const listProperty = <SBD extends SchemaBlockDescriptor>(
     itemType,
     type: 'list',
   } as const);
+
+export const Property = {
+  list: <SBD extends SchemaBlockDescriptor>(
+    itemType: SBD,
+    minMax: {
+      maxItems?: number;
+      minItems?: number;
+    } = {},
+  ) => {
+    const property = listProperty(itemType, minMax);
+
+    const withValidation = (
+      validate: (
+        args: Array<SchemaBlockConfig<SBD>>,
+      ) => AsyncResponse<Array<SchemaBlockConfig<SBD>>>,
+    ) => {
+      return {
+        ...listProperty(itemType, minMax),
+        validate,
+      };
+    };
+
+    return {
+      ...property,
+      withValidation,
+    };
+  },
+};
 
 export const schemaBlockDescriptorBrand = Symbol('SchemaBlockDescriptorBrand');
 export type SchemaBlockDescriptor = {

@@ -1,13 +1,6 @@
 import { AsyncResponse, SyncResponse } from '../types/response';
 
-import {
-  Attribute,
-  listProperty,
-  schema,
-  schemaBlock,
-  SchemaBlockDescriptor,
-} from './descriptor';
-import { SchemaBlockConfig } from './SchemaConfig';
+import { Attribute, Property, schema, schemaBlock } from './descriptor';
 import { validateSchemaConfig } from './validateSchemaConfig';
 
 describe('validateSchemaConfig', () => {
@@ -190,25 +183,6 @@ describe('validateSchemaConfig', () => {
   });
 
   describe('should validate a more complex schema with a list', () => {
-    const Property = {
-      list: <SBD extends SchemaBlockDescriptor>(
-        itemType: SBD,
-        minMax: {
-          maxItems?: number;
-          minItems?: number;
-        } = {},
-      ) => (
-        validate?: (
-          args: Array<SchemaBlockConfig<SBD>>,
-        ) => AsyncResponse<Array<SchemaBlockConfig<SBD>>>,
-      ) => {
-        return {
-          ...listProperty(itemType, minMax),
-          validate,
-        };
-      },
-    };
-
     const schemaDescriptor = schema(
       schemaBlock('complex', {
         id: Attribute.optional.string,
@@ -225,7 +199,7 @@ describe('validateSchemaConfig', () => {
             }),
           }),
           {},
-        )((list) => {
+        ).withValidation((list) => {
           if (!list.some((item) => item.quality === 'very good')) {
             return AsyncResponse.fromErrorString(
               'No exceptional quality',
