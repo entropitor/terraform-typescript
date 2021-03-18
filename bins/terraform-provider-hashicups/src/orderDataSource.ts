@@ -6,11 +6,11 @@ import {
   ctyString,
   listProperty,
   schema,
+  schemaBlock,
   SchemaState,
   Severity,
   SyncResponse,
 } from '@entropitor/terraform-provider-sdk';
-import { schemaBlock } from '@entropitor/terraform-provider-sdk/dist/src/schema/descriptor';
 
 import { HashicupsApiClient } from './apiClient';
 

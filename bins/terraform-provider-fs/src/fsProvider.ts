@@ -8,10 +8,10 @@ import {
   ctyString,
   Provider,
   schema,
+  schemaBlock,
   Severity,
   SyncResponse,
 } from '@entropitor/terraform-provider-sdk';
-import { schemaBlock } from '@entropitor/terraform-provider-sdk/dist/src/schema/descriptor';
 
 import { FsClient } from './fsClient';
 import { fsFileResource } from './fsFileResource';
