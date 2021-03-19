@@ -2183,10 +2183,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@^26.0.15":
-  version "26.0.15"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.15.tgz#12e02c0372ad0548e07b9f4e19132b834cb1effe"
-  integrity sha512-s2VMReFXRg9XXxV+CW9e5Nz8fH2K1aEhwgjUqPPbQd7g95T0laAcvLv032EhFHIa5GHsZ8W7iJEQVaJq6k3Gog==
+"@types/jest@^26.0.21":
+  version "26.0.21"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.21.tgz#3a73c2731e7e4f0fbaea56ce7ff8c79cf812bd24"
+  integrity sha512-ab9TyM/69yg7eew9eOwKMUmvIZAKEGZYlq/dhe5/0IMUd/QLJv5ldRMdddSn+u22N13FP3s5jYyktxuBwY0kDA==
   dependencies:
     jest-diff "^26.0.0"
     pretty-format "^26.0.0"
@@ -2216,18 +2216,18 @@
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
   integrity sha1-aaI6OtKcrwCX8G7aWbNh7i8GOfY=
 
-"@types/node-fetch@^2.5.7":
-  version "2.5.7"
-  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.7.tgz#20a2afffa882ab04d44ca786449a276f9f6bbf3c"
-  integrity sha512-o2WVNf5UhWRkxlf6eq+jMZDu7kjgpgJfl4xVNlvryc95O/6F2ld8ztKX+qu+Rjyet93WAWm5LjeX9H5FGkODvw==
+"@types/node-fetch@^2.5.8":
+  version "2.5.8"
+  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.8.tgz#e199c835d234c7eb0846f6618012e558544ee2fb"
+  integrity sha512-fbjI6ja0N5ZA8TV53RUqzsKNkl9fv8Oj3T7zxW7FGv1GSH7gwJaNF8dzCjrqKaxKeUpTz4yT1DaJFq/omNpGfw==
   dependencies:
     "@types/node" "*"
     form-data "^3.0.0"
 
-"@types/node-forge@^0.9.5":
-  version "0.9.5"
-  resolved "https://registry.yarnpkg.com/@types/node-forge/-/node-forge-0.9.5.tgz#648231d79da197216290429020698d4e767365a0"
-  integrity sha512-rrN3xfA/oZIzwOnO3d2wRQz7UdeVkmMMPjWUCfpPTPuKFVb3D6G10LuiVHYYmvrivBBLMx4m0P/FICoDbNZUMA==
+"@types/node-forge@^0.9.7":
+  version "0.9.7"
+  resolved "https://registry.yarnpkg.com/@types/node-forge/-/node-forge-0.9.7.tgz#948f7b52d352a6c4ab22d3328c206f0870672db5"
+  integrity sha512-AX7Mqk5ztzSvxqsA/q8y0k0/znJpW6QAqnoLQMEi7A3tio+laRmC/8Q3gbATHT4kZnvhnDmGAy1CpWFzlzCfeA==
   dependencies:
     "@types/node" "*"
 
@@ -2256,10 +2256,10 @@
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.1.5.tgz#b6ab3bba29e16b821d84e09ecfaded462b816b00"
   integrity sha512-UEyp8LwZ4Dg30kVU2Q3amHHyTn1jEdhCIE59ANed76GaT1Vp76DD3ZWSAxgCrw6wJ0TqeoBpqmfUHiUDPs//HQ==
 
-"@types/ramda@^0.27.32":
-  version "0.27.32"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.27.32.tgz#4f62ff4fc3a41dc32dd9df3cde53861b6ee69e6f"
-  integrity sha512-vdwZcWC+hlTxB//LZQLS1+VEdArImGI4yVKUpeqB8b9mBXgDFXCuQoOt8spQbi8fTyNLOdqRv6liSm2ckxWLog==
+"@types/ramda@^0.27.39":
+  version "0.27.39"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.27.39.tgz#7541d9d745a2003c8f635897dff8c65c12be9327"
+  integrity sha512-od24Hng0uS1NcMSPo6ZzKXN2WJxjbF7IBzQhRCtSDyIShdEJTAWXgQlyDg998aylNrXbVvQxkFJmuaLHQcfczg==
   dependencies:
     ts-toolbelt "^6.15.1"
 

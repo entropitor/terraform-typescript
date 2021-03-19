@@ -6,7 +6,7 @@
     "@babel/preset-typescript": "^7.12.7",
     "@datacamp/eslint-config": "^5.0.0",
     "@datacamp/prettier-config": "^2.1.0",
-    "@types/jest": "^26.0.15",
+    "@types/jest": "^26.0.21",
     "babel-jest": "^26.6.3",
     "eslint": "^7.22.0",
     "jest": "^26.6.3",

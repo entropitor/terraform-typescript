@@ -11,13 +11,13 @@
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.2.2",
     "@entropitor/hashicorp-grpc-utils": "^0.1.0",
+    "@grpc/grpc-js": "^1.2.2",
     "grpc-js-health-check": "^1.0.1",
     "node-forge": "^0.10.0"
   },
   "devDependencies": {
     "@grpc/proto-loader": "0.6.0-pre17",
-    "@types/node-forge": "^0.9.5"
+    "@types/node-forge": "^0.9.7"
   }
 }
