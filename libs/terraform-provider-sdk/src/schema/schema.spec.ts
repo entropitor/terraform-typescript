@@ -4,6 +4,7 @@ import { Equals, expectTypeToBeTrue } from '../testUtils';
 import { ctyNumber, ctyString, ctyTypeToBuffer } from './ctyType';
 import { Description, markdown, plain } from './description';
 import { Attribute, Property, schema, schemaBlock } from './descriptor';
+import { Size } from './descriptor/property';
 import { createSchema } from './schema';
 import { SchemaConfig } from './SchemaConfig';
 import { SchemaState } from './SchemaState';
@@ -127,7 +128,7 @@ describe('createSchema', () => {
               'The teaser description of the coffee',
             ),
           }),
-        ),
+        ).withSizeConstraint(Size.between(1, 3)),
       }),
     );
     expect(createSchema(descriptor)).toEqual({
@@ -237,8 +238,8 @@ describe('createSchema', () => {
               description_kind: StringKind.PLAIN,
               version: 0,
             },
-            max_items: undefined,
-            min_items: undefined,
+            max_items: 3,
+            min_items: 1,
             nesting: 'LIST',
             type_name: 'coffees',
           },

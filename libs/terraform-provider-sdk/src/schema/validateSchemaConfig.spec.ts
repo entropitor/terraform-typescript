@@ -204,7 +204,6 @@ describe('validateSchemaConfig', () => {
                 return AsyncResponse.right(quality);
               }),
           }),
-          {},
         ).withValidation((list) => {
           if (!list.some((item) => item.quality === 'very good')) {
             return AsyncResponse.fromErrorString(
