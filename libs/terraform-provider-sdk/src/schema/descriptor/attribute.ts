@@ -11,9 +11,14 @@ import {
   ctyTuple,
   CtyType,
 } from '../ctyType';
+import { DescriptionLike } from '../description';
 import { AttributePropertyConfigBySource } from '../SchemaConfig';
 
-import { attribute, AttributePropertyDescriptor } from './propertyDescriptor';
+import {
+  attribute,
+  AttributePropertyDescriptor,
+  AttributeSource,
+} from './propertyDescriptor';
 
 const validatedAttribute = <
   CT extends CtyType,
@@ -21,8 +26,9 @@ const validatedAttribute = <
 >(
   source: S,
   ctyType: CT,
+  description: DescriptionLike,
 ) => {
-  const withoutValidation = attribute(source, ctyType);
+  const withoutValidation = attribute(source, ctyType, description);
 
   const withValidation = (
     validate: (
@@ -39,71 +45,34 @@ const validatedAttribute = <
     withValidation,
   };
 };
+
+const attributeConstructors = <AS extends AttributeSource>(source: AS) => ({
+  any: (description: DescriptionLike) =>
+    validatedAttribute(source, ctyAny, description),
+  boolean: (description: DescriptionLike) =>
+    validatedAttribute(source, ctyBoolean, description),
+  list: <C extends CtyType>(description: DescriptionLike, itemType: C) =>
+    validatedAttribute(source, ctyList(itemType), description),
+  map: <C extends CtyType>(description: DescriptionLike, itemType: C) =>
+    validatedAttribute(source, ctyMap(itemType), description),
+  number: (description: DescriptionLike) =>
+    validatedAttribute(source, ctyNumber, description),
+  object: <R extends Record<string, CtyType>>(
+    description: DescriptionLike,
+    itemTypes: R,
+  ) => validatedAttribute(source, ctyObject(itemTypes), description),
+  set: <C extends CtyType>(description: DescriptionLike, itemType: C) =>
+    validatedAttribute(source, ctySet(itemType), description),
+  string: (description: DescriptionLike) =>
+    validatedAttribute(source, ctyString, description),
+  tuple: <T extends CtyType[]>(description: DescriptionLike, ...itemTypes: T) =>
+    validatedAttribute(source, ctyTuple(...itemTypes), description),
+});
 export const Attribute = {
-  computed: {
-    any: validatedAttribute('computed', ctyAny),
-    boolean: validatedAttribute('computed', ctyBoolean),
-    list: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('computed', ctyList(itemType)),
-    map: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('computed', ctyMap(itemType)),
-    number: validatedAttribute('computed', ctyNumber),
-    object: <R extends Record<string, CtyType>>(itemTypes: R) =>
-      validatedAttribute('computed', ctyObject(itemTypes)),
-    set: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('computed', ctySet(itemType)),
-    string: validatedAttribute('computed', ctyString),
-    tuple: <T extends CtyType[]>(...itemTypes: T) =>
-      validatedAttribute('computed', ctyTuple(...itemTypes)),
-  },
-  computedButOverridable: {
-    any: validatedAttribute('computed-but-overridable', ctyAny),
-    boolean: validatedAttribute('computed-but-overridable', ctyBoolean),
-    list: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('computed-but-overridable', ctyList(itemType)),
-    map: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('computed-but-overridable', ctyMap(itemType)),
-    number: validatedAttribute('computed-but-overridable', ctyNumber),
-    object: <R extends Record<string, CtyType>>(itemTypes: R) =>
-      validatedAttribute('computed-but-overridable', ctyObject(itemTypes)),
-    set: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('computed-but-overridable', ctySet(itemType)),
-    string: validatedAttribute('computed-but-overridable', ctyString),
-    tuple: <T extends CtyType[]>(...itemTypes: T) =>
-      validatedAttribute('computed-but-overridable', ctyTuple(...itemTypes)),
-  },
-  optional: {
-    any: validatedAttribute('optional-in-config', ctyAny),
-    boolean: validatedAttribute('optional-in-config', ctyBoolean),
-    list: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('optional-in-config', ctyList(itemType)),
-    map: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('optional-in-config', ctyMap(itemType)),
-    number: validatedAttribute('optional-in-config', ctyNumber),
-    object: <R extends Record<string, CtyType>>(itemTypes: R) =>
-      validatedAttribute('optional-in-config', ctyObject(itemTypes)),
-    set: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('optional-in-config', ctySet(itemType)),
-    string: validatedAttribute('optional-in-config', ctyString),
-    tuple: <T extends CtyType[]>(...itemTypes: T) =>
-      validatedAttribute('optional-in-config', ctyTuple(...itemTypes)),
-  },
-  required: {
-    any: validatedAttribute('required-in-config', ctyAny),
-    boolean: validatedAttribute('required-in-config', ctyBoolean),
-    list: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('required-in-config', ctyList(itemType)),
-    map: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('required-in-config', ctyMap(itemType)),
-    number: validatedAttribute('required-in-config', ctyNumber),
-    object: <R extends Record<string, CtyType>>(itemTypes: R) =>
-      validatedAttribute('required-in-config', ctyObject(itemTypes)),
-    set: <C extends CtyType>(itemType: C) =>
-      validatedAttribute('required-in-config', ctySet(itemType)),
-    string: validatedAttribute('required-in-config', ctyString),
-    tuple: <T extends CtyType[]>(...itemTypes: T) =>
-      validatedAttribute('required-in-config', ctyTuple(...itemTypes)),
-  },
+  computed: attributeConstructors('computed'),
+  computedButOverridable: attributeConstructors('computed-but-overridable'),
+  optional: attributeConstructors('optional-in-config'),
+  required: attributeConstructors('required-in-config'),
 };
 
 export const isOptional = (

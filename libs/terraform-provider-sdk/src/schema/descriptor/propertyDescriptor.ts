@@ -3,6 +3,7 @@
 
 import { AsyncResponse } from '../../types/response';
 import { CtyType } from '../ctyType';
+import { Description, DescriptionLike, parseDescription } from '../description';
 
 import type { SchemaBlockDescriptor } from './blockDescriptor';
 
@@ -11,7 +12,7 @@ import type { SchemaBlockDescriptor } from './blockDescriptor';
  */
 export const propertyDescriptorBrand = Symbol('PropertyDescriptorBrand');
 
-type AttributeSource =
+export type AttributeSource =
   | 'required-in-config'
   | 'optional-in-config'
   | 'computed-but-overridable'
@@ -20,6 +21,7 @@ export type SchemaPropertyDescriptor =
   | {
       brand: typeof propertyDescriptorBrand;
       ctyType: CtyType;
+      description: Description;
       source: AttributeSource;
       type: 'attribute';
       // Using AttributePropertyConfigBySource for typing here resulted in infinte types
@@ -56,10 +58,12 @@ export const attribute = <
 >(
   source: S,
   ctyType: CT,
+  description: DescriptionLike,
 ) =>
   ({
     brand: propertyDescriptorBrand,
     ctyType,
+    description: parseDescription(description),
     source,
     type: 'attribute',
   } as const);

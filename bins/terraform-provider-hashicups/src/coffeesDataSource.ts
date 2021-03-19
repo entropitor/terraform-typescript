@@ -18,17 +18,29 @@ const ctor = createDataSource(
     schemaBlock('Coffees data source schema', {
       coffees: listProperty(
         schemaBlock('Test description', {
-          description: attribute('computed', ctyString),
-          id: attribute('computed', ctyNumber),
-          image: attribute('computed', ctyString),
+          description: attribute(
+            'computed',
+            ctyString,
+            'The description of the coffee',
+          ),
+          id: attribute('computed', ctyNumber, 'The id of the coffee'),
+          image: attribute('computed', ctyString, 'The image of the coffee'),
           ingredients: listProperty(
             schemaBlock('ingredients description', {
-              ingredient_id: attribute('computed', ctyNumber),
+              ingredient_id: attribute(
+                'computed',
+                ctyNumber,
+                'The id of the ingredient',
+              ),
             }),
           ),
-          name: attribute('computed', ctyString),
-          price: attribute('computed', ctyNumber),
-          teaser: attribute('computed', ctyString),
+          name: attribute('computed', ctyString, 'The name of the coffee'),
+          price: attribute('computed', ctyNumber, 'The price of the coffee'),
+          teaser: attribute(
+            'computed',
+            ctyString,
+            'The teaser description of the coffee',
+          ),
         }),
       ),
     }),

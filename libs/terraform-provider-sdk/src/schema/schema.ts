@@ -5,6 +5,7 @@ import {
 import { StringKind } from '../generated/tfplugin5/StringKind';
 
 import { ctyTypeToBuffer } from './ctyType';
+import { toTerraformDescription } from './description';
 import {
   AttributePropertyDescriptor,
   isComputed,
@@ -28,8 +29,7 @@ export const createBlock = (descriptor: SchemaBlockDescriptor): SchemaBlock => {
         return {
           computed: isComputed(attributeDescriptor) || undefined,
           deprecated: false,
-          description: '',
-          description_kind: StringKind.PLAIN,
+          ...toTerraformDescription(attributeDescriptor.description),
           name: attributeName,
           optional: isOptional(attributeDescriptor) || undefined,
           required: isRequired(attributeDescriptor) || undefined,

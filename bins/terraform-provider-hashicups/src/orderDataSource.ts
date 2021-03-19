@@ -16,16 +16,32 @@ import { HashicupsApiClient } from './apiClient';
 
 const schemaDescriptor = schema(
   schemaBlock('Order data source', {
-    id: attribute('required-in-config', ctyNumber),
+    id: attribute('required-in-config', ctyNumber, 'The id of the order'),
     items: listProperty(
       schemaBlock('items', {
-        coffee_description: attribute('computed', ctyString),
-        coffee_id: attribute('computed', ctyNumber),
-        coffee_image: attribute('computed', ctyString),
-        coffee_name: attribute('computed', ctyString),
-        coffee_price: attribute('computed', ctyNumber),
-        coffee_teaser: attribute('computed', ctyString),
-        quantity: attribute('computed', ctyNumber),
+        coffee_description: attribute(
+          'computed',
+          ctyString,
+          'The description of the coffee',
+        ),
+        coffee_id: attribute('computed', ctyNumber, 'The id of the coffee'),
+        coffee_image: attribute(
+          'computed',
+          ctyString,
+          'The image of the coffee',
+        ),
+        coffee_name: attribute('computed', ctyString, 'The name of the coffee'),
+        coffee_price: attribute(
+          'computed',
+          ctyNumber,
+          'The price of the coffee',
+        ),
+        coffee_teaser: attribute(
+          'computed',
+          ctyString,
+          'The teaser description of the coffee',
+        ),
+        quantity: attribute('computed', ctyNumber, 'The amount of coffees'),
       }),
     ),
   }),

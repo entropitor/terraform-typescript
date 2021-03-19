@@ -23,15 +23,18 @@ import { FsClient } from './fsClient';
 const ctor = createResource(
   schema(
     schemaBlock('a file resource', {
-      // description: "The body of the file",
       body: attribute(
         'required-in-config',
         ctyObject({
           nb_foos: ctyNumber,
         }),
+        'The body of the file',
       ),
-      // description: "The name of the file to manage",
-      file_name: attribute('required-in-config', ctyString),
+      file_name: attribute(
+        'required-in-config',
+        ctyString,
+        'The name of the file',
+      ),
       // description: "Som extra properties of the file",
       // extra: attribute('optional-in-config', ctyAny)
     }),

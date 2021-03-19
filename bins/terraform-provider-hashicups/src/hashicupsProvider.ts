@@ -20,8 +20,16 @@ import { orderResource } from './orderResource';
 
 const schemaDescriptor = schema(
   schemaBlock('hashicups', {
-    password: attribute('optional-in-config', ctyString),
-    username: attribute('optional-in-config', ctyString),
+    password: attribute(
+      'optional-in-config',
+      ctyString,
+      'The password for the provider',
+    ),
+    username: attribute(
+      'optional-in-config',
+      ctyString,
+      'The username for the provider',
+    ),
   }),
 );
 

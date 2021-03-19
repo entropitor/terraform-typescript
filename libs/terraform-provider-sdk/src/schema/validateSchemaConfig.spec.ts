@@ -7,35 +7,39 @@ describe('validateSchemaConfig', () => {
   describe('should validate a simple schema config', () => {
     const schemaDescriptor = schema(
       schemaBlock('hashicups', {
-        password: Attribute.optional.string.withValidation((password) => {
-          if (password === 'admin') {
-            return AsyncResponse.fromErrorString(
-              'Too weak',
-              'Even I can guess this',
-            );
-          }
-          if (password?.length === 5) {
-            return AsyncResponse.both(
-              [
-                {
-                  detail: 'use a longer password',
-                  summary: 'This is a very short password',
-                },
-              ],
-              `Longer password: ${password}`,
-            );
-          }
-          return AsyncResponse.right(password || 'default-password');
-        }),
-        username: Attribute.optional.string.withValidation((username) => {
-          if (username === 'admin') {
-            return AsyncResponse.fromErrorString(
-              'Admin is too powerful',
-              'You are not allowed to pass an admin user',
-            );
-          }
-          return AsyncResponse.right(username || 'default-username');
-        }),
+        password: Attribute.optional
+          .string('The password for the provider')
+          .withValidation((password) => {
+            if (password === 'admin') {
+              return AsyncResponse.fromErrorString(
+                'Too weak',
+                'Even I can guess this',
+              );
+            }
+            if (password?.length === 5) {
+              return AsyncResponse.both(
+                [
+                  {
+                    detail: 'use a longer password',
+                    summary: 'This is a very short password',
+                  },
+                ],
+                `Longer password: ${password}`,
+              );
+            }
+            return AsyncResponse.right(password || 'default-password');
+          }),
+        username: Attribute.optional
+          .string('The username for the provider')
+          .withValidation((username) => {
+            if (username === 'admin') {
+              return AsyncResponse.fromErrorString(
+                'Admin is too powerful',
+                'You are not allowed to pass an admin user',
+              );
+            }
+            return AsyncResponse.right(username || 'default-username');
+          }),
       }),
     );
 
@@ -185,18 +189,20 @@ describe('validateSchemaConfig', () => {
   describe('should validate a more complex schema with a list', () => {
     const schemaDescriptor = schema(
       schemaBlock('complex', {
-        id: Attribute.optional.string,
+        id: Attribute.optional.string('The id of the ...'),
         items: Property.list(
           schemaBlock('the items in the order', {
-            quality: Attribute.optional.string.withValidation((quality) => {
-              if (quality === 'bad') {
-                return AsyncResponse.fromErrorString(
-                  'Bad quality',
-                  'You need good quality',
-                );
-              }
-              return AsyncResponse.right(quality);
-            }),
+            quality: Attribute.optional
+              .string('The quality')
+              .withValidation((quality) => {
+                if (quality === 'bad') {
+                  return AsyncResponse.fromErrorString(
+                    'Bad quality',
+                    'You need good quality',
+                  );
+                }
+                return AsyncResponse.right(quality);
+              }),
           }),
           {},
         ).withValidation((list) => {
@@ -208,7 +214,7 @@ describe('validateSchemaConfig', () => {
           }
           return AsyncResponse.right(list);
         }),
-        last_updated: Attribute.optional.string,
+        last_updated: Attribute.optional.string('Last updated at'),
       }),
     );
 

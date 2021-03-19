@@ -2,6 +2,7 @@ import { StringKind } from '../generated/tfplugin5/StringKind';
 import { Equals, expectTypeToBeTrue } from '../testUtils';
 
 import { ctyNumber, ctyString, ctyTypeToBuffer } from './ctyType';
+import { Description, plain } from './description';
 import { Attribute, Property, schema, schemaBlock } from './descriptor';
 import { createSchema } from './schema';
 import { SchemaConfig } from './SchemaConfig';
@@ -25,9 +26,11 @@ describe('createSchema', () => {
   it('should create a simple schema with attributes', () => {
     const descriptor = schema(
       schemaBlock('Test schema', {
-        password: Attribute.required.string,
-        url: Attribute.computed.string,
-        username: Attribute.computedButOverridable.string,
+        password: Attribute.required.string('The password for the provider'),
+        url: Attribute.computed.string(plain('The url of the api')),
+        username: Attribute.computedButOverridable.string(
+          Description.markdown('The username for the provider'),
+        ),
       }),
     );
 
@@ -37,7 +40,7 @@ describe('createSchema', () => {
           {
             computed: undefined,
             deprecated: false,
-            description: '',
+            description: 'The password for the provider',
             description_kind: StringKind.PLAIN,
             name: 'password',
             optional: undefined,
@@ -48,7 +51,7 @@ describe('createSchema', () => {
           {
             computed: true,
             deprecated: false,
-            description: '',
+            description: 'The url of the api',
             description_kind: StringKind.PLAIN,
             name: 'url',
             optional: undefined,
@@ -59,8 +62,8 @@ describe('createSchema', () => {
           {
             computed: true,
             deprecated: false,
-            description: '',
-            description_kind: StringKind.PLAIN,
+            description: 'The username for the provider',
+            description_kind: StringKind.MARKDOWN,
             name: 'username',
             optional: true,
             required: undefined,
@@ -106,17 +109,21 @@ describe('createSchema', () => {
       schemaBlock('Test schema', {
         coffees: Property.list(
           schemaBlock('Test description', {
-            description: Attribute.computed.string,
-            id: Attribute.computed.number,
-            image: Attribute.computed.string,
+            description: Attribute.computed.string('Description of the coffee'),
+            id: Attribute.computed.number('The id of the coffee'),
+            image: Attribute.computed.string('The image showing the coffee'),
             ingredients: Property.list(
               schemaBlock('ingredients description', {
-                ingredient_id: Attribute.computed.number,
+                ingredient_id: Attribute.computed.number(
+                  'The id of the ingredient',
+                ),
               }),
             ),
-            name: Attribute.computed.string,
-            price: Attribute.computed.number,
-            teaser: Attribute.computed.string,
+            name: Attribute.computed.string('the name of the coffee'),
+            price: Attribute.computed.number('The price of the coffee'),
+            teaser: Attribute.computed.string(
+              'The teaser description of the coffee',
+            ),
           }),
         ),
       }),
@@ -131,7 +138,7 @@ describe('createSchema', () => {
                 {
                   computed: true,
                   deprecated: false,
-                  description: '',
+                  description: 'Description of the coffee',
                   description_kind: StringKind.PLAIN,
                   name: 'description',
                   optional: undefined,
@@ -142,7 +149,7 @@ describe('createSchema', () => {
                 {
                   computed: true,
                   deprecated: false,
-                  description: '',
+                  description: 'The id of the coffee',
                   description_kind: StringKind.PLAIN,
                   name: 'id',
                   optional: undefined,
@@ -153,7 +160,7 @@ describe('createSchema', () => {
                 {
                   computed: true,
                   deprecated: false,
-                  description: '',
+                  description: 'The image showing the coffee',
                   description_kind: StringKind.PLAIN,
                   name: 'image',
                   optional: undefined,
@@ -164,7 +171,7 @@ describe('createSchema', () => {
                 {
                   computed: true,
                   deprecated: false,
-                  description: '',
+                  description: 'the name of the coffee',
                   description_kind: StringKind.PLAIN,
                   name: 'name',
                   optional: undefined,
@@ -175,7 +182,7 @@ describe('createSchema', () => {
                 {
                   computed: true,
                   deprecated: false,
-                  description: '',
+                  description: 'The price of the coffee',
                   description_kind: StringKind.PLAIN,
                   name: 'price',
                   optional: undefined,
@@ -186,7 +193,7 @@ describe('createSchema', () => {
                 {
                   computed: true,
                   deprecated: false,
-                  description: '',
+                  description: 'The teaser description of the coffee',
                   description_kind: StringKind.PLAIN,
                   name: 'teaser',
                   optional: undefined,
@@ -202,7 +209,7 @@ describe('createSchema', () => {
                       {
                         computed: true,
                         deprecated: false,
-                        description: '',
+                        description: 'The id of the ingredient',
                         description_kind: StringKind.PLAIN,
                         name: 'ingredient_id',
                         optional: undefined,
