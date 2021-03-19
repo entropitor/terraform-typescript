@@ -8,14 +8,9 @@ type Proto<PackageName extends string, ServiceName extends string> = {
     [serviceName in ServiceName]: any;
   };
 };
-type PackageName<P> = P extends Proto<infer PackageName, any>
-  ? PackageName
-  : never;
-type ServiceName<P, PN extends PackageName<P>> = P extends Proto<
-  PN,
-  infer ServiceName
->
-  ? ServiceName
+type PackageName<P> = P extends Proto<infer Name, any> ? Name : never;
+type ServiceName<P, PN extends PackageName<P>> = P extends Proto<PN, infer Name>
+  ? Name
   : never;
 
 type LoadProtoArgs<

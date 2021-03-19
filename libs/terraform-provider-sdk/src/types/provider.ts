@@ -25,12 +25,12 @@ type ConfigureResult<Client> = {
   client: Client;
 };
 
-export interface Provider<
+export type Provider<
   ProviderSchemaDescriptor extends SchemaDescriptor,
   Client,
   R extends Record<string, SchemaDescriptor> = Record<string, SchemaDescriptor>,
   D extends Record<string, SchemaDescriptor> = Record<string, SchemaDescriptor>
-> {
+> = {
   configure(args: {
     config: SchemaConfig<ProviderSchemaDescriptor>;
     preparedConfig: SchemaConfig<ProviderSchemaDescriptor>;
@@ -47,4 +47,4 @@ export interface Provider<
   }): AsyncResponse<
     PrepareConfigureResult<SchemaConfig<ProviderSchemaDescriptor>>
   >;
-}
+};

@@ -92,7 +92,7 @@ export const validatedAttribute = <
 
   const withValidation = (
     validate: (
-      attribute: AttributePropertyConfigBySource<S, CT>,
+      attributeToValidate: AttributePropertyConfigBySource<S, CT>,
     ) => AsyncResponse<AttributePropertyConfigBySource<S, CT>>,
   ) =>
     ({

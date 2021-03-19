@@ -1,5 +1,4 @@
 import { GrpcResponse } from '@entropitor/hashicorp-grpc-utils';
-import { Do } from 'fp-ts-contrib/lib/Do';
 import { sequenceS, sequenceT } from 'fp-ts/lib/Apply';
 import { getMonoid } from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
@@ -7,6 +6,7 @@ import { pipe } from 'fp-ts/lib/function';
 import * as Task from 'fp-ts/lib/Task';
 import * as TaskThese from 'fp-ts/lib/TaskThese';
 import * as These from 'fp-ts/lib/These';
+import { Do } from 'fp-ts-contrib/lib/Do';
 
 import {
   _tfplugin5_Diagnostic_Severity as Severity,

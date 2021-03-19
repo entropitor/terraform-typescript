@@ -4,11 +4,11 @@
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-typescript": "^7.12.7",
-    "@datacamp/eslint-config": "^4.1.0",
+    "@datacamp/eslint-config": "^5.0.0",
     "@datacamp/prettier-config": "^2.1.0",
     "@types/jest": "^26.0.15",
     "babel-jest": "^26.6.3",
-    "eslint": "^7.14.0",
+    "eslint": "^7.22.0",
     "jest": "^26.6.3",
     "lerna": "^3.22.1",
     "prettier": "^2.2.1",
@@ -20,7 +20,7 @@
   "scripts": {
     "build": "yarn lerna run build",
     "build:ts": "yarn tsc -b tsconfig.solution.json",
-    "lint": "yarn eslint . --ext ts,js,json --ignore-path .gitignore",
+    "lint": "yarn eslint . --cache --ext ts,js,json --ignore-path .gitignore",
     "test": "yarn jest",
     "check": "yarn lint && yarn jest && yarn build:ts"
   }

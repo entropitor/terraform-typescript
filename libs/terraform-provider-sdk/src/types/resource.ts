@@ -28,7 +28,7 @@ type ReadResourceResult<S> = {
   privateData: Buffer;
 };
 
-export interface Resource<SD extends SchemaDescriptor, Client> {
+export type Resource<SD extends SchemaDescriptor, Client> = {
   applyChange(args: {
     client: Client;
     config: SchemaConfig<SD>;
@@ -62,7 +62,7 @@ export interface Resource<SD extends SchemaDescriptor, Client> {
   }): AsyncResponse<UpgradeResult<SchemaState<SD>>>;
 
   validate(args: { config: SchemaConfig<SD> }): AsyncResponse<ValidateResult>;
-}
+};
 
 // TODO add "id" field?
 export const createResource = <SD extends SchemaDescriptor>(descriptor: SD) => <
