@@ -60,9 +60,9 @@ const validateSchemaBlockConfig = <SBD extends SchemaBlockDescriptor>(
               pipe(
                 AsyncResponse.sequenceT(
                   ...configValue.map((itemConfig: any, index: number) =>
-                    // @ts-expect-error infinite because any above
                     validateSchemaBlockConfig(
-                      propertyDescriptor.itemType,
+                      // We need any to supress infinite type
+                      propertyDescriptor.itemType as any,
                       itemConfig,
                       [
                         ...attributePath,

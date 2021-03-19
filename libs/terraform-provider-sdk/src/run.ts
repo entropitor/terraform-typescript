@@ -136,7 +136,10 @@ export const run = <
           resource.planChange({
             client: client!,
             config: parseDynamicValue(call.request!.config!),
-            hasProposedStateChange: hasChange(priorState, proposedNewState),
+            hasProposedStateChange: hasChange(
+              priorState,
+              proposedNewState,
+            ) as any,
             priorPrivateData: call.request!.prior_private!,
             priorState,
             proposedNewState,
@@ -171,12 +174,12 @@ export const run = <
 
         return pipe(
           resource.applyChange({
-            config: parseDynamicValue(call.request!.config!),
             client: client!,
-            hasStateChange: hasChange(priorState, plannedState),
+            config: parseDynamicValue(call.request!.config!),
+            hasStateChange: hasChange(priorState, plannedState) as any,
             plannedPrivateData: call.request!.planned_private!,
-            priorState,
             plannedState,
+            priorState,
           }),
           TaskThese.map(({ newState, privateData }) => ({
             private: privateData,
