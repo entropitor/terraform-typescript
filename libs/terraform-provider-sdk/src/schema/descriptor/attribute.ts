@@ -20,7 +20,7 @@ import {
   AttributeSource,
 } from './propertyDescriptor';
 
-const validatedAttribute = <
+const validatableAttribute = <
   CT extends CtyType,
   S extends AttributePropertyDescriptor['source']
 >(
@@ -48,25 +48,25 @@ const validatedAttribute = <
 
 const attributeConstructors = <AS extends AttributeSource>(source: AS) => ({
   any: (description: DescriptionLike) =>
-    validatedAttribute(source, ctyAny, description),
+    validatableAttribute(source, ctyAny, description),
   boolean: (description: DescriptionLike) =>
-    validatedAttribute(source, ctyBoolean, description),
+    validatableAttribute(source, ctyBoolean, description),
   list: <C extends CtyType>(description: DescriptionLike, itemType: C) =>
-    validatedAttribute(source, ctyList(itemType), description),
+    validatableAttribute(source, ctyList(itemType), description),
   map: <C extends CtyType>(description: DescriptionLike, itemType: C) =>
-    validatedAttribute(source, ctyMap(itemType), description),
+    validatableAttribute(source, ctyMap(itemType), description),
   number: (description: DescriptionLike) =>
-    validatedAttribute(source, ctyNumber, description),
+    validatableAttribute(source, ctyNumber, description),
   object: <R extends Record<string, CtyType>>(
     description: DescriptionLike,
     itemTypes: R,
-  ) => validatedAttribute(source, ctyObject(itemTypes), description),
+  ) => validatableAttribute(source, ctyObject(itemTypes), description),
   set: <C extends CtyType>(description: DescriptionLike, itemType: C) =>
-    validatedAttribute(source, ctySet(itemType), description),
+    validatableAttribute(source, ctySet(itemType), description),
   string: (description: DescriptionLike) =>
-    validatedAttribute(source, ctyString, description),
+    validatableAttribute(source, ctyString, description),
   tuple: <T extends CtyType[]>(description: DescriptionLike, ...itemTypes: T) =>
-    validatedAttribute(source, ctyTuple(...itemTypes), description),
+    validatableAttribute(source, ctyTuple(...itemTypes), description),
 });
 export const Attribute = {
   computed: attributeConstructors('computed'),
