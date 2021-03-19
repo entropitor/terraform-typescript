@@ -1,5 +1,5 @@
 import { CtyToTypescript } from './ctyType';
-import {
+import type {
   AttributePropertyDescriptor,
   ListPropertyDescriptor,
   SchemaBlockDescriptor,
