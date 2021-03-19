@@ -2,7 +2,7 @@ import { StringKind } from '../generated/tfplugin5/StringKind';
 import { Equals, expectTypeToBeTrue } from '../testUtils';
 
 import { ctyNumber, ctyString, ctyTypeToBuffer } from './ctyType';
-import { attribute, listProperty, schema, schemaBlock } from './descriptor';
+import { Attribute, Property, schema, schemaBlock } from './descriptor';
 import { createSchema } from './schema';
 import { SchemaConfig } from './SchemaConfig';
 import { SchemaState } from './SchemaState';
@@ -25,9 +25,9 @@ describe('createSchema', () => {
   it('should create a simple schema with attributes', () => {
     const descriptor = schema(
       schemaBlock('Test schema', {
-        password: attribute('required-in-config', ctyString),
-        url: attribute('computed', ctyString),
-        username: attribute('computed-but-overridable', ctyString),
+        password: Attribute.required.string,
+        url: Attribute.computed.string,
+        username: Attribute.computedButOverridable.string,
       }),
     );
 
@@ -104,19 +104,19 @@ describe('createSchema', () => {
   it('should create a more complex schema with attributes and list block_types', () => {
     const descriptor = schema(
       schemaBlock('Test schema', {
-        coffees: listProperty(
+        coffees: Property.list(
           schemaBlock('Test description', {
-            description: attribute('computed', ctyString),
-            id: attribute('computed', ctyNumber),
-            image: attribute('computed', ctyString),
-            ingredients: listProperty(
+            description: Attribute.computed.string,
+            id: Attribute.computed.number,
+            image: Attribute.computed.string,
+            ingredients: Property.list(
               schemaBlock('ingredients description', {
-                ingredient_id: attribute('computed', ctyNumber),
+                ingredient_id: Attribute.computed.number,
               }),
             ),
-            name: attribute('computed', ctyString),
-            price: attribute('computed', ctyNumber),
-            teaser: attribute('computed', ctyString),
+            name: Attribute.computed.string,
+            price: Attribute.computed.number,
+            teaser: Attribute.computed.string,
           }),
         ),
       }),
