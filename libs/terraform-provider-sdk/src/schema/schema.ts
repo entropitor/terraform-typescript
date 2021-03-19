@@ -2,7 +2,6 @@ import {
   _tfplugin5_Schema_Block as SchemaBlock,
   Schema,
 } from '../generated/tfplugin5/Schema';
-import { StringKind } from '../generated/tfplugin5/StringKind';
 
 import { ctyTypeToBuffer } from './ctyType';
 import { toTerraformDescription } from './description';
@@ -61,8 +60,7 @@ export const createBlock = (descriptor: SchemaBlockDescriptor): SchemaBlock => {
         throw new Error('unsupported');
       }),
     deprecated: false,
-    description: descriptor.description,
-    description_kind: StringKind.PLAIN,
+    ...toTerraformDescription(descriptor.description),
     version: 0,
   };
 };

@@ -2,7 +2,7 @@ import { StringKind } from '../generated/tfplugin5/StringKind';
 import { Equals, expectTypeToBeTrue } from '../testUtils';
 
 import { ctyNumber, ctyString, ctyTypeToBuffer } from './ctyType';
-import { Description, plain } from './description';
+import { Description, markdown, plain } from './description';
 import { Attribute, Property, schema, schemaBlock } from './descriptor';
 import { createSchema } from './schema';
 import { SchemaConfig } from './SchemaConfig';
@@ -10,13 +10,15 @@ import { SchemaState } from './SchemaState';
 
 describe('createSchema', () => {
   it('should create a simple schema', () => {
-    expect(createSchema(schema(schemaBlock('Empty schema', {})))).toEqual({
+    expect(
+      createSchema(schema(schemaBlock(markdown('Empty schema'), {}))),
+    ).toEqual({
       block: {
         attributes: [],
         block_types: [],
         deprecated: false,
         description: 'Empty schema',
-        description_kind: StringKind.PLAIN,
+        description_kind: StringKind.MARKDOWN,
         version: 0,
       },
       version: 0,
