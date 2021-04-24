@@ -1,3 +1,5 @@
+import type { ForceTypescriptComputation } from '../ForceTypescriptComputation';
+
 import { CtyToTypescript } from './ctyType';
 import type {
   AttributePropertyDescriptor,
@@ -23,8 +25,10 @@ type AttributePropertyConfig<
   Descriptor['source'],
   Descriptor['ctyType']
 >;
-type ListPropertyConfig<Descriptor extends ListPropertyDescriptor> = Array<
-  SchemaBlockConfig<Descriptor['itemType']>
+type ListPropertyConfig<
+  Descriptor extends ListPropertyDescriptor
+> = ForceTypescriptComputation<
+  Array<SchemaBlockConfig<Descriptor['itemType']>>
 >;
 
 export type SchemaPropertyConfig<
@@ -37,12 +41,14 @@ export type SchemaPropertyConfig<
 
 export type SchemaBlockConfig<
   Descriptor extends SchemaBlockDescriptor
-> = SmartOmit<
-  {
-    [propertyName in keyof Descriptor['properties']]: SchemaPropertyConfig<
-      Descriptor['properties'][propertyName]
-    >;
-  }
+> = ForceTypescriptComputation<
+  SmartOmit<
+    {
+      [propertyName in keyof Descriptor['properties']]: SchemaPropertyConfig<
+        Descriptor['properties'][propertyName]
+      >;
+    }
+  >
 >;
 
 export type SchemaConfig<

@@ -1,3 +1,5 @@
+import type { ForceTypescriptComputation } from '../ForceTypescriptComputation';
+
 import { CtyToTypescript } from './ctyType';
 import {
   AttributePropertyDescriptor,
@@ -20,9 +22,9 @@ type AttributePropertyState<
   ? CtyToTypescript<Descriptor['ctyType']>
   : never;
 
-type ListPropertyState<Descriptor extends ListPropertyDescriptor> = Array<
-  BlockState<Descriptor['itemType']>
->;
+export type ListPropertyState<
+  Descriptor extends ListPropertyDescriptor
+> = ForceTypescriptComputation<Array<BlockState<Descriptor['itemType']>>>;
 
 type PropertyState<
   Descriptor extends SchemaPropertyDescriptor
@@ -32,12 +34,16 @@ type PropertyState<
   ? ListPropertyState<Descriptor>
   : never;
 
-export type BlockState<Descriptor extends SchemaBlockDescriptor> = SmartOmit<
-  {
-    [propertyName in keyof Descriptor['properties']]: PropertyState<
-      Descriptor['properties'][propertyName]
-    >;
-  }
+export type BlockState<
+  Descriptor extends SchemaBlockDescriptor
+> = ForceTypescriptComputation<
+  SmartOmit<
+    {
+      [propertyName in keyof Descriptor['properties']]: PropertyState<
+        Descriptor['properties'][propertyName]
+      >;
+    }
+  >
 >;
 
 export type SchemaState<Descriptor extends SchemaDescriptor> = BlockState<
