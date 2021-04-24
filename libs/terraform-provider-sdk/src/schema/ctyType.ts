@@ -32,9 +32,7 @@ export type CtyType =
     }
   | {
       brand: typeof brand;
-      itemType: {
-        [key: string]: CtyType;
-      };
+      itemType: Record<string, CtyType>;
       type: 'object';
     };
 
@@ -111,7 +109,7 @@ export const ctyTuple = <T extends CtyType[]>(...of: T) =>
     itemTypes: of,
     type: 'tuple',
   } as const);
-export const ctyObject = <R extends { [key: string]: CtyType }>(of: R) =>
+export const ctyObject = <R extends Record<string, CtyType>>(of: R) =>
   ({
     brand,
     itemType: of,
