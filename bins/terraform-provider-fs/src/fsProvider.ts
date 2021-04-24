@@ -3,9 +3,8 @@ import * as path from 'path';
 
 import {
   AsyncResponse,
-  attribute,
+  Attribute,
   createSchema,
-  ctyString,
   Provider,
   schema,
   schemaBlock,
@@ -19,11 +18,7 @@ import { fsFileResource } from './fsFileResource';
 const schemaDescriptor = schema(
   schemaBlock('test schema', {
     // description: "The root dir where all files will be stored",
-    root_dir: attribute(
-      'required-in-config',
-      ctyString,
-      'The root dir where the file will be',
-    ),
+    root_dir: Attribute.required.string('The root dir where the file will be'),
   }),
 );
 

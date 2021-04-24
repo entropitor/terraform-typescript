@@ -16,9 +16,10 @@ export {
 export { createSchema } from './schema/schema';
 export {
   schema,
-  attribute,
-  listProperty,
   schemaBlock,
+  Attribute,
+  Property,
+  Size,
 } from './schema/descriptor';
 export { SchemaState } from './schema/SchemaState';
 export { SchemaConfig } from './schema/SchemaConfig';

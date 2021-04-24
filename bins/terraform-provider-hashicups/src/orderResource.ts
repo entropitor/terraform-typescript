@@ -1,14 +1,13 @@
 import {
   AsyncResponse,
-  attribute,
+  Attribute,
   computedValue,
   createCRUDResource,
-  ctyNumber,
-  ctyString,
-  listProperty,
+  Property,
   schema,
   schemaBlock,
   SchemaState,
+  Size,
   SyncResponse,
 } from '@entropitor/terraform-provider-sdk';
 
@@ -16,45 +15,26 @@ import { ApiOrder, HashicupsApiClient } from './apiClient';
 
 const schemaDescriptor = schema(
   schemaBlock('Order resource', {
-    // TODO move to resource itself (?)
-    id: attribute('computed', ctyString, 'The id of the order'),
-    items: listProperty(
+    // TODO move id field to resource itself (?)
+    id: Attribute.computed.string('The id of the order'),
+    items: Property.list(
       schemaBlock('the items in the order', {
-        coffee: listProperty(
+        coffee: Property.list(
           schemaBlock('the coffee you want to order', {
-            description: attribute(
-              'computed',
-              ctyString,
+            description: Attribute.computed.string(
               'The description of the coffee',
             ),
-            id: attribute(
-              'required-in-config',
-              ctyNumber,
-              'The id of the coffee',
-            ),
-            image: attribute('computed', ctyString, 'The image of the coffee'),
-            name: attribute('computed', ctyString, 'The name of the coffee'),
-            price: attribute('computed', ctyNumber, 'The price of the coffee'),
-            teaser: attribute(
-              'computed',
-              ctyString,
-              'The teaser of the coffee',
-            ),
+            id: Attribute.required.number('The id of the coffee'),
+            image: Attribute.computed.string('The image of the coffee'),
+            name: Attribute.computed.string('The name of the coffee'),
+            price: Attribute.computed.number('The price of the coffee'),
+            teaser: Attribute.computed.string('The teaser of the coffee'),
           }),
-          {
-            maxItems: 1,
-          },
-        ),
-        quantity: attribute(
-          'required-in-config',
-          ctyNumber,
-          'the amount of coffees',
-        ),
+        ).withSizeConstraint(Size.atMost(1)),
+        quantity: Attribute.required.number('the amount of coffees'),
       }),
     ),
-    last_updated: attribute(
-      'computed-but-overridable',
-      ctyString,
+    last_updated: Attribute.computedButOverridable.string(
       'the time the order was last updated at',
     ),
   }),
@@ -63,7 +43,7 @@ const schemaDescriptor = schema(
 const ctor = createCRUDResource(schemaDescriptor);
 
 type StateOrder = SchemaState<typeof schemaDescriptor>;
-type StateItem = StateOrder['items'][0];
+type StateItem = StateOrder['items'][number];
 
 const transformOrder = (
   order: ApiOrder,

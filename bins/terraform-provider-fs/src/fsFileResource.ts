@@ -2,11 +2,9 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 
 import {
-  attribute,
+  Attribute,
   createResource,
   ctyNumber,
-  ctyObject,
-  ctyString,
   schema,
   schemaBlock,
   Severity,
@@ -23,18 +21,10 @@ import { FsClient } from './fsClient';
 const ctor = createResource(
   schema(
     schemaBlock('a file resource', {
-      body: attribute(
-        'required-in-config',
-        ctyObject({
-          nb_foos: ctyNumber,
-        }),
-        'The body of the file',
-      ),
-      file_name: attribute(
-        'required-in-config',
-        ctyString,
-        'The name of the file',
-      ),
+      body: Attribute.required.object('The body of the file', {
+        nb_foos: ctyNumber,
+      }),
+      file_name: Attribute.required.string('The name of the file'),
       // description: "Som extra properties of the file",
       // extra: attribute('optional-in-config', ctyAny)
     }),

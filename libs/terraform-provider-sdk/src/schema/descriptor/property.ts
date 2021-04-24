@@ -39,15 +39,19 @@ const validatableConstrainedList = <SBD extends SchemaBlockDescriptor>(
 
   return {
     ...property,
-    withSizeConstraint: (newSizeConstraint: SizeConstraint) => {
-      return validatableConstrainedList(itemType, newSizeConstraint);
-    },
     withValidation,
   };
 };
-const validatableList = <SBD extends SchemaBlockDescriptor>(itemType: SBD) => {
-  return validatableConstrainedList(itemType);
+const validatableConstrainableList = <SBD extends SchemaBlockDescriptor>(
+  itemType: SBD,
+) => {
+  return {
+    ...validatableConstrainedList(itemType),
+    withSizeConstraint: (sizeConstraint: SizeConstraint) => {
+      return validatableConstrainedList(itemType, sizeConstraint);
+    },
+  };
 };
 export const Property = {
-  list: validatableList,
+  list: validatableConstrainableList,
 };

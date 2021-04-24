@@ -7,5 +7,5 @@ export {
   attribute,
   listProperty,
 } from './propertyDescriptor';
-export { Property } from './property';
+export { Property, Size } from './property';
 export { SchemaDescriptor, schema } from './schemaDescriptor';

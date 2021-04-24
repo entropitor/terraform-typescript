@@ -1,10 +1,8 @@
 import {
   AsyncResponse,
-  attribute,
+  Attribute,
   createDataSource,
-  ctyNumber,
-  ctyString,
-  listProperty,
+  Property,
   schema,
   schemaBlock,
   Severity,
@@ -16,29 +14,23 @@ import { HashicupsApiClient } from './apiClient';
 const ctor = createDataSource(
   schema(
     schemaBlock('Coffees data source schema', {
-      coffees: listProperty(
+      coffees: Property.list(
         schemaBlock('Test description', {
-          description: attribute(
-            'computed',
-            ctyString,
+          description: Attribute.computed.string(
             'The description of the coffee',
           ),
-          id: attribute('computed', ctyNumber, 'The id of the coffee'),
-          image: attribute('computed', ctyString, 'The image of the coffee'),
-          ingredients: listProperty(
+          id: Attribute.computed.number('The id of the coffee'),
+          image: Attribute.computed.string('The image of the coffee'),
+          ingredients: Property.list(
             schemaBlock('ingredients description', {
-              ingredient_id: attribute(
-                'computed',
-                ctyNumber,
+              ingredient_id: Attribute.computed.number(
                 'The id of the ingredient',
               ),
             }),
           ),
-          name: attribute('computed', ctyString, 'The name of the coffee'),
-          price: attribute('computed', ctyNumber, 'The price of the coffee'),
-          teaser: attribute(
-            'computed',
-            ctyString,
+          name: Attribute.computed.string('The name of the coffee'),
+          price: Attribute.computed.number('The price of the coffee'),
+          teaser: Attribute.computed.string(
             'The teaser description of the coffee',
           ),
         }),

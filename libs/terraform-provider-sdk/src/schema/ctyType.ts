@@ -1,3 +1,4 @@
+import type { ForceTypescriptComputation } from '../ForceTypescriptComputation';
 import { valueMap } from '../mapOverObject';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -124,7 +125,11 @@ type CtyList = ReturnType<typeof ctyList>;
 type CtySet = ReturnType<typeof ctySet>;
 type CtyMap = ReturnType<typeof ctyMap>;
 type CtyTuple = ReturnType<typeof ctyTuple>;
-type CtyObject = ReturnType<typeof ctyObject>;
+export type CtyObject<
+  R extends Record<string, CtyType> = Record<string, CtyType>
+> = ForceTypescriptComputation<
+  Omit<Extract<CtyType, { type: 'object' }>, 'itemType'> & { itemType: R }
+>;
 
 type CtyTupleToTypescript<T> = {
   [key in keyof T]: CtyToTypescript<T[key]>;

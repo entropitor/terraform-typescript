@@ -5,6 +5,7 @@ import {
   ctyList,
   ctyMap,
   ctyNumber,
+  CtyObject,
   ctyObject,
   ctySet,
   ctyString,
@@ -21,8 +22,9 @@ import {
 } from './propertyDescriptor';
 
 const validatableAttribute = <
+  S extends AttributePropertyDescriptor['source'],
   CT extends CtyType,
-  S extends AttributePropertyDescriptor['source']
+  CTToValidate extends CtyType = CT
 >(
   source: S,
   ctyType: CT,
@@ -30,10 +32,11 @@ const validatableAttribute = <
 ) => {
   const withoutValidation = attribute(source, ctyType, description);
 
+  type AttributeConfig = AttributePropertyConfigBySource<S, CTToValidate>;
   const withValidation = (
     validate: (
-      attributeToValidate: AttributePropertyConfigBySource<S, CT>,
-    ) => AsyncResponse<AttributePropertyConfigBySource<S, CT>>,
+      attributeToValidate: AttributeConfig,
+    ) => AsyncResponse<AttributeConfig>,
   ) =>
     ({
       ...withoutValidation,
@@ -57,10 +60,15 @@ const attributeConstructors = <AS extends AttributeSource>(source: AS) => ({
     validatableAttribute(source, ctyMap(itemType), description),
   number: (description: DescriptionLike) =>
     validatableAttribute(source, ctyNumber, description),
-  object: <R extends Record<string, CtyType>>(
+  object: <R extends Record<string, CtyType>, C extends CtyType = CtyObject<R>>(
     description: DescriptionLike,
     itemTypes: R,
-  ) => validatableAttribute(source, ctyObject(itemTypes), description),
+  ) =>
+    validatableAttribute<AS, CtyObject<R>, C>(
+      source,
+      ctyObject(itemTypes),
+      description,
+    ),
   set: <C extends CtyType>(description: DescriptionLike, itemType: C) =>
     validatableAttribute(source, ctySet(itemType), description),
   string: (description: DescriptionLike) =>

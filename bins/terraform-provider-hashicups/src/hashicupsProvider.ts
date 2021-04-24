@@ -3,9 +3,8 @@
  */
 import {
   AsyncResponse,
-  attribute,
+  Attribute,
   createSchema,
-  ctyString,
   Provider,
   schema,
   schemaBlock,
@@ -20,16 +19,8 @@ import { orderResource } from './orderResource';
 
 const schemaDescriptor = schema(
   schemaBlock('hashicups', {
-    password: attribute(
-      'optional-in-config',
-      ctyString,
-      'The password for the provider',
-    ),
-    username: attribute(
-      'optional-in-config',
-      ctyString,
-      'The username for the provider',
-    ),
+    password: Attribute.optional.string('The password for the provider'),
+    username: Attribute.optional.string('The username for the provider'),
   }),
 );
 
