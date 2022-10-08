@@ -89,7 +89,7 @@ export const orderResource = ctor<HashicupsApiClient>({
           newState: transformOrder(order, null),
           privateData: plannedPrivateData,
         });
-      } catch (error) {
+      } catch (error: any) {
         return SyncResponse.fromError('Failure to create order', error);
       }
     };
@@ -104,7 +104,7 @@ export const orderResource = ctor<HashicupsApiClient>({
           newState: null,
           privateData: plannedPrivateData,
         });
-      } catch (error) {
+      } catch (error: any) {
         return SyncResponse.fromError('Failure to delete order', error);
       }
     };

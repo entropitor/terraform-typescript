@@ -1,0 +1,11 @@
+Things to do:
+- Allow importing of a resource
+- Write acceptence tests?
+    Helps with making sure everything works
+- Write a real provider (e.g. kong, split.io)
+- Strip out extra properties not provided in schema. If not in schema, don't pass to terraform (like ExactRecord from io-ts)
+- Finish up all properties (not only list but also set, ...)
+- Write acceptence test framework
+    Use jest runner?
+    Use bash?
+    Compatible with only 1 terraform version or multiple?

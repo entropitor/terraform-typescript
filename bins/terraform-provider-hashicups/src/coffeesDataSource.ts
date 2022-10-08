@@ -48,7 +48,7 @@ export const coffeesDataSource = ctor<HashicupsApiClient>({
             coffees: await client.coffee.list(),
           },
         });
-      } catch (error) {
+      } catch (error: any) {
         return SyncResponse.left([
           {
             detail: error.toString(),

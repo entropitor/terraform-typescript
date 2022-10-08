@@ -14,9 +14,7 @@ import { SchemaDescriptor } from './schema/descriptor';
 import { createSchema } from './schema/schema';
 import { SchemaConfig } from './schema/SchemaConfig';
 import { SchemaState } from './schema/SchemaState';
-import { DataSource } from './types/dataSource';
 import { Provider, StringKeys } from './types/provider';
-import { Resource } from './types/resource';
 import {
   AsyncResponse,
   getDiagnostics,
@@ -47,13 +45,11 @@ export const run = <
         return Either.right({
           provider: provider.getSchema(),
           resource_schemas: valueMap(
-            (dataSource: Resource<any, Client>) =>
-              createSchema(dataSource.getSchemaDescriptor()),
+            (dataSource: any) => createSchema(dataSource.getSchemaDescriptor()),
             provider.getResources(),
           ),
           data_source_schemas: valueMap(
-            (dataSource: DataSource<any, Client>) =>
-              createSchema(dataSource.getSchemaDescriptor()),
+            (dataSource: any) => createSchema(dataSource.getSchemaDescriptor()),
             provider.getDataSources(),
           ),
         });

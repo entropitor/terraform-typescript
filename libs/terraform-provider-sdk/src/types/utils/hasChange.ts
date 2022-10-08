@@ -1,28 +1,34 @@
 import R from 'ramda';
 
 type SubKey<T> = T extends any[] ? number : T extends object ? keyof T : never;
+// export type PathOf<T> =
+//   | [keyof T]
+//   | {
+//       [key in keyof T]: [key, SubKey<T[key]>];
+//     }[keyof T]
+//   | {
+//       [key1 in keyof T]: {
+//         [key2 in SubKey<T[key1]>]: key2 extends keyof T[key1]
+//           ? [key1, key2, SubKey<T[key1][key2]>]
+//           : never;
+//       }[SubKey<T[key1]>];
+//     }[keyof T]
+//   | {
+//       [key1 in keyof T]: {
+//         [key2 in SubKey<T[key1]>]: key2 extends keyof T[key1]
+//           ? {
+//               [key3 in SubKey<T[key1][key2]>]: key3 extends keyof T[key1][key2]
+//                 ? [key1, key2, key3, SubKey<T[key1][key2][key3]>]
+//                 : never;
+//             }[SubKey<T[key1][key2]>]
+//           : never;
+//       }[SubKey<T[key1]>];
+//     }[keyof T];
+
 export type PathOf<T> =
-  | [keyof T]
+  | [SubKey<T>]
   | {
-      [key in keyof T]: [key, SubKey<T[key]>];
-    }[keyof T]
-  | {
-      [key1 in keyof T]: {
-        [key2 in SubKey<T[key1]>]: key2 extends keyof T[key1]
-          ? [key1, key2, SubKey<T[key1][key2]>]
-          : never;
-      }[SubKey<T[key1]>];
-    }[keyof T]
-  | {
-      [key1 in keyof T]: {
-        [key2 in SubKey<T[key1]>]: key2 extends keyof T[key1]
-          ? {
-              [key3 in SubKey<T[key1][key2]>]: key3 extends keyof T[key1][key2]
-                ? [key1, key2, key3, SubKey<T[key1][key2][key3]>]
-                : never;
-            }[SubKey<T[key1][key2]>]
-          : never;
-      }[SubKey<T[key1]>];
+      [key in keyof T]: [key, ...PathOf<T[key]>];
     }[keyof T];
 
 // TODO integrate better with the schemaDescriptor?
