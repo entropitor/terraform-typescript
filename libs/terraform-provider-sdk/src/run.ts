@@ -45,7 +45,7 @@ export const run = <
         return Either.right({
           provider: provider.getSchema(),
           resource_schemas: valueMap(
-            (dataSource: any) => createSchema(dataSource.getSchemaDescriptor()),
+            (resource: any) => createSchema(resource.getSchemaDescriptor()),
             provider.getResources(),
           ),
           data_source_schemas: valueMap(
