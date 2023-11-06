@@ -17,7 +17,7 @@ type DataSources<D extends Record<string, SchemaDescriptor>, Client> = {
   [dataSourceName in StringKeys<D>]: DataSource<D[dataSourceName], Client>;
 };
 
-type PrepareConfigureResult<C> = {
+export type PrepareConfigureResult<C> = {
   preparedConfig: C;
 };
 

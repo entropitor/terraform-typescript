@@ -14,7 +14,7 @@ import { SchemaDescriptor } from './schema/descriptor';
 import { createSchema } from './schema/schema';
 import { SchemaConfig } from './schema/SchemaConfig';
 import { SchemaState } from './schema/SchemaState';
-import { Provider, StringKeys } from './types/provider';
+import { PrepareConfigureResult, Provider, StringKeys } from './types/provider';
 import {
   AsyncResponse,
   getDiagnostics,
@@ -56,12 +56,13 @@ export const run = <
       }),
 
       PrepareProviderConfig: unary(async (call) => {
+        const preparedConfigResult = provider.prepareProviderConfig({
+          config: parseDynamicValue<ProviderSchemaConfig>(
+            call.request!.config!,
+          ),
+        });
         return pipe(
-          provider.prepareProviderConfig({
-            config: parseDynamicValue<ProviderSchemaConfig>(
-              call.request!.config!,
-            ),
-          }),
+          preparedConfigResult,
           AsyncResponse.map(({ preparedConfig }) => ({
             prepared_config: serializeDynamicValue(preparedConfig),
           })),
@@ -69,12 +70,35 @@ export const run = <
         );
       }),
       Configure: unary(async (call) => {
-        const config = parseDynamicValue<ProviderSchemaConfig>(
+        const config: ProviderSchemaConfig = parseDynamicValue<ProviderSchemaConfig>(
           call.request!.config!,
+        );
+        const preparedConfigResult: AsyncResponse<
+          PrepareConfigureResult<ProviderSchemaConfig>
+        > = provider.prepareProviderConfig({
+          config,
+        });
+
+        const x = pipe(
+          preparedConfigResult,
+          AsyncResponse.chain((prepareResult) =>
+            provider.configure({
+              config,
+              preparedConfig: prepareResult.preparedConfig,
+            }),
+          ),
+        );
+
+        return pipe(
+          x,
+          AsyncResponse.chain((configuredResult) => {
+            client = configuredResult.client;
+            return AsyncResponse.right({});
+          }),
         );
 
         const configuredAsyncResult = pipe(
-          provider.prepareProviderConfig({ config }),
+          preparedConfigResult,
           AsyncResponse.chain((prepareResult) =>
             provider.configure({
               config,
@@ -123,7 +147,7 @@ export const run = <
         const resource = provider.getResources()[resourceName];
 
         type ResourceSchemaState = SchemaState<R[typeof resourceName]>;
-        const priorState = parseDynamicValue<ResourceSchemaState>(
+        const priorState: ResourceSchemaState = parseDynamicValue<ResourceSchemaState>(
           call.request!.prior_state!,
         );
         const proposedNewState = parseDynamicValue<ResourceSchemaState>(
