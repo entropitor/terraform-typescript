@@ -38,11 +38,9 @@ const validatableAttribute = <
       attributeToValidate: AttributeConfig,
     ) => AsyncResponse<AttributeConfig>,
   ) => {
-    const fixedValidate: AttributePropertyDescriptor['validate'] = validate;
     return {
       ...withoutValidation,
-      // @ts-expect-error too deep to check for typescript
-      validate: fixedValidate,
+      validate: (validate as unknown) as AttributePropertyDescriptor['validate'],
     } as const;
   };
 

@@ -68,6 +68,8 @@ export const AsyncResponse = {
     TaskThese.left<Diagnostic[], T>(diagnostics),
   leftAsync: <T = never>(diagnostics: Task.Task<Diagnostic[]>) =>
     TaskThese.leftTask<Diagnostic[], T>(diagnostics),
+  map: <A, B>(f: (a: A) => B) => (response: AsyncResponse<A>) =>
+    TaskThese.map(f)(response),
   mapLeft: (f: (diag: Diagnostic[]) => Diagnostic[]) => TaskThese.mapLeft(f),
   right: <T = never>(t: T) => TaskThese.right<Diagnostic[], T>(t),
   rightAsync: <T = never>(t: Task.Task<T>) =>

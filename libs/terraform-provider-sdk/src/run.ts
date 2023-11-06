@@ -58,9 +58,11 @@ export const run = <
       PrepareProviderConfig: unary(async (call) => {
         return pipe(
           provider.prepareProviderConfig({
-            config: parseDynamicValue(call.request!.config!),
+            config: parseDynamicValue<ProviderSchemaConfig>(
+              call.request!.config!,
+            ),
           }),
-          TaskThese.map(({ preparedConfig }) => ({
+          AsyncResponse.map(({ preparedConfig }) => ({
             prepared_config: serializeDynamicValue(preparedConfig),
           })),
           runTaskTillGrpcResponse,
@@ -109,7 +111,7 @@ export const run = <
             privateData: call.request!.private!,
             client: client!,
           }),
-          TaskThese.map(({ newState, privateData }) => ({
+          AsyncResponse.map(({ newState, privateData }) => ({
             private: privateData,
             new_state: serializeDynamicValue(newState),
           })),
